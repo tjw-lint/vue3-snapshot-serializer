@@ -5,7 +5,14 @@
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint *.js src tests",
     "test": "vitest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "eslint": "^9.9.1",
+    "happy-dom": "^15.7.3",
+    "vitest": "^2.0.5"
   },
   "repository": {
     "type": "git",
@@ -28,8 +35,5 @@
   "bugs": {
     "url": "https://github.com/tjw-lint/vue3-snapshot-serializer/issues"
   },
-  "homepage": "https://github.com/tjw-lint/vue3-snapshot-serializer#readme",
-  "devDependencies": {
-    "vitest": "^2.0.5"
-  }
+  "homepage": "https://github.com/tjw-lint/vue3-snapshot-serializer#readme"
 }
