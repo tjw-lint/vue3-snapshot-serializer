@@ -1,0 +1,35 @@
+{
+  "name": "vue3-snapshot-serializer",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Vitest snapshot serializer for Vue 3 components",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjw-lint/vue3-snapshot-serializer.git"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "vitest",
+    "jest",
+    "serializer",
+    "snapshots",
+    "unit",
+    "testing",
+    "unit",
+    "lint"
+  ],
+  "author": "The Jared Wilcurt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tjw-lint/vue3-snapshot-serializer/issues"
+  },
+  "homepage": "https://github.com/tjw-lint/vue3-snapshot-serializer#readme",
+  "devDependencies": {
+    "vitest": "^2.0.5"
+  }
+}
