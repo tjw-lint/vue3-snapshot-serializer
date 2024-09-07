@@ -12,6 +12,9 @@ export const isHtmlString = function (received) {
   );
 };
 
-export const isVueWrapper = function (value) {
-	return value;
+export const isVueWrapper = function (received) {
+  return (
+    typeof(received) === 'object' &&
+    typeof(received.html) === 'function'
+  );
 };

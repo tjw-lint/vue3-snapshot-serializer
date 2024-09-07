@@ -23,22 +23,21 @@ const test = function (received) {
  * @return {string}                  The formatted markup
  */
 const print = function (received) {
-	const options = loadOptions();
-
+  loadOptions();
   let html = received || '';
-  html = vNodeManipulation(html, options);
-  html = stringManipulation(html, options);
+  html = vNodeManipulation(html);
+  html = stringManipulation(html);
 
-  return formatMarkup(html, options);
+  return formatMarkup(html);
 };
 
-export const vueMarkupFormatter = function (html, options) {
+export const vueMarkupFormatter = function (html) {
+  loadOptions();
 	if (!isHtmlString(html)) {
 		return html;
 	}
-	options = loadOptions(options);
-  html = stringManipulation(html, options);
-  return formatMarkup(html, options);
+  html = stringManipulation(html);
+  return formatMarkup(html);
 }
 
 export default {

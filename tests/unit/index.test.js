@@ -16,5 +16,29 @@ describe('index.js', () => {
       expect(vue3SnapshotSerializer.test(22))
         .toEqual(false);
     });
+
+    test('Object resembling Vue wrapper is valid', () => {
+      expect(vue3SnapshotSerializer.test({ html: vi.fn() }))
+        .toEqual(true);
+    });
+
+    test('Empty object is invalid', () => {
+      expect(vue3SnapshotSerializer.test({}))
+        .toEqual(false);
+    });
+  });
+
+  describe('Serialization printer', () => {
+    test('Empty string', () => {
+      expect(vue3SnapshotSerializer.print(''))
+        .toEqual('');
+    });
+  });
+
+  describe('Markup formatter', () => {
+    test('Empty string', () => {
+      expect(vueMarkupFormatter(''))
+        .toEqual('');
+    });
   });
 });
