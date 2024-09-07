@@ -20,7 +20,8 @@ describe('Load options', () => {
         removeDataCy: false,
         removeDataPw: false,
         removeIdTest: false,
-        removeClassTest: false
+        removeClassTest: false,
+        removeComments: false
       });
   });
 
@@ -34,7 +35,8 @@ describe('Load options', () => {
       removeDataCy: true,
       removeDataPw: true,
       removeIdTest: true,
-      removeClassTest: true
+      removeClassTest: true,
+      removeComments: true
     };
 
     loadOptions();
@@ -49,7 +51,23 @@ describe('Load options', () => {
         removeDataCy: true,
         removeDataPw: true,
         removeIdTest: true,
-        removeClassTest: true
+        removeClassTest: true,
+        removeComments: true
       });
+  });
+
+  test('Removes non-settings', () => {
+    globalThis.vueSnapshots = {
+      fake: true,
+      notReal: false
+    };
+
+    loadOptions();
+
+    expect(globalThis.vueSnapshots.fake)
+      .toEqual(undefined);
+
+    expect(globalThis.vueSnapshots.notReal)
+      .toEqual(undefined);
   });
 });
