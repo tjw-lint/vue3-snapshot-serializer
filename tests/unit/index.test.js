@@ -40,5 +40,12 @@ describe('index.js', () => {
       expect(vueMarkupFormatter(''))
         .toEqual('');
     });
+
+    test('Simple markup', () => {
+      const markup = '<div>Hello</div>';
+
+      expect(vueMarkupFormatter('<div>Hello</div>'))
+        .toEqual('<div>Hello</div>');
+    });
   });
 });
