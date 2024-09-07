@@ -14,6 +14,29 @@ describe('Cheerio Manipulation', () => {
       .toEqual('');
   });
 
+  describe('Server rendered text', () => {
+    const markup = '<div data-server-rendered="true">Content</div>';
+    const cleaned = '<div>Content</div>';
+
+    test('Removes server rendered attribute if setting enabled', () => {
+      globalThis.vueSnapshots = {
+        removeServerRendered: true
+      };
+
+      expect(cheerioManipulation(markup))
+        .toEqual(cleaned);
+    });
+
+    test('Retains server rendered attribute if setting disabled', () => {
+      globalThis.vueSnapshots = {
+        removeServerRendered: false
+      };
+
+      expect(cheerioManipulation(markup))
+        .toEqual(markup);
+    });
+  });
+
   describe('data-v-ids', () => {
     const markup = '<div data-v-34cd6f4f class="hello"> Hello World </div>';
     const cleaned = '<div class="hello"> Hello World </div>';

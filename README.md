@@ -72,6 +72,7 @@ The following features are implemented in this library:
 
 Setting                | Default           | Description
 :--                    | :--               | :--
+removeServerRendered   | `true`            | Removes `data-server-rendered="true"` from your snapshots if true.
 removeDataVId          | `true`            | Removes `data-v-1234abcd=""` from your snapshots.
 removeDataTest         | `true`            | Removes `data-test="whatever"` from your snapshots if true. To also remove these from your production builds, [see here](https://github.com/cogor/vite-plugin-vue-remove-attributes).
 removeDataTestid       | `true`            | Removes `data-testid="whatever"` from your snapshots if true.
@@ -92,7 +93,6 @@ attributesToClear      | []                | Takes an array of attribute strings
 clearInlineFunctions   | `false`           | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
 formatting             | See above example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
 removeIstanbulComments | `true`            | Removes `/* istanbul ignore next */ cov_1lmjj6lxv1.f[3]++;` comments from snapshots when functions are inside HTML attributes. See [v3.16.0 release notes](https://github.com/tjw-lint/jest-serializer-vue-tjw/releases/tag/v3.16.0) for more details.
-removeServerRendered   | `true`            | Removes `data-server-rendered="true"` from your snapshots if true.
 sortAttributes         | `true`            | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
 verbose                | `true`            | Logs to the console errors or other messages if true. **Strongly recommended** if using experimental features.
 addInputValues         | `false`           | **EXPERIMENTAL** Displays the value of form fields. `<input>` becomes `<input value="whatever">` in your snapshots. Requires you pass in `wrapper`, not `wrapper.html()`. On deeply nested components, it may exceed callstack.

@@ -27,8 +27,7 @@ const cheerioize = function (html) {
 /**
  * This removes data-v-1234abcd="" from your snapshots.
  *
- * @param  {object} $        The markup as a cheerio object
- * @param  {object} options  Options object for this serializer
+ * @param {object} $  The markup as a cheerio object
  */
 const removeScopedStylesDataVIDAttributes = function ($) {
   if (globalThis.vueSnapshots?.removeDataVId) {
@@ -50,11 +49,21 @@ const removeScopedStylesDataVIDAttributes = function ($) {
   }
 };
 
+/**
+ * This removes the data-server-rendered="true" from your snapshots.
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+function removeServerRenderedText ($) {
+  if (globalThis.vueSnapshots?.removeServerRendered) {
+    $('[data-server-rendered]').removeAttr('data-server-rendered');
+  }
+}
 
 export const cheerioManipulation = function (html) {
   const $ = cheerioize(html);
 
-  // removeServerRenderedText($);
+  removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
   // clearAttributes($);

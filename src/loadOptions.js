@@ -6,6 +6,7 @@ export const loadOptions = function () {
    */
 
   const booleanDefaults = {
+    removeServerRendered: true,
     removeDataVId: true,
     removeDataTest: true,
     removeDataTestid: true,

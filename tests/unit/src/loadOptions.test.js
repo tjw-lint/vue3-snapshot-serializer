@@ -5,55 +5,40 @@ describe('Load options', () => {
     globalThis.vueSnapshots = {};
   });
 
+  const defaultSettings = Object.freeze({
+    removeServerRendered: true,
+    removeDataVId: true,
+    removeDataTest: true,
+    removeDataTestid: true,
+    removeDataTestId: true,
+    removeDataQa: false,
+    removeDataCy: false,
+    removeDataPw: false,
+    removeIdTest: false,
+    removeClassTest: false,
+    removeComments: false
+  });
+
   test('Returns defaults', () => {
     delete globalThis.vueSnapshots;
 
     loadOptions();
 
     expect(globalThis.vueSnapshots)
-      .toEqual({
-        removeDataVId: true,
-        removeDataTest: true,
-        removeDataTestid: true,
-        removeDataTestId: true,
-        removeDataQa: false,
-        removeDataCy: false,
-        removeDataPw: false,
-        removeIdTest: false,
-        removeClassTest: false,
-        removeComments: false
-      });
+      .toEqual(defaultSettings);
   });
 
   test('Override defaults', () => {
-    globalThis.vueSnapshots = {
-      removeDataVId: false,
-      removeDataTest: false,
-      removeDataTestid: false,
-      removeDataTestId: false,
-      removeDataQa: true,
-      removeDataCy: true,
-      removeDataPw: true,
-      removeIdTest: true,
-      removeClassTest: true,
-      removeComments: true
-    };
+    const invertedDefaults = {};
+    for (const setting in defaultSettings) {
+      invertedDefaults[setting] = !defaultSettings[setting];
+    }
+    globalThis.vueSnapshots = invertedDefaults;
 
     loadOptions();
 
     expect(globalThis.vueSnapshots)
-      .toEqual({
-        removeDataVId: false,
-        removeDataTest: false,
-        removeDataTestid: false,
-        removeDataTestId: false,
-        removeDataQa: true,
-        removeDataCy: true,
-        removeDataPw: true,
-        removeIdTest: true,
-        removeClassTest: true,
-        removeComments: true
-      });
+      .toEqual(invertedDefaults);
   });
 
   test('Removes non-settings', () => {
