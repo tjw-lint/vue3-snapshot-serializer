@@ -33,14 +33,14 @@ const print = function (received) {
 
 export const vueMarkupFormatter = function (html) {
   loadOptions();
-	if (!isHtmlString(html)) {
-		return html;
-	}
+  if (!isHtmlString(html)) {
+    return html;
+  }
   html = stringManipulation(html);
   return formatMarkup(html);
-}
+};
 
 export default {
-	test,
-	print
+  test,
+  print
 };

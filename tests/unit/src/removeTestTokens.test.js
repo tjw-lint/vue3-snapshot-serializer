@@ -1,4 +1,4 @@
-import { cheerioManipulation as removeTestTokens } from '@/cheerioManipulation.js'
+import { cheerioManipulation as removeTestTokens } from '@/cheerioManipulation.js';
 
 describe('Remove test tokens', () => {
   const dataTest = '<div data-test="token">Test</div>';

@@ -9,7 +9,7 @@ import { removeTestTokens } from '@/removeTestTokens.js';
  * @param  {string} html  The markup to use for the cheerio object
  * @return {object} $     The cheerio object
  */
-export const cheerioize = function (html) {
+const cheerioize = function (html) {
   // https://github.com/fb55/DomHandler
   // https://github.com/fb55/htmlparser2/wiki/Parser-options
   const xmlOptions = {

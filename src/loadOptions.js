@@ -1,4 +1,3 @@
-
 export const loadOptions = function () {
   globalThis.vueSnapshots = globalThis.vueSnapshots || {};
 

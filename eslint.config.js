@@ -1,9 +1,11 @@
 import js from '@eslint/js';
+import tjwBase from 'eslint-config-tjw-base';
 
 export default [
   js.configs.recommended,
+  tjwBase,
   {
-    languageOptions:{
+    languageOptions: {
       globals: {
         afterEach: true,
         beforeEach: true,
@@ -15,8 +17,6 @@ export default [
       }
     },
     rules: {
-      'no-unused-vars': 'error',
-      'no-undef': 'error'
     }
   }
 ];
