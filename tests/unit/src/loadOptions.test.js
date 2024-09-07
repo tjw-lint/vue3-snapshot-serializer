@@ -12,20 +12,44 @@ describe('Load options', () => {
 
     expect(globalThis.vueSnapshots)
       .toEqual({
-        removeDataVId: true
+        removeDataVId: true,
+        removeDataTest: true,
+        removeDataTestid: true,
+        removeDataTestId: true,
+        removeDataQa: false,
+        removeDataCy: false,
+        removeDataPw: false,
+        removeIdTest: false,
+        removeClassTest: false
       });
   });
 
   test('Override defaults', () => {
     globalThis.vueSnapshots = {
-      removeDataVId: false
+      removeDataVId: false,
+      removeDataTest: false,
+      removeDataTestid: false,
+      removeDataTestId: false,
+      removeDataQa: true,
+      removeDataCy: true,
+      removeDataPw: true,
+      removeIdTest: true,
+      removeClassTest: true
     };
 
     loadOptions();
 
     expect(globalThis.vueSnapshots)
       .toEqual({
-        removeDataVId: false
+        removeDataVId: false,
+        removeDataTest: false,
+        removeDataTestid: false,
+        removeDataTestId: false,
+        removeDataQa: true,
+        removeDataCy: true,
+        removeDataPw: true,
+        removeIdTest: true,
+        removeClassTest: true
       });
   });
 });

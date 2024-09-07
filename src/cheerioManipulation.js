@@ -1,13 +1,15 @@
 import * as cheerio from 'cheerio';
 import * as htmlparser2 from 'htmlparser2';
 
+import { removeTestTokens } from '@/removeTestTokens.js';
+
 /**
  * Creates a cheerio ($) object from the html for DOM manipulation.
  *
  * @param  {string} html  The markup to use for the cheerio object
  * @return {object} $     The cheerio object
  */
-const cheerioize = function (html) {
+export const cheerioize = function (html) {
   // https://github.com/fb55/DomHandler
   // https://github.com/fb55/htmlparser2/wiki/Parser-options
   const xmlOptions = {
@@ -28,7 +30,7 @@ const cheerioize = function (html) {
  * @param  {object} $        The markup as a cheerio object
  * @param  {object} options  Options object for this serializer
  */
-const removeScopedStylesDataVIDAttributes = function ($, options) {
+const removeScopedStylesDataVIDAttributes = function ($) {
   if (globalThis.vueSnapshots?.removeDataVId) {
     // [-\w]+ will catch 1 or more instaces of a-z, A-Z, 0-9, hyphen (-), or underscore (_)
     const regex = / data-v-[-\w]+/g;
@@ -48,18 +50,19 @@ const removeScopedStylesDataVIDAttributes = function ($, options) {
   }
 };
 
-export const cheerioManipulation = function (html, options) {
+
+export const cheerioManipulation = function (html) {
   const $ = cheerioize(html);
 
-  // removeServerRenderedText($, options);
-  // removeTestTokens($, options);
-  removeScopedStylesDataVIDAttributes($, options);
-  // clearAttributes($, options);
+  // removeServerRenderedText($);
+  removeTestTokens($);
+  removeScopedStylesDataVIDAttributes($);
+  // clearAttributes($);
 
   // clearInlineFunctions should always be ran before removeIstanbulComments for speed
-  // clearInlineFunctions($, options);
-  // removeIstanbulComments($, options);
-  // sortAttributes($, options);
+  // clearInlineFunctions($);
+  // removeIstanbulComments($);
+  // sortAttributes($);
 
   return $.html();
 };

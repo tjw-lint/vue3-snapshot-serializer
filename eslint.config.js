@@ -5,10 +5,13 @@ export default [
   {
     languageOptions:{
       globals: {
+        afterEach: true,
+        beforeEach: true,
         describe: true,
         expect: true,
         global: true,
-        test: true
+        test: true,
+        vi: true
       }
     },
     rules: {

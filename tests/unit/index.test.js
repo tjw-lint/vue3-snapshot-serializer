@@ -44,8 +44,8 @@ describe('index.js', () => {
     test('Simple markup', () => {
       const markup = '<div>Hello</div>';
 
-      expect(vueMarkupFormatter('<div>Hello</div>'))
-        .toEqual('<div>Hello</div>');
+      expect(vueMarkupFormatter(markup))
+        .toEqual(markup);
     });
   });
 });
