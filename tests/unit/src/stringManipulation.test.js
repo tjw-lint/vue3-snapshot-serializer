@@ -14,6 +14,7 @@ describe('String Manipulation', () => {
     const markup = [
       '<div>',
       '  <!---->',
+      '  <!--v-if-->',
       '  <!--',
       '    line 1',
       '    line 2',
@@ -29,6 +30,6 @@ describe('String Manipulation', () => {
     ].join('\n');
 
     expect(stringManipulation(markup))
-      .toEqual('<div>\n        </div>');
+      .toEqual('<div>\n          </div>');
   });
 });
