@@ -18,3 +18,9 @@ export const isVueWrapper = function (received) {
     typeof(received.html) === 'function'
   );
 };
+
+export const logger = function (message) {
+  if (globalThis.vueSnapshots?.verbose) {
+    console.info('Vue 3 Snapshot Serializer: ' + message);
+  }
+};
