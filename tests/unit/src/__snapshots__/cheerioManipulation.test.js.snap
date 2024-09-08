@@ -53,3 +53,19 @@ exports[`Cheerio Manipulation > InlineFunctions.vue > Functions removed 1`] = `
   <footer title="[function]">Default function in in a prop</footer>
 </div>"
 `;
+
+exports[`Cheerio Manipulation > SortAttributes.vue > Sorted 1`] = `
+"<div>
+  <h1 class="meow nyan" id="kitten" title="cat"> fluffy </h1>
+  <h2 asdf="qwer" class id="kitten2"> mittens </h2>
+  <h3 asdf data-test="qwer" id> scruffy </h3>
+</div>"
+`;
+
+exports[`Cheerio Manipulation > SortAttributes.vue > Unsorted 1`] = `
+"<div>
+  <h1 id="kitten" class="meow nyan" title="cat"> fluffy </h1>
+  <h2 id="kitten2" class asdf="qwer"> mittens </h2>
+  <h3 id asdf data-test="qwer"> scruffy </h3>
+</div>"
+`;

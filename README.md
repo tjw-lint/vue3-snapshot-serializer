@@ -72,6 +72,7 @@ The following features are implemented in this library:
 
 Setting                | Default           | Description
 :--                    | :--               | :--
+sortAttributes         | `true`            | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
 removeServerRendered   | `true`            | Removes `data-server-rendered="true"` from your snapshots if true.
 removeDataVId          | `true`            | Removes `data-v-1234abcd=""` from your snapshots.
 removeDataTest         | `true`            | Removes `data-test="whatever"` from your snapshots if true. To also remove these from your production builds, [see here](https://github.com/cogor/vite-plugin-vue-remove-attributes).
@@ -90,7 +91,6 @@ clearInlineFunctions   | `false`           | Replaces `<div title="function () {
 <!--
 attributesToClear      | []                | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
 formatting             | See above example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
-sortAttributes         | `true`            | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
 verbose                | `true`            | Logs to the console errors or other messages if true. **Strongly recommended** if using experimental features.
 addInputValues         | `false`           | **EXPERIMENTAL** Displays the value of form fields. `<input>` becomes `<input value="whatever">` in your snapshots. Requires you pass in `wrapper`, not `wrapper.html()`. On deeply nested components, it may exceed callstack.
 stringifyObjects       | `false`           | **EXPERIMENTAL** Replaces `title="[object Object]"` with `title="{a:'asdf'}"` in your snapshots, allowing you to see the data in the snapshot. Requires you to pass in `wrapper`, not `wrapper.html()`. This is still a work in progress. On deeply nested components, it may exceed callstack.

@@ -1,4 +1,5 @@
 export const booleanDefaults = {
+  sortAttributes: true,
   removeServerRendered: true,
   removeDataVId: true,
   removeDataTest: true,

@@ -4,6 +4,7 @@ import { cheerioManipulation } from '@/cheerioManipulation.js';
 
 import DataVId from '@@/mockComponents/DataVId.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
+import SortAttributes from '@@/mockComponents/SortAttributes.vue';
 
 describe('Cheerio Manipulation', () => {
   beforeEach(() => {
@@ -119,6 +120,28 @@ describe('Cheerio Manipulation', () => {
 
       expect(fn())
         .toEqual({});
+    });
+  });
+
+  describe('SortAttributes.vue', () => {
+    test('Sorted', async () => {
+      globalThis.vueSnapshots = { sortAttributes: true };
+
+      const wrapper = await mount(SortAttributes);
+      const markup = wrapper.html();
+
+      expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
+    });
+
+    test('Unsorted', async () => {
+      globalThis.vueSnapshots = { sortAttributes: false };
+
+      const wrapper = await mount(SortAttributes);
+      const markup = wrapper.html();
+
+      expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
     });
   });
 });
