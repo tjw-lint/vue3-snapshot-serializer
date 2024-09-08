@@ -48,8 +48,8 @@ attributesToClear      | Probably        | Array of attribute strings to remove 
 verbose                | Probably        | Logs to the console errors or other messages if true
 removeClassTest        | Maybe           | Removes all CSS classes that start with "test", `class="test-whatever"`
 removeIdTest           | Maybe           | Removes `id="test-whatever"` or `id="testWhatever"`from snapshots
-removeIstanbulComments | Maybe           | Removes `/* istanbul ignore next */ cov_1lmjj6lxv1.f[3]++;` comments from snapshots. This may not be an issue in the new tech stack?
 clearInlineFunctions   | Maybe           | `<div title="(x) => !x">` becomes `<div title="[function]">`
+removeIstanbulComments | No              | I cannot reproduce this issue anymore. Will add it back in if people run into it again.
 addInputValues         | No              | Display form field value. `<input>` becomes `<input value="whatever">`. Not sure how to do this in Vue 3
 stringifyObjects       | No              | Replaces `title="[object Object]"` with `title="{a:'asdf'}"`. Not sure if this is possible in Vue 3
 
@@ -86,13 +86,10 @@ removeComments         | `false`           | Removes all HTML comments from your
 
 
 
-
-
 <!--
 attributesToClear      | []                | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
 clearInlineFunctions   | `false`           | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
 formatting             | See above example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
-removeIstanbulComments | `true`            | Removes `/* istanbul ignore next */ cov_1lmjj6lxv1.f[3]++;` comments from snapshots when functions are inside HTML attributes. See [v3.16.0 release notes](https://github.com/tjw-lint/jest-serializer-vue-tjw/releases/tag/v3.16.0) for more details.
 sortAttributes         | `true`            | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
 verbose                | `true`            | Logs to the console errors or other messages if true. **Strongly recommended** if using experimental features.
 addInputValues         | `false`           | **EXPERIMENTAL** Displays the value of form fields. `<input>` becomes `<input value="whatever">` in your snapshots. Requires you pass in `wrapper`, not `wrapper.html()`. On deeply nested components, it may exceed callstack.

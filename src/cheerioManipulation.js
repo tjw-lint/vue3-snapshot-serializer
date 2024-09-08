@@ -54,11 +54,11 @@ const removeScopedStylesDataVIDAttributes = function ($) {
  *
  * @param {object} $  The markup as a cheerio object
  */
-function removeServerRenderedText ($) {
+const removeServerRenderedText = function ($) {
   if (globalThis.vueSnapshots?.removeServerRendered) {
     $('[data-server-rendered]').removeAttr('data-server-rendered');
   }
-}
+};
 
 export const cheerioManipulation = function (html) {
   const $ = cheerioize(html);
@@ -67,10 +67,7 @@ export const cheerioManipulation = function (html) {
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
   // clearAttributes($);
-
-  // clearInlineFunctions should always be ran before removeIstanbulComments for speed
   // clearInlineFunctions($);
-  // removeIstanbulComments($);
   // sortAttributes($);
 
   return $.html();

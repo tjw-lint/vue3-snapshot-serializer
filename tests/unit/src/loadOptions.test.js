@@ -1,23 +1,14 @@
-import { loadOptions } from '@/loadOptions.js';
+import {
+  booleanDefaults,
+  loadOptions
+} from '@/loadOptions.js';
 
 describe('Load options', () => {
   beforeEach(() => {
     globalThis.vueSnapshots = {};
   });
 
-  const defaultSettings = Object.freeze({
-    removeServerRendered: true,
-    removeDataVId: true,
-    removeDataTest: true,
-    removeDataTestid: true,
-    removeDataTestId: true,
-    removeDataQa: false,
-    removeDataCy: false,
-    removeDataPw: false,
-    removeIdTest: false,
-    removeClassTest: false,
-    removeComments: false
-  });
+  const defaultSettings = Object.freeze(booleanDefaults);
 
   test('Returns defaults', () => {
     delete globalThis.vueSnapshots;
