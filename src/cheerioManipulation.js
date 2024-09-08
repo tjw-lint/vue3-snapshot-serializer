@@ -60,6 +60,64 @@ const removeServerRenderedText = function ($) {
   }
 };
 
+/**
+ * Replaces inline functions with the '[function]' placeholder.
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+const clearInlineFunctions = function ($) {
+  if (globalThis.vueSnapshots?.clearInlineFunctions) {
+    /**
+     * Takes a string and tells you if it is a function.
+     *
+     * @param  {string}  str  Any string
+     * @return {Boolean}      true = matches function pattern
+     */
+    const isFunctionDeclaration = function (str) {
+      /**
+       * Matches strings that look like functions
+       * START:
+       *   function
+       *   0 or more spaces
+       * FUNCTION NAME:
+       *   anything 0 or more times
+       *   0 or more spaces
+       * ARGUMENTS:
+       *   (
+       *   ARGUMENT:
+       *     anything followed by a comma, 0 or more times
+       *     0 or more spaces
+       *     0 or more times
+       *   )
+       *   0 or more spaces
+       * DECLARATION:
+       *   {
+       *     maybe anything
+       *     maybe return(s)
+       *     0 or more times
+       *   }
+       */
+      const functionRegex = /function( )*(.)*( )*\((.,* *){0,}\) *{(.*\n*)*}/;
+
+      if (str.startsWith('function ') || str.startsWith('function(')) {
+        return str.endsWith('}') && functionRegex.test(str);
+      }
+
+      // Good enough to match most arrow functions
+      return /^\s*\w+\s*=>/.test(str) || /^\s*\([^)]*\)\s*=>/.test(str);
+    };
+
+    $('*').each(function (index, element) {
+      Object.keys(element.attribs).forEach(function (attributeName) {
+        let value = element.attribs[attributeName];
+        if (isFunctionDeclaration(value)) {
+          element.attribs[attributeName] = '[function]';
+        }
+      });
+    });
+  }
+};
+
 export const cheerioManipulation = function (html) {
   const $ = cheerioize(html);
 
@@ -67,7 +125,7 @@ export const cheerioManipulation = function (html) {
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
   // clearAttributes($);
-  // clearInlineFunctions($);
+  clearInlineFunctions($);
   // sortAttributes($);
 
   return $.html();

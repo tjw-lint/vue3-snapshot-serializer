@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { cheerioManipulation } from '@/cheerioManipulation.js';
 
 import DataVId from '@@/mockComponents/DataVId.vue';
+import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 
 describe('Cheerio Manipulation', () => {
   beforeEach(() => {
@@ -79,6 +80,45 @@ describe('Cheerio Manipulation', () => {
 
       expect(cheerioManipulation(emptyAttribute))
         .toEqual(markup);
+    });
+  });
+
+  describe('InlineFunctions.vue', () => {
+    test('Functions kept', async () => {
+      globalThis.vueSnapshots = {
+        clearInlineFunctions: false
+      };
+      const wrapper = await mount(InlineFunctions);
+      const markup = wrapper.html();
+
+      expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
+    });
+
+    test('Functions removed', async () => {
+      globalThis.vueSnapshots = {
+        clearInlineFunctions: true
+      };
+      const wrapper = await mount(InlineFunctions);
+      const markup = wrapper.html();
+
+      expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
+    });
+
+    test('Props', async () => {
+      const wrapper = await mount(InlineFunctions);
+      const propFn = wrapper.vm.propFn;
+      const fn = propFn();
+
+      expect(typeof(propFn))
+        .toEqual('function');
+
+      expect(typeof(fn))
+        .toEqual('function');
+
+      expect(fn())
+        .toEqual({});
     });
   });
 });

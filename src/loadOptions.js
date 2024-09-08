@@ -9,7 +9,8 @@ export const booleanDefaults = {
   removeDataPw: false,
   removeIdTest: false,
   removeClassTest: false,
-  removeComments: false
+  removeComments: false,
+  clearInlineFunctions: false
 };
 
 export const loadOptions = function () {

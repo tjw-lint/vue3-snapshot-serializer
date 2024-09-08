@@ -83,12 +83,12 @@ removeDataPw           | `false`           | Removes `data-pw="whatever"` from y
 removeIdTest           | `false`           | Removes `id="test-whatever"` or `id="testWhatever"`from snapshots. **Warning:** You should never use ID's for test tokens, as they can also be used by JS and CSS, making them more brittle. Use `data-test-id` instead.
 removeClassTest        | `false`           | Removes all CSS classes that start with "test", `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
 removeComments         | `false`           | Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
+clearInlineFunctions   | `false`           | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
 
 
 
 <!--
 attributesToClear      | []                | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
-clearInlineFunctions   | `false`           | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
 formatting             | See above example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
 sortAttributes         | `true`            | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
 verbose                | `true`            | Logs to the console errors or other messages if true. **Strongly recommended** if using experimental features.

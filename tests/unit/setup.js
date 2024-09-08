@@ -1,6 +1,6 @@
-import vueSnapshotSerializer from '../../index.js';
+// import vueSnapshotSerializer from '../../index.js';
 
-expect.addSnapshotSerializer(vueSnapshotSerializer);
+// expect.addSnapshotSerializer(vueSnapshotSerializer);
 
 global.beforeEach(() => {
 });
