@@ -61,6 +61,20 @@ const removeServerRenderedText = function ($) {
 };
 
 /**
+ * Loops over the attributesToClear array to set the attribute
+ * value to empty string on all matching elements.
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+const clearAttributes = function ($) {
+  if (globalThis.vueSnapshots?.attributesToClear?.length) {
+    globalThis.vueSnapshots.attributesToClear.forEach(function (attribute) {
+      $('[' + attribute + ']').attr(attribute, '');
+    });
+  }
+};
+
+/**
  * Replaces inline functions with the '[function]' placeholder.
  *
  * @param {object} $  The markup as a cheerio object
@@ -144,7 +158,7 @@ export const cheerioManipulation = function (html) {
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
-  // clearAttributes($);
+  clearAttributes($);
   clearInlineFunctions($);
   sortAttributes($);
 

@@ -16,6 +16,29 @@ describe('Cheerio Manipulation', () => {
       .toEqual('');
   });
 
+  describe('Attributes to clear', () => {
+    test('Clears attributes', () => {
+      globalThis.vueSnapshots.attributesToClear = [
+        'data-size',
+        'title',
+        'non-existent'
+      ];
+
+      const markup = [
+        '<h1 class="small" data-size="sm" title="text">',
+        'Some <strong class="bold" title="Words">text</strong>',
+        '</h1>'
+      ].join('');
+
+      expect(cheerioManipulation(markup))
+        .toEqual([
+          '<h1 class="small" data-size title>',
+          'Some <strong class="bold" title>text</strong>',
+          '</h1>'
+        ].join(''));
+    });
+  });
+
   describe('Server rendered text', () => {
     const markup = '<div data-server-rendered="true">Content</div>';
     const cleaned = '<div>Content</div>';
