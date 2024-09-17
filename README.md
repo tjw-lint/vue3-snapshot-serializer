@@ -87,8 +87,19 @@ removeIdTest           | `false`           | Removes `id="test-whatever"` or `id
 removeClassTest        | `false`           | Removes all CSS classes that start with "test", `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
 removeComments         | `false`           | Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
 clearInlineFunctions   | `false`           | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
+formatting             | See below example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
 
 
-<!--
-formatting             | See above example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
--->
+```js
+// Default snapshot formatting settings
+global.vueSnapshots = {
+  formatting: {
+    indent_char: ' ',
+    indent_inner_html: true,
+    indent_size: 2,
+    inline: [],
+    sep: '\n',
+    unformatted: ['code', 'pre']
+  }
+}
+```
