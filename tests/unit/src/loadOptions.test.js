@@ -2,6 +2,7 @@ import {
   booleanDefaults,
   loadOptions
 } from '@/loadOptions.js';
+
 describe('Load options', () => {
   const info = console.info;
 
