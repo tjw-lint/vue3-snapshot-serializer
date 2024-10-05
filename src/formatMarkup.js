@@ -1,12 +1,14 @@
 import { parseFragment } from 'parse5';
 
+import { logger } from '@/helpers.js';
+
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
  * @param  {string} markup  Any valid HTML
  * @return {string}         HTML formatted to be more easily diffable
  */
-export function formatMarkup (markup) {
+export const diffableFormatter = function (markup) {
   const options = {
     sourceCodeLocationInfo: true
   };
@@ -71,4 +73,21 @@ export function formatMarkup (markup) {
   });
 
   return formattedOutput.trim();
-}
+};
+
+export const formatMarkup = function (markup) {
+  if (globalThis.vueSnapshots?.formatting) {
+    if (typeof(globalThis.vueSnapshots.formatting) === 'function') {
+      const result = globalThis.vueSnapshots.formatting(markup);
+      if (typeof(result) === 'string') {
+        return result;
+      } else {
+        logger('Your custom markup formatter must return a string.');
+      }
+    }
+    if (globalThis.vueSnapshots.formatting === 'diffable') {
+      return diffableFormatter(markup);
+    }
+  }
+  return markup;
+};
