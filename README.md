@@ -19,7 +19,7 @@ This is the successor to [jest-serializer-vue-tjw](https://github.com/tjw-lint/j
    * Also makes it much easier to override these global settings when you have test-specific settings.
    * Would be be nice to abstract the settings gathering from the serialization, so the serialization can be externalized.
       * `serializeVue(htmlOrVueWrapper, settings);`
-      * Would allow E2E tooling to import and use this directly (See #70) 
+      * Would allow E2E tooling to import and use this directly
    * The library would need to clear this global setting after every run to prevent global object-mutation based test-bleed.
 1. Migration guide
 1. Once feature support reaches an acceptable point, update the old repo to point people to this one.
@@ -29,7 +29,7 @@ This is the successor to [jest-serializer-vue-tjw](https://github.com/tjw-lint/j
 
 ## Planned API Support:
 
-This is mostly take from `jest-serializer-vue-tjw`:
+This is mostly taken from `jest-serializer-vue-tjw`:
 
 Setting                | In new version? | Description
 :--                    | :--             | :--
@@ -87,8 +87,91 @@ removeIdTest           | `false`           | Removes `id="test-whatever"` or `id
 removeClassTest        | `false`           | Removes all CSS classes that start with "test", `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
 removeComments         | `false`           | Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
 clearInlineFunctions   | `false`           | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
+formatting             | `'diffable'`      | Function to use for formatting the markup output. See examples below. Accepts `'none'`, `'diffable'`, or a custom function handed a string of markup and must return a string.
 
 
-<!--
-formatting             | See above example | These options format the snapshot. [See all available options here](https://github.com/beautify-web/js-beautify/blob/master/js/src/html/options.js).
--->
+## Formatting examples:
+
+There are 3 formatting options:
+
+* None - does not apply any additional formatting
+* Custom function - You can pass in your own function to format the markup.
+* Diffable - Applies formatting designed for more easily readble diffs (example below)
+
+**Input:**
+
+```html
+<div id="header">
+  <h1>Hello World!</h1>
+  <ul id="main-list" class="list"><li><a class="link" href="#">My HTML</a></li></ul>
+</div>
+```
+
+**"None" Output:** (no formatting applied)
+
+```js
+global.vueSnapshots = {
+  formatting: 'none'
+};
+```
+
+```html
+<div id="header">
+  <h1>Hello World!</h1>
+  <ul id="main-list" class="list"><li><a class="link" href="#">My HTML</a></li></ul>
+</div>
+```
+
+**"Diffable" Output:**
+
+```js
+global.vueSnapshots = {
+  formatting: 'diffable'
+};
+```
+
+```html
+<div id="header">
+  <h1>
+    Hello World!
+  </h1>
+  <ul
+    id="main-list"
+    class="list"
+  >
+    <li>
+      <a
+        class="link"
+        href="#"
+      >My HTML</a>
+    </li>
+  </ul>
+</div>
+```
+
+**Custom Function Output:**
+
+```js
+global.vueSnapshots = {
+  /**
+   * Your custom formatting function.
+   * Must return a string.
+   * Must not return a promise.
+   *
+   * @param  {string} markup  Valid HTML markup
+   * @return {string}         Your formatted version
+   */
+  formatting: function (markup) {
+    return markup.toUpperCase();
+  }
+}
+```
+
+Custom function example output:
+
+```html
+<DIV ID="HEADER">
+  <H1>HELLO WORLD!</H1>
+  <UL ID="MAIN-LIST" CLASS="LIST"><LI><A CLASS="LINK" HREF="#">MY HTML</A></LI></UL>
+</DIV>
+```

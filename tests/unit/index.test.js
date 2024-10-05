@@ -1,6 +1,10 @@
 import vue3SnapshotSerializer, { vueMarkupFormatter } from '../../index.js';
 
 describe('index.js', () => {
+  beforeEach(() => {
+    globalThis.vueSnapshots = {};
+  });
+
   describe('Serialization tester', () => {
     test('HTML is valid', () => {
       expect(vue3SnapshotSerializer.test('<div>Text</div>'))
@@ -42,10 +46,18 @@ describe('index.js', () => {
     });
 
     test('Simple markup', () => {
+      globalThis.vueSnapshots = { formatting: 'none' };
       const markup = '<div>Hello</div>';
 
       expect(vueMarkupFormatter(markup))
-        .toEqual(markup);
+        .toEqual('<div>Hello</div>');
+    });
+
+    test('Diffable markup', () => {
+      const markup = '<div>Hello</div>';
+
+      expect(vueMarkupFormatter(markup))
+        .toEqual('<div>\n  Hello\n</div>');
     });
   });
 });

@@ -59,13 +59,27 @@ export const loadOptions = function () {
   }
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
+  if (
+    typeof(globalThis.vueSnapshots.formatting) !== 'function' &&
+    !['none', 'diffable'].includes(globalThis.vueSnapshots.formatting)
+  ) {
+    if (globalThis.vueSnapshots.formatting) {
+      logger('Allowed values for global.vueSnapshots.formatting are \'none\', \'diffable\', or a custom function');
+    }
+    globalThis.vueSnapshots.formatting = undefined;
+  }
+  if (!globalThis.vueSnapshots.formatting) {
+    globalThis.vueSnapshots.formatting = 'diffable';
+  }
+
   /**
    * Clean up settings
    */
 
   const permittedKeys = [
     ...Object.keys(booleanDefaults),
-    'attributesToClear'
+    'attributesToClear',
+    'formatting'
   ];
   const allKeys = Object.keys(globalThis.vueSnapshots);
 

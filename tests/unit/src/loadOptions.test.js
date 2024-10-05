@@ -17,7 +17,8 @@ describe('Load options', () => {
 
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
-    attributesToClear: []
+    attributesToClear: [],
+    formatting: 'diffable'
   });
 
   test('Returns defaults', () => {
@@ -90,6 +91,63 @@ describe('Load options', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Attributes must be a type of string in global.vueSnapshots.attributesToClear. Received: 22');
+    });
+  });
+
+  describe('Formatting', () => {
+    test('Warns about bad input', () => {
+      global.vueSnapshots = {
+        formatting: 'invalid'
+      };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting)
+        .toEqual('diffable');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Allowed values for global.vueSnapshots.formatting are \'none\', \'diffable\', or a custom function');
+    });
+
+    test('None', () => {
+      global.vueSnapshots = {
+        formatting: 'none'
+      };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting)
+        .toEqual('none');
+
+      expect(console.info)
+        .not.toHaveBeenCalled();
+    });
+
+    test('Diffable', () => {
+      global.vueSnapshots = {};
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting)
+        .toEqual('diffable');
+
+      expect(console.info)
+        .not.toHaveBeenCalled();
+    });
+
+    test('Custom function', () => {
+      function formatting (markup) {
+        return markup.toUpperCase();
+      }
+      global.vueSnapshots = { formatting };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting)
+        .toEqual(formatting);
+
+      expect(console.info)
+        .not.toHaveBeenCalled();
     });
   });
 
