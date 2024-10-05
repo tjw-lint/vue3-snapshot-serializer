@@ -1,6 +1,5 @@
 import {
   booleanDefaults,
-  formattingDefaults,
   loadOptions
 } from '@/loadOptions.js';
 describe('Load options', () => {
@@ -17,8 +16,7 @@ describe('Load options', () => {
 
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
-    attributesToClear: [],
-    formatting: formattingDefaults
+    attributesToClear: []
   });
 
   test('Returns defaults', () => {

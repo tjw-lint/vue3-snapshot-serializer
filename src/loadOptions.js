@@ -17,15 +17,6 @@ export const booleanDefaults = {
   clearInlineFunctions: false
 };
 
-export const formattingDefaults = {
-  indent_char: ' ',
-  indent_inner_html: true,
-  indent_size: 2,
-  inline: [],
-  sep: '\n',
-  unformatted: ['code', 'pre']
-};
-
 export const loadOptions = function () {
   globalThis.vueSnapshots = globalThis.vueSnapshots || {};
 
@@ -68,25 +59,13 @@ export const loadOptions = function () {
   }
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
-  if (
-    !globalThis.vueSnapshots.formatting ||
-    typeof(globalThis.vueSnapshots.formatting) !== 'object' ||
-    Array.isArray(globalThis.vueSnapshots.formatting)
-  ) {
-    if (globalThis.vueSnapshots.formatting) {
-      logger('The global.vueSnapshots.formatting value must be an object or undefined.');
-    }
-    globalThis.vueSnapshots.formatting = formattingDefaults;
-  }
-
   /**
    * Clean up settings
    */
 
   const permittedKeys = [
     ...Object.keys(booleanDefaults),
-    'attributesToClear',
-    'formatting'
+    'attributesToClear'
   ];
   const allKeys = Object.keys(globalThis.vueSnapshots);
 
