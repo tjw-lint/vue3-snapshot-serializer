@@ -2,6 +2,7 @@ import { logger } from '@/helpers.js';
 
 export const booleanDefaults = {
   verbose: true,
+  addInputValues: true,
   sortAttributes: true,
   removeServerRendered: true,
   removeDataVId: true,

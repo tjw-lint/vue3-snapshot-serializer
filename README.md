@@ -43,15 +43,15 @@ removeDataQa           | Yes             | Removes `data-qa="whatever"` from you
 removeDataCy           | Yes             | Removes `data-cy="whatever"` from your snapshots (Cypress)
 removeDataPw           | Yes - **New**   | Removes `data-pw="whatever"` from your snapshots (Playwright)
 removeServerRendered   | Yes             | Removes `data-server-rendered="true"` from your snapshots
-sortAttributes         | Eventually      | Sorts the attributes inside HTML elements in the snapshot. May not be in first release of v4
-attributesToClear      | Probably        | Array of attribute strings to remove the values from. `['title', 'id']` produces `<input title id class="stuff">`
-verbose                | Probably        | Logs to the console errors or other messages if true
-removeClassTest        | Maybe           | Removes all CSS classes that start with "test", `class="test-whatever"`
-removeIdTest           | Maybe           | Removes `id="test-whatever"` or `id="testWhatever"`from snapshots
-clearInlineFunctions   | Maybe           | `<div title="(x) => !x">` becomes `<div title="[function]">`
-removeIstanbulComments | No              | I cannot reproduce this issue anymore. Will add it back in if people run into it again.
-addInputValues         | No              | Display form field value. `<input>` becomes `<input value="whatever">`. Not sure how to do this in Vue 3
+sortAttributes         | Yes             | Sorts the attributes inside HTML elements in the snapshot. May not be in first release of v4
+attributesToClear      | Yes             | Array of attribute strings to remove the values from. `['title', 'id']` produces `<input title id class="stuff">`
+verbose                | Yes             | Logs to the console errors or other messages if true
+removeClassTest        | Yes             | Removes all CSS classes that start with "test", `class="test-whatever"`
+removeIdTest           | Yes             | Removes `id="test-whatever"` or `id="testWhatever"`from snapshots
+addInputValues         | Yes             | Display form field value. `<input>` becomes `<input value="whatever">`. Not sure how to do this in Vue 3
+clearInlineFunctions   | Yes             | `<div title="(x) => !x">` becomes `<div title="[function]">`
 stringifyObjects       | No              | Replaces `title="[object Object]"` with `title="{a:'asdf'}"`. Not sure if this is possible in Vue 3
+removeIstanbulComments | No              | I cannot reproduce this issue anymore. Will add it back in if people run into it again.
 
 
 ## New planned features
@@ -74,6 +74,7 @@ Setting                | Default           | Description
 :--                    | :--               | :--
 verbose                | `true`            | Logs to the console errors or other messages if true. **Strongly recommended** if using experimental features.
 attributesToClear      | []                | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
+addInputValues         | `true`            | Display internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="whatever">`.
 sortAttributes         | `true`            | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
 removeServerRendered   | `true`            | Removes `data-server-rendered="true"` from your snapshots if true.
 removeDataVId          | `true`            | Removes `data-v-1234abcd=""` from your snapshots.

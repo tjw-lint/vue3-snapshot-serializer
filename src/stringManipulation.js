@@ -6,8 +6,8 @@ import { cheerioManipulation } from '@/cheerioManipulation.js';
  * Multi-line <!-- \n asdf \n asdf \n -->
  * Containing HTML <!-- <div></div> -->
  *
- * @param  {string} html     The markup being serialized
- * @return {string}          Modified HTML string
+ * @param  {string} html  The markup being serialized
+ * @return {string}       Modified HTML string
  */
 function removeAllComments (html) {
   if (globalThis.vueSnapshots?.removeComments) {

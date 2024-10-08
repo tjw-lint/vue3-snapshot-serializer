@@ -1,6 +1,10 @@
 import * as cheerio from 'cheerio';
 import * as htmlparser2 from 'htmlparser2';
 
+import {
+  stringify,
+  swapQuotes
+} from '@/helpers.js';
 import { removeTestTokens } from '@/removeTestTokens.js';
 
 /**
@@ -22,6 +26,31 @@ const cheerioize = function (html) {
   const dom = htmlparser2.parseDOM(html, xmlOptions);
   const $ = cheerio.load(dom, { xml: xmlOptions });
   return $;
+};
+
+/**
+ * Sets appends a data-value attribute to input, select, and textareas
+ * to show the current value of the element in the snapshot.
+ *
+ * <input>
+ * <input value="Hello World">
+ *
+ * @param {object} $           The markup as a cheerio object
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ */
+const addInputValues = function ($, vueWrapper) {
+  if (
+    globalThis.vueSnapshots?.addInputValues &&
+    typeof(vueWrapper?.html) === 'function'
+  ) {
+    const inputSelectors = 'input, textarea, select';
+
+    $(inputSelectors).each(function (index, element) {
+      const input = vueWrapper.findAll(inputSelectors).at(index);
+      const value = input.element.value;
+      element.attribs.value = swapQuotes(stringify(value));
+    });
+  }
 };
 
 /**
@@ -152,9 +181,22 @@ const sortAttributes = function ($) {
   }
 };
 
-export const cheerioManipulation = function (html) {
+/**
+ * Applies desired DOM manipulations based on
+ * global.vueSnapshots settings for improved snapshots.
+ *
+ * @param  {Object|string} vueWrapper  Either the Vue-Test-Utils mounted component object, or a string of html.
+ * @return {string}                    String of manipulated HTML, ready for formatting.
+ */
+export const cheerioManipulation = function (vueWrapper) {
+  let html = vueWrapper;
+  if (typeof(vueWrapper?.html) === 'function') {
+    html = vueWrapper.html();
+  }
+
   const $ = cheerioize(html);
 
+  addInputValues($, vueWrapper);
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);

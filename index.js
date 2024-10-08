@@ -1,6 +1,5 @@
 import { isHtmlString, isVueWrapper } from './src/helpers.js';
 import { loadOptions } from './src/loadOptions.js';
-import { vNodeManipulation } from './src/vNodeManipulation.js';
 import { stringManipulation } from './src/stringManipulation.js';
 import { formatMarkup } from './src/formatMarkup.js';
 
@@ -25,7 +24,6 @@ const test = function (received) {
 const print = function (received) {
   loadOptions();
   let html = received || '';
-  html = vNodeManipulation(html);
   html = stringManipulation(html);
 
   return formatMarkup(html);

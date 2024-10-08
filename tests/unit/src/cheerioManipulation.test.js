@@ -4,6 +4,7 @@ import { cheerioManipulation } from '@/cheerioManipulation.js';
 
 import DataVId from '@@/mockComponents/DataVId.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
+import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
 import SortAttributes from '@@/mockComponents/SortAttributes.vue';
 
 describe('Cheerio Manipulation', () => {
@@ -164,6 +165,19 @@ describe('Cheerio Manipulation', () => {
       const markup = wrapper.html();
 
       expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
+    });
+  });
+
+  describe('Add input values', () => {
+    test('Adds values into DOM', async () => {
+      globalThis.vueSnapshots.addInputValues = true;
+
+      const wrapper = await mount(SeveralInputs);
+
+      await wrapper.find('[data-test="button"]').trigger('click');
+
+      expect(cheerioManipulation(wrapper))
         .toMatchSnapshot();
     });
   });
