@@ -46,7 +46,7 @@ const addInputValues = function ($, vueWrapper) {
     const inputSelectors = 'input, textarea, select';
     const inputs = vueWrapper.findAll(inputSelectors);
 
-    if (inputs.at(0)) {
+    if (inputs?.at && inputs.at(0)) {
       $(inputSelectors).each(function (index, element) {
         const input = inputs.at(index);
         const value = input.element.value;
