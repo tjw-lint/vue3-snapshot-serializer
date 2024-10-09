@@ -1,5 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Cheerio Manipulation > Add input values > Adds values into DOM 1`] = `
+"<div><input value="'1st'"><textarea value="'second'"></textarea><input type="number" value="'3'"><select value="'b'">
+    <option value="a">A</option>
+    <option value="b">B</option>
+  </select><button data-test="button"> Set First </button></div>"
+`;
+
 exports[`Cheerio Manipulation > InlineFunctions.vue > Functions kept 1`] = `
 "<div>
   <h1 title="function () { return true; }">Classic</h1>

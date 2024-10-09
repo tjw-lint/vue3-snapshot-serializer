@@ -24,3 +24,73 @@ export const logger = function (message) {
     console.info('Vue 3 Snapshot Serializer: ' + message);
   }
 };
+
+/**
+ * Swaps single and double quotes.
+ *
+ * 'Text' => "Text"
+ * "Text" => 'Text'
+ *
+ * @param  {string} string  Input
+ * @return {string}         Swapped output
+ */
+export const swapQuotes = function (string) {
+  return string.replace(/['"]/g, function (match) {
+    return match === '"' ? '\'' : '"';
+  });
+};
+
+/**
+ * Same as JSON.stringify, but without quotes around object properties.
+ *
+ * @param  {object} obj  data to stringify
+ * @return {string}      stringified string
+ */
+export const stringify = function (obj) {
+  if (obj === null) {
+    return 'null';
+  }
+  if (obj === undefined) {
+    return 'undefined';
+  }
+  if (Number.isNaN(obj)) {
+    return 'NaN';
+  }
+  if (obj === Infinity) {
+    return 'Infinity';
+  }
+  if (obj === -Infinity) {
+    return '-Infinity';
+  }
+  if (typeof(obj) === 'number') {
+    return String(obj);
+  }
+  if (obj instanceof Error) {
+    return 'Error: ' + obj.message;
+  }
+  if (obj instanceof Set) {
+    return JSON.stringify([...obj]);
+  }
+  if (typeof(obj) === 'object' && typeof(obj.getTime) === 'function') {
+    if (Number.isNaN(obj.getTime())) {
+      return obj.toString(); // 'Invalid Date'
+    } else {
+      return obj.getTime() + ''; // '1583463154386'
+    }
+  }
+  if (typeof(obj) === 'function') {
+    return 'Function';
+  }
+  if (typeof(obj) !== 'object' || Array.isArray(obj)) {
+    return JSON.stringify(obj) || '';
+  }
+
+  let props = Object
+    .keys(obj)
+    .map((key) => {
+      return key + ':' + stringify(obj[key]);
+    })
+    .join(',');
+
+  return '{' + props + '}';
+};

@@ -1,6 +1,10 @@
 import * as cheerio from 'cheerio';
 import * as htmlparser2 from 'htmlparser2';
 
+import {
+  stringify,
+  swapQuotes
+} from '@/helpers.js';
 import { removeTestTokens } from '@/removeTestTokens.js';
 
 /**
@@ -22,6 +26,34 @@ const cheerioize = function (html) {
   const dom = htmlparser2.parseDOM(html, xmlOptions);
   const $ = cheerio.load(dom, { xml: xmlOptions });
   return $;
+};
+
+/**
+ * Appends a value attribute to input, select, and textareas
+ * to show the current value of the element in the snapshot.
+ *
+ * <input>
+ * <input value="Hello World">
+ *
+ * @param {object} $           The markup as a cheerio object
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ */
+const addInputValues = function ($, vueWrapper) {
+  if (
+    globalThis.vueSnapshots?.addInputValues &&
+    typeof(vueWrapper?.findAll) === 'function'
+  ) {
+    const inputSelectors = 'input, textarea, select';
+    const inputs = vueWrapper.findAll(inputSelectors);
+
+    if (inputs?.at && inputs.at(0)) {
+      $(inputSelectors).each(function (index, element) {
+        const input = inputs.at(index);
+        const value = input.element.value;
+        element.attribs.value = swapQuotes(stringify(value));
+      });
+    }
+  }
 };
 
 /**
@@ -152,9 +184,34 @@ const sortAttributes = function ($) {
   }
 };
 
-export const cheerioManipulation = function (html) {
+/**
+ * Applies desired DOM manipulations based on
+ * global.vueSnapshots settings for improved snapshots.
+ *
+ * @param  {Object|string} vueWrapper  Either the Vue-Test-Utils mounted component object, or a string of html.
+ * @return {string}                    String of manipulated HTML, ready for formatting.
+ */
+export const cheerioManipulation = function (vueWrapper) {
+  let html = vueWrapper;
+  if (typeof(vueWrapper?.html) === 'function') {
+    html = vueWrapper.html();
+  }
+
+  /**
+   * NOTE: Although we could check the settings and potentially skip
+   * the cheerioze step completely, that would result in inconsistent
+   * snapshots, as Cheerio removes empty attribute assignments.
+   *
+   * `<div class=""></div>` becomes `<div class></div>`
+   *
+   * Because of this, we should always pass the markup through Cheerio
+   * to keep all snapshots consistent, even if we are not doing any
+   * DOM manipulation.
+   */
+
   const $ = cheerioize(html);
 
+  addInputValues($, vueWrapper);
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
