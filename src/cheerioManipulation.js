@@ -29,7 +29,7 @@ const cheerioize = function (html) {
 };
 
 /**
- * Sets appends a data-value attribute to input, select, and textareas
+ * Appends a value attribute to input, select, and textareas
  * to show the current value of the element in the snapshot.
  *
  * <input>
