@@ -41,15 +41,18 @@ const cheerioize = function (html) {
 const addInputValues = function ($, vueWrapper) {
   if (
     globalThis.vueSnapshots?.addInputValues &&
-    typeof(vueWrapper?.html) === 'function'
+    typeof(vueWrapper?.findAll) === 'function'
   ) {
     const inputSelectors = 'input, textarea, select';
+    const inputs = vueWrapper.findAll(inputSelectors);
 
-    $(inputSelectors).each(function (index, element) {
-      const input = vueWrapper.findAll(inputSelectors).at(index);
-      const value = input.element.value;
-      element.attribs.value = swapQuotes(stringify(value));
-    });
+    if (inputs.at(0)) {
+      $(inputSelectors).each(function (index, element) {
+        const input = inputs.at(index);
+        const value = input.element.value;
+        element.attribs.value = swapQuotes(stringify(value));
+      });
+    }
   }
 };
 
