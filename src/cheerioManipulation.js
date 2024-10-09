@@ -197,6 +197,18 @@ export const cheerioManipulation = function (vueWrapper) {
     html = vueWrapper.html();
   }
 
+  /**
+   * NOTE: Although we could check the settings and potentially skip
+   * the cheerioze step completely, that would result in inconsistent
+   * snapshots, as Cheerio removes empty attribute assignments.
+   *
+   * `<div class=""></div>` becomes `<div class></div>`
+   *
+   * Because of this, we should always pass the markup through Cheerio
+   * to keep all snapshots consistent, even if we are not doing any
+   * DOM manipulation.
+   */
+
   const $ = cheerioize(html);
 
   addInputValues($, vueWrapper);
