@@ -6,6 +6,7 @@ import DataVId from '@@/mockComponents/DataVId.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
 import SortAttributes from '@@/mockComponents/SortAttributes.vue';
+import StringifyAttributes from '@@/mockComponents/StringifyAttributes.vue';
 
 describe('Cheerio Manipulation', () => {
   beforeEach(() => {
@@ -179,6 +180,24 @@ describe('Cheerio Manipulation', () => {
 
       expect(cheerioManipulation(wrapper))
         .toMatchSnapshot();
+    });
+  });
+
+  describe('Stringify attributes', () => {
+    test('Replaces attribute value', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+
+      const wrapper = await mount(StringifyAttributes);
+
+      expect(cheerioManipulation(wrapper))
+        .toMatchInlineSnapshot(`
+          "<div>
+            <h1 title="[object Object]">Te<s>xt</s></h1>
+          </div>
+          <p><strong>Text</strong></p>
+          <h2 title="[object Object]">Words</h2>
+          <div><span><em>Some</em> stuff. </span></div>"
+        `);
     });
   });
 });

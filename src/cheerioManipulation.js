@@ -7,6 +7,51 @@ import {
 } from '@/helpers.js';
 import { removeTestTokens } from '@/removeTestTokens.js';
 
+const KEY_NAME = 'data-vue-snapshot-serializer-key';
+
+let key = 0;
+
+const attributesCanBeStringified = function (vueWrapper) {
+  return (
+    globalThis.vueSnapshots?.stringifyAttributes &&
+    typeof(vueWrapper?.findAll) === 'function'
+  );
+};
+
+/**
+ * Adds a unique key to every DOM element as a data- attribute.
+ *
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ */
+const addSerializerKeys = function (vueWrapper) {
+  if (attributesCanBeStringified(vueWrapper)) {
+    const vnodes = vueWrapper.findAll('*');
+    for (let vnode of vnodes) {
+      vnode.element.setAttribute(KEY_NAME, 'v-' + key);
+      key++;
+    }
+  }
+};
+
+/**
+ * Removes the data- attribute containing the unique key.
+ *
+ * @param {object} $           The markup as a cheerio object
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ */
+const removeSerializerKeys = function ($, vueWrapper) {
+  $('[' + KEY_NAME + ']').each((index, element) => {
+    $(element).removeAttr(KEY_NAME);
+  });
+
+  if (attributesCanBeStringified(vueWrapper)) {
+    const vnodes = vueWrapper.findAll('*');
+    for (let vnode of vnodes) {
+      vnode.element.removeAttribute(KEY_NAME);
+    }
+  }
+};
+
 /**
  * Creates a cheerio ($) object from the html for DOM manipulation.
  *
@@ -55,6 +100,32 @@ const addInputValues = function ($, vueWrapper) {
     }
   }
 };
+
+/**
+ * Replaces dynamic attribute values with a stringified version.
+ *
+ * <h1 title="[object Object]"></h1>
+ * <h1 title="{x:'asdf'}"></h1>
+ *
+ * @param {object} $           The markup as a cheerio object
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ */
+const stringifyAttributes = function ($, vueWrapper) {
+  if (attributesCanBeStringified(vueWrapper)) {
+    $('[' + KEY_NAME + ']').each((index, element) => {
+      const currentKey = $(element).attr(KEY_NAME);
+      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+      const attributes =  vnode.attributes();
+      delete attributes[KEY_NAME];
+      const attributeNames = Object.keys(attributes);
+      for (let attributeName of attributeNames) {
+        console.log(0, typeof(vnode.attributes(attributeName)), vnode.attributes(attributeName));
+        let value = vnode.element.getAttribute(attributeName);
+        console.log(1, typeof(value), value);
+      }
+    });
+  }
+}
 
 /**
  * This removes data-v-1234abcd="" from your snapshots.
@@ -192,6 +263,7 @@ const sortAttributes = function ($) {
  * @return {string}                    String of manipulated HTML, ready for formatting.
  */
 export const cheerioManipulation = function (vueWrapper) {
+  addSerializerKeys(vueWrapper);
   let html = vueWrapper;
   if (typeof(vueWrapper?.html) === 'function') {
     html = vueWrapper.html();
@@ -208,10 +280,10 @@ export const cheerioManipulation = function (vueWrapper) {
    * to keep all snapshots consistent, even if we are not doing any
    * DOM manipulation.
    */
-
   const $ = cheerioize(html);
 
   addInputValues($, vueWrapper);
+  stringifyAttributes($, vueWrapper);
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
@@ -219,5 +291,6 @@ export const cheerioManipulation = function (vueWrapper) {
   clearInlineFunctions($);
   sortAttributes($);
 
+  removeSerializerKeys($, vueWrapper);
   return $.html();
 };
