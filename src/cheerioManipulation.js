@@ -13,7 +13,10 @@ let key = 0;
 
 const attributesCanBeStringified = function (vueWrapper) {
   return (
-    globalThis.vueSnapshots?.stringifyAttributes &&
+    (
+      globalThis.vueSnapshots?.addInputValues ||
+      globalThis.vueSnapshots?.stringifyAttributes
+    ) &&
     typeof(vueWrapper?.find) === 'function' &&
     typeof(vueWrapper?.findAll) === 'function'
   );
@@ -68,18 +71,14 @@ const cheerioize = function (html) {
 const addInputValues = function ($, vueWrapper) {
   if (
     globalThis.vueSnapshots?.addInputValues &&
-    typeof(vueWrapper?.findAll) === 'function'
+    attributesCanBeStringified(vueWrapper)
   ) {
-    const inputSelectors = 'input, textarea, select';
-    const inputs = vueWrapper.findAll(inputSelectors);
-
-    if (inputs?.at && inputs.at(0)) {
-      $(inputSelectors).each(function (index, element) {
-        const input = inputs.at(index);
-        const value = input.element.value;
-        element.attribs.value = swapQuotes(stringify(value));
-      });
-    }
+    $('input, textarea, select').each(function (index, element) {
+      const currentKey = $(element).attr(KEY_NAME);
+      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+      const value = vnode.element.value;
+      element.attribs.value = swapQuotes(stringify(value));
+    });
   }
 };
 
@@ -93,7 +92,10 @@ const addInputValues = function ($, vueWrapper) {
  * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
  */
 const stringifyAttributes = function ($, vueWrapper) {
-  if (attributesCanBeStringified(vueWrapper)) {
+  if (
+    globalThis.vueSnapshots?.stringifyAttributes &&
+    attributesCanBeStringified(vueWrapper)
+  ) {
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
@@ -102,13 +104,13 @@ const stringifyAttributes = function ($, vueWrapper) {
       const attributeNames = Object.keys(attributes);
       for (let attributeName of attributeNames) {
         let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
-        if (value !== undefined) {
+        if (value !== undefined && typeof(value) !== 'string') {
           value = swapQuotes(stringify(value));
           $(element).attr(attributeName, value);
         }
       }
 
-      // Clean up, remove the serializer keys
+      // Clean up, remove the serializer data-key
       $(element).removeAttr(KEY_NAME);
       vnode.element.removeAttribute(KEY_NAME);
     });
@@ -271,6 +273,7 @@ export const cheerioManipulation = function (vueWrapper) {
   const $ = cheerioize(html);
 
   addInputValues($, vueWrapper);
+  // Removes data-key, so has be last of vueWrapper calls
   stringifyAttributes($, vueWrapper);
   removeServerRenderedText($);
   removeTestTokens($);

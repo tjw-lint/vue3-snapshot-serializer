@@ -178,7 +178,7 @@ describe('Cheerio Manipulation', () => {
 
       await wrapper.find('[data-test="button"]').trigger('click');
 
-      expect(cheerioManipulation(wrapper))
+      expect(wrapper)
         .toMatchSnapshot();
     });
   });
