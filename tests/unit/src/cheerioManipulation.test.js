@@ -181,6 +181,17 @@ describe('Cheerio Manipulation', () => {
       expect(wrapper)
         .toMatchSnapshot();
     });
+
+    test('Does not add values into DOM', async () => {
+      globalThis.vueSnapshots.addInputValues = false;
+
+      const wrapper = await mount(SeveralInputs);
+
+      await wrapper.find('[data-test="button"]').trigger('click');
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
   });
 
   describe('Stringify attributes', () => {
@@ -205,6 +216,15 @@ describe('Cheerio Manipulation', () => {
           }
         }
       });
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Does not stringifyAttributes', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = false;
+
+      const wrapper = await mount(StringifyAttributes);
 
       expect(wrapper)
         .toMatchSnapshot();

@@ -8,8 +8,8 @@ import {
 import { removeTestTokens } from '@/removeTestTokens.js';
 
 const KEY_NAME = 'data-vue-snapshot-serializer-key';
-
 let key = 0;
+let alreadyRemovedKey = true;
 
 const attributesCanBeStringified = function (vueWrapper) {
   return (
@@ -34,6 +34,28 @@ const addSerializerKeys = function (vueWrapper) {
       vnode.element.setAttribute(KEY_NAME, 'v-' + key);
       key++;
     }
+    alreadyRemovedKey = false;
+  }
+};
+
+/**
+ * Removes all data-keys from the vueWrapper and Cheerio object.
+ *
+ * <h1 data-vue-snapshot-serializer-key="6">Hello World</h1>
+ * <h1>Hello World</h1>
+ *
+ * @param {object} $           The markup as a cheerio object
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ */
+const removeSerializerKeys = function ($, vueWrapper) {
+  if (!alreadyRemovedKey) {
+    $('[' + KEY_NAME + ']').each((index, element) => {
+      const currentKey = $(element).attr(KEY_NAME);
+      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+      $(element).removeAttr(KEY_NAME);
+      vnode.element.removeAttribute(KEY_NAME);
+      alreadyRemovedKey = true;
+    });
   }
 };
 
@@ -113,6 +135,7 @@ const stringifyAttributes = function ($, vueWrapper) {
       // Clean up, remove the serializer data-key
       $(element).removeAttr(KEY_NAME);
       vnode.element.removeAttribute(KEY_NAME);
+      alreadyRemovedKey = true;
     });
   }
 };
@@ -282,5 +305,6 @@ export const cheerioManipulation = function (vueWrapper) {
   clearInlineFunctions($);
   sortAttributes($);
 
+  removeSerializerKeys($, vueWrapper);
   return $.html();
 };
