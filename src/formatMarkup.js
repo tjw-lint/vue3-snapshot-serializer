@@ -1,31 +1,60 @@
+// @ts-check
+
+/** @import { DefaultTreeAdapterMap } from "parse5" */
+/** @typedef {DefaultTreeAdapterMap["childNode"]} ChildNode */
+
 import { parseFragment } from 'parse5';
 
-import { logger } from '@/helpers.js';
+import { logger } from './helpers.js';
+
+const VOID_ELEMENTS = Object.freeze([
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr'
+]);
+
+const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
+  'a',
+  'pre'
+]);
 
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
- * @param  {string} markup  Any valid HTML
- * @return {string}         HTML formatted to be more easily diffable
+ * @param  {string} markup Any valid HTML
+ * @param  {object} [options] Settings to tweak the formatting
+ * @param  {'html' | 'xhtml' | 'closingTag'} [options.voidElements='xhtml'] How to handle void elements
+ * @return {string} HTML formatted to be more easily diffable
  */
-export const diffableFormatter = function (markup) {
-  const options = {
-    sourceCodeLocationInfo: true
-  };
-  const ast = parseFragment(markup, options);
+export const diffableFormatter = function (markup, options) {
+  const voidElementMode = options?.voidElements || 'xhtml';
 
-  const whiteSpaceDependentTags = [
-    'a',
-    'pre'
-  ];
+  const ast = parseFragment(markup, {
+    sourceCodeLocationInfo: true
+  });
+
   let lastSeenTag = '';
-  const formatNode = (node, indent) => {
-    indent = indent || 0;
-    if (node.tagName) {
+  /** @param {ChildNode} node */
+  const formatNode = (node, indent = 0) => {
+    if ('tagName' in node) {
       lastSeenTag = node.tagName;
     }
-    const tagIsWhitespaceDependent = whiteSpaceDependentTags.includes(lastSeenTag);
-    if (node.nodeName === '#text') {
+
+    const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
+    const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+
+    if ('value' in node) {
       if (node.value.trim()) {
         if (tagIsWhitespaceDependent) {
           return node.value;
@@ -39,28 +68,30 @@ export const diffableFormatter = function (markup) {
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
     // Add attributes
-    if (node?.attrs?.length === 1) {
-      let attr = node?.attrs[0];
-      result = result + ' ' + attr.name + '="' + attr.value + '">';
-    } else if (node?.attrs?.length) {
+    const bracket = tagIsVoidElement && voidElementMode === 'xhtml' ? ' />' : '>';
+    if ('attrs' in node && node.attrs.length === 1) {
+      let [attr] = node.attrs;
+      result = result + ' ' + attr.name + '="' + attr.value + '"' + bracket;
+    } else if ('attrs' in node && node.attrs.length) {
       node.attrs.forEach((attr) => {
         result = result + '\n' + '  '.repeat(indent + 1) + attr.name + '="' + attr.value + '"';
       });
-      result = result + '\n' + '  '.repeat(indent) + '>';
+      result = result + '\n' + '  '.repeat(indent) + bracket.trim();
     } else {
-      result = result + '>';
+      result = result + bracket;
     }
 
     // Process child nodes
-    if (node.childNodes && node.childNodes.length) {
+    if ('childNodes' in node && node.childNodes.length) {
       node.childNodes.forEach((child) => {
         result = result + formatNode(child, indent + 1);
       });
     }
 
-    if (tagIsWhitespaceDependent) {
+    // Add closing tag
+    if (tagIsWhitespaceDependent || (tagIsVoidElement && voidElementMode === 'closingTag')) {
       result = result + '</' + node.nodeName + '>';
-    } else {
+    } else if (!tagIsVoidElement) {
       result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
     }
 
