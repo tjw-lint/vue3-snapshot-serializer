@@ -97,7 +97,7 @@ const stringifyAttributes = function ($, vueWrapper) {
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-      const attributes =  vnode.attributes();
+      const attributes = vnode.attributes();
       delete attributes[KEY_NAME];
       const attributeNames = Object.keys(attributes);
       for (let attributeName of attributeNames) {
@@ -113,7 +113,7 @@ const stringifyAttributes = function ($, vueWrapper) {
       vnode.element.removeAttribute(KEY_NAME);
     });
   }
-}
+};
 
 /**
  * This removes data-v-1234abcd="" from your snapshots.

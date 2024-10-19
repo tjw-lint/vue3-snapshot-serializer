@@ -36,7 +36,7 @@ export default defineConfig({
       './tests/unit/setup.js'
     ],
     snapshotSerializers: [
-     './index.js'
-   ]
+      './index.js'
+    ]
   }
 });
