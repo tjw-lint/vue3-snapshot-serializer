@@ -14,6 +14,22 @@ export const diffableFormatter = function (markup) {
   };
   const ast = parseFragment(markup, options);
 
+  const VOID_ELEMENTS = Object.freeze([
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr'
+  ]);
   const whiteSpaceDependentTags = [
     'a',
     'pre'
@@ -25,6 +41,8 @@ export const diffableFormatter = function (markup) {
       lastSeenTag = node.tagName;
     }
     const tagIsWhitespaceDependent = whiteSpaceDependentTags.includes(lastSeenTag);
+    const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+    const hasChildren = node.childNodes && node.childNodes.length;
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
         if (tagIsWhitespaceDependent) {
@@ -38,30 +56,37 @@ export const diffableFormatter = function (markup) {
 
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
+    let endingAngleBracket = '>';
+    if (tagIsVoidElement) {
+      endingAngleBracket = ' />';
+    }
+
     // Add attributes
     if (node?.attrs?.length === 1) {
       let attr = node?.attrs[0];
-      result = result + ' ' + attr.name + '="' + attr.value + '">';
+      result = result + ' ' + attr.name + '="' + attr.value + '"' + endingAngleBracket;
     } else if (node?.attrs?.length) {
       node.attrs.forEach((attr) => {
         result = result + '\n' + '  '.repeat(indent + 1) + attr.name + '="' + attr.value + '"';
       });
-      result = result + '\n' + '  '.repeat(indent) + '>';
+      result = result + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
     } else {
-      result = result + '>';
+      result = result + endingAngleBracket;
     }
 
     // Process child nodes
-    if (node.childNodes && node.childNodes.length) {
+    if (hasChildren) {
       node.childNodes.forEach((child) => {
         result = result + formatNode(child, indent + 1);
       });
     }
 
-    if (tagIsWhitespaceDependent) {
-      result = result + '</' + node.nodeName + '>';
-    } else {
-      result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
+    if (!tagIsVoidElement) {
+      if (tagIsWhitespaceDependent || !hasChildren) {
+        result = result + '</' + node.nodeName + '>';
+      } else {
+        result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
+      }
     }
 
     return result;

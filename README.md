@@ -44,6 +44,7 @@ Setting                | Default      | Description
 `attributesToClear`    | []           | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
 `addInputValues`       | `true`       | Display internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`.
 `sortAttributes`       | `true`       | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
+`stringifyAttributes`  | `true`       | Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`.
 `removeServerRendered` | `true`       | Removes `data-server-rendered="true"` from your snapshots if true.
 `removeDataVId`        | `true`       | Removes `data-v-1234abcd=""` from your snapshots if true.
 `removeDataTest`       | `true`       | Removes `data-test="whatever"` from your snapshots if true. To also remove these from your production builds, [see here](https://github.com/cogor/vite-plugin-vue-remove-attributes).
