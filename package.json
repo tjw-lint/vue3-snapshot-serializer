@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint *.js src tests",
     "fix": "npm run lint -- --fix",
-    "test": "vitest --coverage"
+    "test": "vitest --coverage",
+    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Stringify attributes\" \"cheerio\""
   },
   "dependencies": {
     "cheerio": "^1.0.0",

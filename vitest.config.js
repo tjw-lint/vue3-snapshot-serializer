@@ -34,6 +34,9 @@ export default defineConfig({
     root: '.',
     setupFiles: [
       './tests/unit/setup.js'
-    ]
+    ],
+    snapshotSerializers: [
+     './index.js'
+   ]
   }
 });

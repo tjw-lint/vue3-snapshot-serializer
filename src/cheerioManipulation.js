@@ -14,6 +14,7 @@ let key = 0;
 const attributesCanBeStringified = function (vueWrapper) {
   return (
     globalThis.vueSnapshots?.stringifyAttributes &&
+    typeof(vueWrapper?.find) === 'function' &&
     typeof(vueWrapper?.findAll) === 'function'
   );
 };
@@ -29,25 +30,6 @@ const addSerializerKeys = function (vueWrapper) {
     for (let vnode of vnodes) {
       vnode.element.setAttribute(KEY_NAME, 'v-' + key);
       key++;
-    }
-  }
-};
-
-/**
- * Removes the data- attribute containing the unique key.
- *
- * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
- */
-const removeSerializerKeys = function ($, vueWrapper) {
-  $('[' + KEY_NAME + ']').each((index, element) => {
-    $(element).removeAttr(KEY_NAME);
-  });
-
-  if (attributesCanBeStringified(vueWrapper)) {
-    const vnodes = vueWrapper.findAll('*');
-    for (let vnode of vnodes) {
-      vnode.element.removeAttribute(KEY_NAME);
     }
   }
 };
@@ -119,10 +101,16 @@ const stringifyAttributes = function ($, vueWrapper) {
       delete attributes[KEY_NAME];
       const attributeNames = Object.keys(attributes);
       for (let attributeName of attributeNames) {
-        console.log(0, typeof(vnode.attributes(attributeName)), vnode.attributes(attributeName));
-        let value = vnode.element.getAttribute(attributeName);
-        console.log(1, typeof(value), value);
+        let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
+        if (value !== undefined) {
+          value = swapQuotes(stringify(value));
+          $(element).attr(attributeName, value);
+        }
       }
+
+      // Clean up, remove the serializer keys
+      $(element).removeAttr(KEY_NAME);
+      vnode.element.removeAttribute(KEY_NAME);
     });
   }
 }
@@ -291,6 +279,5 @@ export const cheerioManipulation = function (vueWrapper) {
   clearInlineFunctions($);
   sortAttributes($);
 
-  removeSerializerKeys($, vueWrapper);
   return $.html();
 };

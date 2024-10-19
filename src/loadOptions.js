@@ -4,6 +4,7 @@ export const booleanDefaults = {
   verbose: true,
   addInputValues: true,
   sortAttributes: true,
+  stringifyAttributes: true,
   removeServerRendered: true,
   removeDataVId: true,
   removeDataTest: true,
