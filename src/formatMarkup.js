@@ -1,11 +1,9 @@
 // @ts-check
+/** @typedef {import("parse5").DefaultTreeAdapterMap["childNode"]} ChildNode */
 
-/** @import { DefaultTreeAdapterMap } from "parse5" */
-/** @typedef {DefaultTreeAdapterMap["childNode"]} ChildNode */
+import { defaultTreeAdapter, parseFragment } from 'parse5';
 
-import { parseFragment } from 'parse5';
-
-import { logger } from './helpers.js';
+import { logger } from '@/helpers.js';
 
 const VOID_ELEMENTS = Object.freeze([
   'area',
@@ -47,14 +45,17 @@ export const diffableFormatter = function (markup, options) {
   let lastSeenTag = '';
   /** @param {ChildNode} node */
   const formatNode = (node, indent = 0) => {
-    if ('tagName' in node) {
+    const isElementNode = defaultTreeAdapter.isElementNode(node);
+    const isTextNode = defaultTreeAdapter.isTextNode(node);
+
+    if (isElementNode) {
       lastSeenTag = node.tagName;
     }
 
     const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
 
-    if ('value' in node) {
+    if (isTextNode) {
       if (node.value.trim()) {
         if (tagIsWhitespaceDependent) {
           return node.value;
@@ -69,20 +70,20 @@ export const diffableFormatter = function (markup, options) {
 
     // Add attributes
     const bracket = tagIsVoidElement && voidElementMode === 'xhtml' ? ' />' : '>';
-    if ('attrs' in node && node.attrs.length === 1) {
+    if (!isElementNode || !node.attrs.length) {
+      result = result + bracket;
+    } else if (node.attrs.length === 1) {
       let [attr] = node.attrs;
       result = result + ' ' + attr.name + '="' + attr.value + '"' + bracket;
-    } else if ('attrs' in node && node.attrs.length) {
+    } else if (node.attrs.length > 1) {
       node.attrs.forEach((attr) => {
         result = result + '\n' + '  '.repeat(indent + 1) + attr.name + '="' + attr.value + '"';
       });
       result = result + '\n' + '  '.repeat(indent) + bracket.trim();
-    } else {
-      result = result + bracket;
     }
 
     // Process child nodes
-    if ('childNodes' in node && node.childNodes.length) {
+    if (isElementNode) {
       node.childNodes.forEach((child) => {
         result = result + formatNode(child, indent + 1);
       });
