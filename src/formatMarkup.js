@@ -39,7 +39,6 @@ const isElementNode = (node) => Object.prototype.hasOwnProperty.call(node, 'tagN
  */
 const isTextNode = (node) => node.nodeName === '#text';
 
-
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
@@ -128,7 +127,9 @@ export const formatMarkup = function (markup) {
       }
     }
     if (globalThis.vueSnapshots.formatting === 'diffable') {
-      return diffableFormatter(markup);
+      return diffableFormatter(markup, {
+        voidElements: globalThis.vueSnapshots.voidElements
+      });
     }
   }
   return markup;

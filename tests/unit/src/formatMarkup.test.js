@@ -1,4 +1,5 @@
 import { formatMarkup } from '@/formatMarkup.js';
+import { describe, expect, test } from 'vitest';
 
 const unformattedMarkup = `
 <div id="header">
@@ -26,7 +27,39 @@ const formattedMarkup = `
 </div>
 `.trim();
 
-describe('Formt markup', () => {
+const unformattedMarkupVoidElements = `
+<input>
+<input type="range"><input type="range" max="50">
+`.trim();
+
+const formattedMarkupVoidElementsWithHTML = `
+<input>
+<input type="range">
+<input
+  type="range"
+  max="50"
+>
+`.trim();
+
+const formattedMarkupVoidElementsWithXHTML = `
+<input />
+<input type="range" />
+<input
+  type="range"
+  max="50"
+/>
+`.trim();
+
+const formattedMarkupVoidElementsWithClosingTag = `
+<input></input>
+<input type="range"></input>
+<input
+  type="range"
+  max="50"
+></input>
+`.trim();
+
+describe('Format markup', () => {
   const info = console.info;
 
   beforeEach(() => {
@@ -82,5 +115,25 @@ describe('Formt markup', () => {
 
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
+  });
+});
+
+describe('Format markup options', () => {
+  beforeEach(() => {
+    globalThis.vueSnapshots = {
+      formatting: 'diffable',
+      verbose: true
+    };
+  });
+
+  test.each([
+    ['html', formattedMarkupVoidElementsWithHTML],
+    ['xhtml', formattedMarkupVoidElementsWithXHTML],
+    ['closingTag', formattedMarkupVoidElementsWithClosingTag]
+  ])('Formats void elements using mode "%s"', (mode, expected) => {
+    globalThis.vueSnapshots.voidElements = mode;
+
+    expect(formatMarkup(unformattedMarkupVoidElements))
+      .toEqual(expected);
   });
 });
