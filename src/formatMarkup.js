@@ -1,7 +1,7 @@
 // @ts-check
-/** @typedef {import("parse5").DefaultTreeAdapterMap["childNode"]} ChildNode */
+/** @import { DefaultTreeAdapterMap } from "parse5" */
 
-import { defaultTreeAdapter, parseFragment } from 'parse5';
+import { parseFragment } from 'parse5';
 
 import { logger } from '@/helpers.js';
 
@@ -28,6 +28,19 @@ const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
 ]);
 
 /**
+ * @param {DefaultTreeAdapterMap["node"]} node
+ * @returns {node is DefaultTreeAdapterMap["element"]}
+ */
+const isElementNode = (node) => Object.prototype.hasOwnProperty.call(node, 'tagName');
+
+/**
+ * @param {DefaultTreeAdapterMap["node"]} node
+ * @returns {node is DefaultTreeAdapterMap["textNode"]}
+ */
+const isTextNode = (node) => node.nodeName === '#text';
+
+
+/**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
  * @param  {string} markup Any valid HTML
@@ -43,19 +56,16 @@ export const diffableFormatter = function (markup, options) {
   });
 
   let lastSeenTag = '';
-  /** @param {ChildNode} node */
+  /** @param {DefaultTreeAdapterMap["childNode"]} node */
   const formatNode = (node, indent = 0) => {
-    const isElementNode = defaultTreeAdapter.isElementNode(node);
-    const isTextNode = defaultTreeAdapter.isTextNode(node);
-
-    if (isElementNode) {
+    if (isElementNode(node)) {
       lastSeenTag = node.tagName;
     }
 
     const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
 
-    if (isTextNode) {
+    if (isTextNode(node)) {
       if (node.value.trim()) {
         if (tagIsWhitespaceDependent) {
           return node.value;
@@ -70,7 +80,7 @@ export const diffableFormatter = function (markup, options) {
 
     // Add attributes
     const bracket = tagIsVoidElement && voidElementMode === 'xhtml' ? ' />' : '>';
-    if (!isElementNode || !node.attrs.length) {
+    if (!isElementNode(node) || !node.attrs.length) {
       result = result + bracket;
     } else if (node.attrs.length === 1) {
       let [attr] = node.attrs;
@@ -83,7 +93,7 @@ export const diffableFormatter = function (markup, options) {
     }
 
     // Process child nodes
-    if (isElementNode) {
+    if (isElementNode(node)) {
       node.childNodes.forEach((child) => {
         result = result + formatNode(child, indent + 1);
       });
