@@ -221,7 +221,16 @@ describe('Cheerio Manipulation', () => {
         .toMatchSnapshot();
     });
 
-    test('Does not stringifyAttributes', async () => {
+    test('Replaces prop values on children in shallow mounts', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+
+      const wrapper = await mount(StringifyAttributes, { shallow: true });
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Does not stringify attributes', async () => {
       globalThis.vueSnapshots.stringifyAttributes = false;
 
       const wrapper = await mount(StringifyAttributes);

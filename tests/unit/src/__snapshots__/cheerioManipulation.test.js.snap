@@ -202,7 +202,7 @@ exports[`Cheerio Manipulation > SortAttributes.vue > Unsorted 1`] = `
 </div>
 `;
 
-exports[`Cheerio Manipulation > Stringify attributes > Does not stringifyAttributes 1`] = `
+exports[`Cheerio Manipulation > Stringify attributes > Does not stringify attributes 1`] = `
 <div>
   <h1 title="[object Object]">
     Te
@@ -292,4 +292,32 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
   </span>
 </div>
 <span person="{name:'bob'}"></span>
+`;
+
+exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on children in shallow mounts 1`] = `
+<div>
+  <h1 title="{x:'asdf'}">
+    Te
+    <s>
+      xt
+    </s>
+  </h1>
+</div>
+<p title="plain text">
+  <strong title="22">
+    Text
+  </strong>
+</p>
+<h2 title="{y:2}">
+  Words
+</h2>
+<div title="Function">
+  <span title="[true,2,'string']">
+    <em>
+      Some
+    </em>
+    stuff.
+  </span>
+</div>
+<stringify-props-stub person="{name:'bob'}"></stringify-props-stub>
 `;
