@@ -6,6 +6,7 @@ import DataVId from '@@/mockComponents/DataVId.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
 import SortAttributes from '@@/mockComponents/SortAttributes.vue';
+import StringifyAttributes from '@@/mockComponents/StringifyAttributes.vue';
 
 describe('Cheerio Manipulation', () => {
   beforeEach(() => {
@@ -177,7 +178,64 @@ describe('Cheerio Manipulation', () => {
 
       await wrapper.find('[data-test="button"]').trigger('click');
 
-      expect(cheerioManipulation(wrapper))
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Does not add values into DOM', async () => {
+      globalThis.vueSnapshots.addInputValues = false;
+
+      const wrapper = await mount(SeveralInputs);
+
+      await wrapper.find('[data-test="button"]').trigger('click');
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+  });
+
+  describe('Stringify attributes', () => {
+    test('Replaces attribute values including child components', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+
+      const wrapper = await mount(StringifyAttributes);
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Replaces attribute values with stubbed child component', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+
+      const wrapper = await mount(StringifyAttributes, {
+        global: {
+          stubs: {
+            StringifyProps: {
+              template: '<span />'
+            }
+          }
+        }
+      });
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Replaces prop values on children in shallow mounts', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+
+      const wrapper = await mount(StringifyAttributes, { shallow: true });
+
+      expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Does not stringify attributes', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = false;
+
+      const wrapper = await mount(StringifyAttributes);
+
+      expect(wrapper)
         .toMatchSnapshot();
     });
   });
