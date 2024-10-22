@@ -45,7 +45,7 @@ This is the successor to [jest-serializer-vue-tjw](https://github.com/tjw-lint/j
    ```js
    test('My test', async () => {
      const wrapper = await mount(MyComponent);
-     const button = wrapper.find('[data-test="my-button"]');
+     const button = wrapper.find('[data-test="myButton"]');
 
      // GOOD
      expect(wrapper)
@@ -71,12 +71,12 @@ This is the successor to [jest-serializer-vue-tjw](https://github.com/tjw-lint/j
 Setting                | Default      | Description
 :--                    | :--          | :--
 `verbose`              | `true`       | Logs to the console errors or other messages if true.
-`attributesToClear`    | []           | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
-`addInputValues`       | `true`       | Display internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
-`sortAttributes`       | `true`       | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
+`attributesToClear`    | []           | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d28cb453f94" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
+`addInputValues`       | `true`       | Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
+`sortAttributes`       | `true`       | Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
 `stringifyAttributes`  | `true`       | Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
 `removeServerRendered` | `true`       | Removes `data-server-rendered="true"` from your snapshots if true.
-`removeDataVId`        | `true`       | Removes `data-v-1234abcd=""` from your snapshots if true.
+`removeDataVId`        | `true`       | Removes `data-v-1234abcd=""` from your snapshots if true. Useful if 3rd-party components use scoped styles to reduce snapshot noise when updating dependencies.
 `removeDataTest`       | `true`       | Removes `data-test="whatever"` from your snapshots if true. To also remove these from your production builds, [see here](https://github.com/cogor/vite-plugin-vue-remove-attributes).
 `removeDataTestid`     | `true`       | Removes `data-testid="whatever"` from your snapshots if true.
 `removeDataTestId`     | `true`       | Removes `data-test-id="whatever"` from your snapshots if true.
@@ -90,45 +90,27 @@ Setting                | Default      | Description
 `formatter`            | `'diffable'` | Function to use for formatting the markup output. Accepts `'none'`, `'diffable'`, or a custom function that is given a string and must synchronously return a string.
 
 
-Though the below settings are all the defaults, so if you like them, you don't need to pass them in.
+The below settings are all the defaults, so if you like them, you don't need to pass them in.
 
 ```js 
 global.vueSnapshots = {
-  // Logs to the console errors or other messages if true.
   verbose: true,
-  // Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
   attributesToClear: [],
-  // Display internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU wrapper, not `wrapper.html()`.
   addInputValues: true,
-  // Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
   sortAttributes: true,
-  // Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU wrapper, not `wrapper.html()`.
   stringifyAttributes: true,
-  // Removes `data-server-rendered="true"` from your snapshots if true.
   removeServerRendered: true,
-  // Removes `data-v-1234abcd=""` from your snapshots if true.
   removeDataVId: true,
-  // Removes `data-test="whatever"` from your snapshots if true. To also remove these from your production builds, [see here](https://github.com/cogor/vite-plugin-vue-remove-attributes).
   removeDataTest: true,
-  // Removes `data-testid="whatever"` from your snapshots if true.
   removeDataTestid: true,
-  // Removes `data-test-id="whatever"` from your snapshots if true.
   removeDataTestId: true,
-  // Removes `data-qa="whatever"` from your snapshots if true. `data-qa` is usually used by non-dev QA members. If they change in your snapshot, that indicates it may break someone else's E2E tests. So most using `data-qa` prefer they be left in by default.
   removeDataQa: false,
-  // Removes `data-cy="whatever"` from your snapshots if true. `data-cy` is used by Cypress end-to-end tests. If they change in your snapshot, that indicates it may break an E2E test. So most using `data-cy` prefer they be left in by default.
   removeDataCy: false,
-  // Removes `data-pw="whatever"` from your snapshots if true. `data-pw` is used by Playwright end-to-end tests. If they change in your snapshot, that indicates it may break an E2E test. So most using `data-pw` prefer they be left in by default.
   removeDataPw: false,
-  // Removes `id="test-whatever"` or `id="testWhatever"`from snapshots. **Warning:** You should never use ID's for test tokens, as they can also be used by JS and CSS, making them more brittle and their intent less clear. Use `data-test-id` instead.
   removeIdTest: false,
-  // Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
   removeClassTest: false,
-  // Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
   removeComments: false,
-  // Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
   clearInlineFunctions: false,
-  // Function to use for formatting the markup output. Accepts `'none'`, `'diffable'`, or a custom function that is given a string and must synchronously return a string.
   formatter: 'diffable'
 };
 ```
@@ -142,8 +124,7 @@ global.vueSnapshots = {
 // /tests/setup.js
 global.beforeEach(() => {
   global.vueSnapshots = {
-    removeDataQa: true,
-    removeComments: true
+    removeDataQa: true
   };
 });
 ```
@@ -155,11 +136,6 @@ test('H1 contains correct data-qa', async () => {
   const wrapper = await mount(MyComponent);
 
   global.vueSnapshots.removeDataQa = false;
-  expect(wrapper)
-    .toMatchSnapshot();
-});
-
-test('', () => {
   expect(wrapper)
     .toMatchSnapshot();
 });
