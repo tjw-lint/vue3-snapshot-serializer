@@ -4,6 +4,7 @@ export const booleanDefaults = {
   verbose: true,
   addInputValues: true,
   sortAttributes: true,
+  stringifyAttributes: true,
   removeServerRendered: true,
   removeDataVId: true,
   removeDataTest: true,
@@ -60,17 +61,18 @@ export const loadOptions = function () {
   }
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
+  // Formatter
   if (
-    typeof(globalThis.vueSnapshots.formatting) !== 'function' &&
-    !['none', 'diffable'].includes(globalThis.vueSnapshots.formatting)
+    typeof(globalThis.vueSnapshots.formatter) !== 'function' &&
+    !['none', 'diffable'].includes(globalThis.vueSnapshots.formatter)
   ) {
-    if (globalThis.vueSnapshots.formatting) {
-      logger('Allowed values for global.vueSnapshots.formatting are \'none\', \'diffable\', or a custom function');
+    if (globalThis.vueSnapshots.formatter) {
+      logger('Allowed values for global.vueSnapshots.formatter are \'none\', \'diffable\', or a custom function');
     }
-    globalThis.vueSnapshots.formatting = undefined;
+    globalThis.vueSnapshots.formatter = undefined;
   }
-  if (!globalThis.vueSnapshots.formatting) {
-    globalThis.vueSnapshots.formatting = 'diffable';
+  if (!globalThis.vueSnapshots.formatter) {
+    globalThis.vueSnapshots.formatter = 'diffable';
   }
 
   /**
@@ -80,7 +82,7 @@ export const loadOptions = function () {
   const permittedKeys = [
     ...Object.keys(booleanDefaults),
     'attributesToClear',
-    'formatting'
+    'formatter'
   ];
   const allKeys = Object.keys(globalThis.vueSnapshots);
 

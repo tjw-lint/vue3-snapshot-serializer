@@ -7,45 +7,76 @@ This is the successor to [jest-serializer-vue-tjw](https://github.com/tjw-lint/j
 
 ## Usage
 
-1. `npm install --save-dev vue3-snapshot-serializer`
-1. **Vitest:**
-   * In your `vite.config.js` or `vitest.config.js`:
+1. Install the dependency
+   * `npm install --save-dev vue3-snapshot-serializer`
+1. Register the serializer:
+   * **Vitest:** In your `vite.config.js` or `vitest.config.js`:
+      ```js
+      import { defineConfig } from 'vite'; // or 'vitest'
+   
+      export default defineConfig({
+        test: {
+          snapshotSerializers: [
+            './node_modules/vue3-snapshot-serializer/index.js'
+          ]
+        }
+      });
+      ```
+   * **Jest:** In your `package.json`, or Jest config file:
+      ```json
+      {
+        "jest": {
+          "snapshotSerializers": [
+            "./node_modules/vue3-snapshot-serializer/index.js"
+          ]
+        }
+      }
+      ```
+1. If you want to tweak any of the default settings for snapshots, put them in your `global.beforeEach()`
    ```js
-   import { defineConfig } from 'vite'; // or 'vitest'
-
-   export default defineConfig({
-     test: {
-       snapshotSerializers: [
-         './node_modules/vue3-snapshot-serializer/index.js'
-       ]
-     }
+   // /tests/unit/setup.js
+   global.beforeEach(() => {
+     global.vueSnapshots = {
+       // Your settings
+     };
    });
    ```
-1. **Jest:**
-   * In your `package.json`, or Jest config file:
-   ```json
-   {
-     "jest": {
-       "snapshotSerializers": [
-         "./node_modules/vue3-snapshot-serializer/index.js"
-       ]
-     }
-   }
+1. In tests, make sure to always pass in the Vue-Test-Utils wrapper containing the VNode so advanced features will work. If you pass in the HTML string instead, most features will still work, but not all.
+   ```js
+   test('My test', async () => {
+     const wrapper = await mount(MyComponent);
+     const button = wrapper.find('[data-test="myButton"]');
+
+     // GOOD
+     expect(wrapper)
+       .toMatchSanpshot();
+
+     // GOOD
+     expect(button)
+       .toMatchSanpshot();
+
+     // BAD
+     expect(wrapper.html())
+       .toMatchSanpshot();
+
+     // BAD
+     expect(button.html())
+       .toMatchSanpshot();
+   });
    ```
 
 
-## Features
-
-The following features are implemented in this library:
+## API/Features
 
 Setting                | Default      | Description
 :--                    | :--          | :--
 `verbose`              | `true`       | Logs to the console errors or other messages if true.
-`attributesToClear`    | []           | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<input title id class="stuff">`.
-`addInputValues`       | `true`       | Display internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`.
-`sortAttributes`       | `true`       | Sorts the attributes inside HTML elements in the snapshot. This helps make snapshot diffs easier to read.
+`attributesToClear`    | []           | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d28cb453f94" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
+`addInputValues`       | `true`       | Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
+`sortAttributes`       | `true`       | Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
+`stringifyAttributes`  | `true`       | Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
 `removeServerRendered` | `true`       | Removes `data-server-rendered="true"` from your snapshots if true.
-`removeDataVId`        | `true`       | Removes `data-v-1234abcd=""` from your snapshots if true.
+`removeDataVId`        | `true`       | Removes `data-v-1234abcd=""` from your snapshots if true. Useful if 3rd-party components use scoped styles to reduce snapshot noise when updating dependencies.
 `removeDataTest`       | `true`       | Removes `data-test="whatever"` from your snapshots if true. To also remove these from your production builds, [see here](https://github.com/cogor/vite-plugin-vue-remove-attributes).
 `removeDataTestid`     | `true`       | Removes `data-testid="whatever"` from your snapshots if true.
 `removeDataTestId`     | `true`       | Removes `data-test-id="whatever"` from your snapshots if true.
@@ -56,16 +87,68 @@ Setting                | Default      | Description
 `removeClassTest`      | `false`      | Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
 `removeComments`       | `false`      | Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
 `clearInlineFunctions` | `false`      | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
-`formatting`           | `'diffable'` | Function to use for formatting the markup output. See examples below. Accepts `'none'`, `'diffable'`, or a function.
+`formatter`            | `'diffable'` | Function to use for formatting the markup output. Accepts `'none'`, `'diffable'`, or a custom function that is given a string and must synchronously return a string.
 
 
-### Formatting examples:
+The below settings are all the defaults, so if you like them, you don't need to pass them in.
 
-There are 3 formatting options:
+```js 
+global.vueSnapshots = {
+  verbose: true,
+  attributesToClear: [],
+  addInputValues: true,
+  sortAttributes: true,
+  stringifyAttributes: true,
+  removeServerRendered: true,
+  removeDataVId: true,
+  removeDataTest: true,
+  removeDataTestid: true,
+  removeDataTestId: true,
+  removeDataQa: false,
+  removeDataCy: false,
+  removeDataPw: false,
+  removeIdTest: false,
+  removeClassTest: false,
+  removeComments: false,
+  clearInlineFunctions: false,
+  formatter: 'diffable'
+};
+```
 
-* None - does not apply any additional formatting
-* Diffable - Applies formatting designed for more easily readble diffs
-* Custom function - You can pass in your own function to format the markup.
+**Note:** You can set the global defaults for your entire project in your global `beforeEach`, so it aways resets to those defaults before each test. Then In a specific test you can override those defaults as needed if a test works better with a setting.
+
+
+## Global Settings/Individual Test Example
+
+```js
+// /tests/setup.js
+global.beforeEach(() => {
+  global.vueSnapshots = {
+    removeDataQa: true
+  };
+});
+```
+
+Then later in a specific test:
+
+```js
+test('H1 contains correct data-qa', async () => {
+  const wrapper = await mount(MyComponent);
+
+  global.vueSnapshots.removeDataQa = false;
+  expect(wrapper)
+    .toMatchSnapshot();
+});
+```
+
+
+### Formatter examples:
+
+There are 3 formatter options:
+
+* **None** - Does not apply any additional formatting, just spits out the markup as-is after tranformations have been applied.
+* **Diffable** - Applies formatting designed for more easily readble diffs. This formatter also has a few options you can set.
+* **Custom function** - You can pass in your own function to format the markup however you like.
 
 
 #### **Input Example:**
@@ -82,7 +165,7 @@ There are 3 formatting options:
 
 ```js
 global.vueSnapshots = {
-  formatting: 'none'
+  formatter: 'none'
 };
 ```
 
@@ -98,7 +181,7 @@ global.vueSnapshots = {
 
 ```js
 global.vueSnapshots = {
-  formatting: 'diffable'
+  formatter: 'diffable'
 };
 ```
 
@@ -136,7 +219,7 @@ global.vueSnapshots = {
    * @param  {string} markup  Valid HTML markup
    * @return {string}         Your formatted version
    */
-  formatting: function (markup) {
+  formatter: function (markup) {
     return markup.toUpperCase();
   }
 }
@@ -159,8 +242,7 @@ In your `setup.js` file, I would recommend creating
 ```js
 global.beforeEach(() => {
   global.vueSnapshots = {
-    // Your custom settings, such as:
-    verbose: true
+    // Your default settings for all snapshots
   };
 });
 ```
@@ -173,11 +255,13 @@ import { mount } from '@vue/test-utils';
 import MyComponent from '@/components/MyComponent.vue';
 
 describe('MyComponent', () => {
-  test('My test', () => {
+  test('My test', async () => {
+    const wrapper = await mount(MyComponent);
+
     // Test-specific settings
     global.vueSnapshots.attributesToClear = ['data-uuid'];
 
-    expect(MyComponent)
+    expect(wrapper)
       .toMatchSnapshot();
   });
 });

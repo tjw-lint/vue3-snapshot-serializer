@@ -18,7 +18,7 @@ describe('Load options', () => {
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
     attributesToClear: [],
-    formatting: 'diffable'
+    formatter: 'diffable'
   });
 
   test('Returns defaults', () => {
@@ -97,26 +97,26 @@ describe('Load options', () => {
   describe('Formatting', () => {
     test('Warns about bad input', () => {
       global.vueSnapshots = {
-        formatting: 'invalid'
+        formatter: 'invalid'
       };
 
       loadOptions();
 
-      expect(globalThis.vueSnapshots.formatting)
+      expect(globalThis.vueSnapshots.formatter)
         .toEqual('diffable');
 
       expect(console.info)
-        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Allowed values for global.vueSnapshots.formatting are \'none\', \'diffable\', or a custom function');
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Allowed values for global.vueSnapshots.formatter are \'none\', \'diffable\', or a custom function');
     });
 
     test('None', () => {
       global.vueSnapshots = {
-        formatting: 'none'
+        formatter: 'none'
       };
 
       loadOptions();
 
-      expect(globalThis.vueSnapshots.formatting)
+      expect(globalThis.vueSnapshots.formatter)
         .toEqual('none');
 
       expect(console.info)
@@ -128,7 +128,7 @@ describe('Load options', () => {
 
       loadOptions();
 
-      expect(globalThis.vueSnapshots.formatting)
+      expect(globalThis.vueSnapshots.formatter)
         .toEqual('diffable');
 
       expect(console.info)
@@ -136,15 +136,15 @@ describe('Load options', () => {
     });
 
     test('Custom function', () => {
-      function formatting (markup) {
+      function formatter (markup) {
         return markup.toUpperCase();
       }
-      global.vueSnapshots = { formatting };
+      global.vueSnapshots = { formatter };
 
       loadOptions();
 
-      expect(globalThis.vueSnapshots.formatting)
-        .toEqual(formatting);
+      expect(globalThis.vueSnapshots.formatter)
+        .toEqual(formatter);
 
       expect(console.info)
         .not.toHaveBeenCalled();
