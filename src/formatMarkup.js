@@ -101,16 +101,15 @@ export const diffableFormatter = function (markup) {
 };
 
 export const formatMarkup = function (markup) {
-  if (globalThis.vueSnapshots?.formatting) {
-    if (typeof(globalThis.vueSnapshots.formatting) === 'function') {
-      const result = globalThis.vueSnapshots.formatting(markup);
+  if (globalThis.vueSnapshots?.formatter) {
+    if (typeof(globalThis.vueSnapshots.formatter) === 'function') {
+      const result = globalThis.vueSnapshots.formatter(markup);
       if (typeof(result) === 'string') {
         return result;
       } else {
         logger('Your custom markup formatter must return a string.');
       }
-    }
-    if (globalThis.vueSnapshots.formatting === 'diffable') {
+    } else if (globalThis.vueSnapshots.formatter === 'diffable') {
       return diffableFormatter(markup);
     }
   }

@@ -26,7 +26,7 @@ const formattedMarkup = `
 </div>
 `.trim();
 
-describe('Formt markup', () => {
+describe('Format markup', () => {
   const info = console.info;
 
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe('Formt markup', () => {
   });
 
   test('Does no formatting', () => {
-    globalThis.vueSnapshots.formatting = 'none';
+    globalThis.vueSnapshots.formatter = 'none';
 
     expect(formatMarkup(unformattedMarkup))
       .toEqual(unformattedMarkup);
@@ -51,7 +51,7 @@ describe('Formt markup', () => {
   });
 
   test('Formats HTML to be diffable', () => {
-    globalThis.vueSnapshots.formatting = 'diffable';
+    globalThis.vueSnapshots.formatter = 'diffable';
 
     expect(formatMarkup(unformattedMarkup))
       .toEqual(formattedMarkup);
@@ -61,7 +61,7 @@ describe('Formt markup', () => {
   });
 
   test('Applies custom formatting', () => {
-    globalThis.vueSnapshots.formatting = function () {
+    globalThis.vueSnapshots.formatter = function () {
       return 'test';
     };
 
@@ -73,7 +73,7 @@ describe('Formt markup', () => {
   });
 
   test('Logs warning if custom function does not return a string', () => {
-    globalThis.vueSnapshots.formatting = function () {
+    globalThis.vueSnapshots.formatter = function () {
       return 5;
     };
 
