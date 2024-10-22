@@ -14,6 +14,7 @@ export const diffableFormatter = function (markup) {
   };
   const ast = parseFragment(markup, options);
 
+  // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
   const VOID_ELEMENTS = Object.freeze([
     'area',
     'base',
