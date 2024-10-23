@@ -54,13 +54,23 @@ export const diffableFormatter = function (markup) {
       }
       return '';
     }
+    // <!-- Comments -->
     if (node.nodeName === '#comment') {
+      /**
+       * The " Some Text " part in <!-- Some Text -->
+       * Or the "\n  Some\n  Text\n" in
+       * <!--
+       *   Some
+       *   Text
+       * -->
+       */
       let data = node.data
         .split('\n')
         .map((line, index, lines) => {
           if (!line) {
             return line;
           }
+          // Is last item in loop
           if (index + 1 === lines.length) {
             return line.trim();
           }
@@ -70,8 +80,10 @@ export const diffableFormatter = function (markup) {
       if (!data.startsWith('\n')) {
         data = ' ' + data;
       }
+      // Single line
       if (!data.endsWith('\n')) {
         data = data + ' ';
+      // Multi-line
       } else {
         data = data + '  '.repeat(indent);
       }

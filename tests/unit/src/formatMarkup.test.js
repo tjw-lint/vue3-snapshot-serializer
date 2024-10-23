@@ -87,8 +87,10 @@ describe('Format markup', () => {
   });
 
   describe('Comments', () => {
-    test('Does not change comments', () => {
-      const MyComponent = {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
         template: `
           <div>
             <!-- Single Line -->
@@ -99,9 +101,16 @@ describe('Format markup', () => {
             -->
             <p>2</p>
             <p v-if="false">3</p>
+            <!--         Weird    Spacing
+
+                 Weird   Spacing
+                 -->
           </div>
         `
       };
+    });
+
+    test('Formats comments accurately', () => {
       const wrapper = mount(MyComponent);
 
       globalThis.vueSnapshots.formatter = 'diffable';
@@ -122,6 +131,29 @@ describe('Format markup', () => {
               2
             </p>
             <!-- v-if -->
+            <!--     Weird    Spacing
+
+              Weird   Spacing
+            -->
+          </div>
+        `);
+    });
+
+    test('Removes comments', () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.removeComments = true;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            <p>
+              1
+            </p>
+            <p>
+              2
+            </p>
           </div>
         `);
     });
