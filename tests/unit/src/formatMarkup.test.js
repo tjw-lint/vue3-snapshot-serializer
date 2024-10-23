@@ -107,7 +107,7 @@ describe('Format markup', () => {
       globalThis.vueSnapshots.formatter = 'diffable';
       globalThis.vueSnapshots.removeComments = false;
 
-      expect(wrapper.html())
+      expect(wrapper)
         .toMatchInlineSnapshot(`
           <div>
             <!-- Single Line -->
