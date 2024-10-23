@@ -1,3 +1,5 @@
+import { mount } from '@vue/test-utils';
+
 import { formatMarkup } from '@/formatMarkup.js';
 
 const unformattedMarkup = `
@@ -82,5 +84,46 @@ describe('Format markup', () => {
 
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
+  });
+
+  describe('Comments', () => {
+    test('Does not change comments', () => {
+      const MyComponent = {
+        template: `
+          <div>
+            <!-- Single Line -->
+            <p>1</p>
+            <!--
+              Multi
+              Line
+            -->
+            <p>2</p>
+            <p v-if="false">3</p>
+          </div>
+        `
+      };
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.removeComments = false;
+
+      expect(wrapper.html())
+        .toMatchInlineSnapshot(`
+          <div>
+            <!-- Single Line -->
+            <p>
+              1
+            </p>
+            <!--
+              Multi
+              Line
+            -->
+            <p>
+              2
+            </p>
+            <!-- v-if -->
+          </div>
+        `);
+    });
   });
 });

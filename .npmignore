@@ -1,0 +1,7 @@
+/.git
+/.github
+/tests
+.editorconfig
+.gitignore
+eslint.config.js
+vitest.config.js
