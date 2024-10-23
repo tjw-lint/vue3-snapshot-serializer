@@ -1,4 +1,4 @@
-import { logger } from '@/helpers.js';
+import { logger } from './helpers.js';
 
 export const booleanDefaults = {
   verbose: true,

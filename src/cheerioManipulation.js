@@ -4,8 +4,8 @@ import * as htmlparser2 from 'htmlparser2';
 import {
   stringify,
   swapQuotes
-} from '@/helpers.js';
-import { removeTestTokens } from '@/removeTestTokens.js';
+} from './helpers.js';
+import { removeTestTokens } from './removeTestTokens.js';
 
 const KEY_NAME = 'data-vue-snapshot-serializer-key';
 let key = 0;
