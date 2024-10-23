@@ -1,4 +1,4 @@
-import { cheerioManipulation } from '@/cheerioManipulation.js';
+import { cheerioManipulation } from './cheerioManipulation.js';
 
 /**
  * This removes all HTML comments from your snapshots.

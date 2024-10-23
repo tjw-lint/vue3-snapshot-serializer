@@ -1,6 +1,6 @@
 import { parseFragment } from 'parse5';
 
-import { logger } from '@/helpers.js';
+import { logger } from './helpers.js';
 
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
