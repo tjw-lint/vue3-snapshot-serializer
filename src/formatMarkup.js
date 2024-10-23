@@ -80,10 +80,8 @@ export const diffableFormatter = function (markup) {
       if (!data.startsWith('\n')) {
         data = ' ' + data;
       }
-      // Single line
       if (!data.endsWith('\n')) {
         data = data + ' ';
-      // Multi-line
       } else {
         data = data + '  '.repeat(indent);
       }
