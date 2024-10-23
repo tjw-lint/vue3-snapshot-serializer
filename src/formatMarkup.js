@@ -54,6 +54,39 @@ export const diffableFormatter = function (markup) {
       }
       return '';
     }
+    // <!-- Comments -->
+    if (node.nodeName === '#comment') {
+      /**
+       * The " Some Text " part in <!-- Some Text -->
+       * Or the "\n  Some\n  Text\n" in
+       * <!--
+       *   Some
+       *   Text
+       * -->
+       */
+      let data = node.data
+        .split('\n')
+        .map((line, index, lines) => {
+          if (!line) {
+            return line;
+          }
+          // Is last item in loop
+          if (index + 1 === lines.length) {
+            return line.trim();
+          }
+          return '  '.repeat(indent + 1) + line.trimStart();
+        })
+        .join('\n');
+      if (!data.startsWith('\n')) {
+        data = ' ' + data;
+      }
+      if (!data.endsWith('\n')) {
+        data = data + ' ';
+      } else {
+        data = data + '  '.repeat(indent);
+      }
+      return '\n' + '  '.repeat(indent) + '<!--' + data + '-->';
+    }
 
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
