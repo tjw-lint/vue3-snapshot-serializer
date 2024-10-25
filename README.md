@@ -68,10 +68,12 @@ This is the successor to [jest-serializer-vue-tjw](https://github.com/tjw-lint/j
 
 ## API/Features
 
+`global.vueSnapshots` options:
+
 Setting                | Default      | Description
 :--                    | :--          | :--
 `verbose`              | `true`       | Logs to the console errors or other messages if true.
-`attributesToClear`    | []           | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d28cb453f94" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
+`attributesToClear`    | `[]`         | Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d28cb453f94" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
 `addInputValues`       | `true`       | Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
 `sortAttributes`       | `true`       | Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
 `stringifyAttributes`  | `true`       | Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. **Requires passing in the VTU wrapper**, not `wrapper.html()`.
@@ -87,7 +89,18 @@ Setting                | Default      | Description
 `removeClassTest`      | `false`      | Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
 `removeComments`       | `false`      | Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
 `clearInlineFunctions` | `false`      | Replaces `<div title="function () { return true; }">` or this `<div title="(x) => !x">` with this placeholder `<div title="[function]">`.
-`formatter`            | `'diffable'` | Function to use for formatting the markup output. Accepts `'none'`, `'diffable'`, or a custom function that is given a string and must synchronously return a string.
+`formatter`            | `'diffable'` | Function to use for formatting the markup output. See examples below. Accepts `'none'`, `'diffable'`, or a function.
+`formatting`           | See below    | An object containing settings specific to the diffable formatter.
+
+
+`globale.vueSnapshots.formmattingOptions` options:
+
+Setting                | Default      | Description
+:--                    | :--          | :--
+`attributesPerLine`    | `1`          | How many attributes are allowed on the same line as the starting tag.
+`emptyAttributes`      | `true`       | Determines whether empty attributes will include `=""`. If `false` then `<span class="" id=""></span>` becomes `<span class id></span>`.
+`selfClosingTag`       | `false`      | Converts `<div></div>` to `<div />` or `<p class="x"></p>` to `<p class="x" />`. Does not affect void elements (like `<input>`), use the `voidElements` setting for them.
+`voidElements`         | `'xhtml'`    | Determines how void elements are closed. Accepts `'html'` for `<input>`, `'xhtml'` for `<input />`, and `'closingTag'` for `<input></input>`.
 
 
 The below settings are all the defaults, so if you like them, you don't need to pass them in.
@@ -111,7 +124,13 @@ global.vueSnapshots = {
   removeClassTest: false,
   removeComments: false,
   clearInlineFunctions: false,
-  formatter: 'diffable'
+  formatter: 'diffable',
+  formatting: {
+    attributesPerLine: 1,
+    emptyAttributes: true,
+    selfClosingTag: false,
+    voidElements: 'xhtml'
+  }
 };
 ```
 

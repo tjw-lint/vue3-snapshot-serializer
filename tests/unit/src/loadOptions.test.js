@@ -18,7 +18,10 @@ describe('Load options', () => {
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
     attributesToClear: [],
-    formatter: 'diffable'
+    formatter: 'diffable',
+    formatting: {
+      showEmptyAttributes: true
+    }
   });
 
   test('Returns defaults', () => {
@@ -148,6 +151,19 @@ describe('Load options', () => {
 
       expect(console.info)
         .not.toHaveBeenCalled();
+    });
+
+    test('Warns and deletes formatting options if not using diffable formatter', () => {
+      global.vueSnapshots.formatter = 'none';
+      global.vueSnapshots.formatting = { showEmptyAttributes: true };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting)
+        .toEqual(undefined);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: When setting the formatter to "none" or a custom function, all formatting options will be removed.');
     });
   });
 

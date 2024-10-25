@@ -1,6 +1,9 @@
 import { mount } from '@vue/test-utils';
 
-import { formatMarkup } from '@/formatMarkup.js';
+import {
+  diffableFormatter,
+  formatMarkup
+} from '@/formatMarkup.js';
 
 const unformattedMarkup = `
 <div id="header">
@@ -33,7 +36,8 @@ describe('Format markup', () => {
 
   beforeEach(() => {
     globalThis.vueSnapshots = {
-      verbose: true
+      verbose: true,
+      formatting: {}
     };
     console.info = vi.fn();
   });
@@ -84,6 +88,13 @@ describe('Format markup', () => {
 
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
+  });
+
+  describe('diffableFormatter', () => {
+    test('No arguments', () => {
+      expect(diffableFormatter())
+        .toEqual('');
+    });
   });
 
   describe('Comments', () => {
@@ -155,6 +166,53 @@ describe('Format markup', () => {
               2
             </p>
           </div>
+        `);
+    });
+  });
+
+  describe('Show empty attributes', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: '<div class="x y" id title="">Text</div><p class></p>'
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Enabled', async () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div
+            class="x y"
+            id=""
+            title=""
+          >
+            Text
+          </div>
+          <p class=""></p>
+        `);
+    });
+
+    test('Disabled', async () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatting.showEmptyAttributes = false;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div
+            class="x y"
+            id
+            title
+          >
+            Text
+          </div>
+          <p class></p>
         `);
     });
   });

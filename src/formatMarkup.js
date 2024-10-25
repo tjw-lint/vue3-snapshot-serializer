@@ -3,16 +3,33 @@ import { parseFragment } from 'parse5';
 import { logger } from './helpers.js';
 
 /**
+ * @typedef  {object}  OPTIONS
+ * @property {boolean} [showEmptyAttributes=true]  Determines whether empty attributes will include `=""`. <div class> or <div class="">
+ */
+
+/**
+ * @type {OPTIONS}
+ */
+export let DIFFABLE_OPTIONS_TYPE;
+
+/**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
- * @param  {string} markup  Any valid HTML
- * @return {string}         HTML formatted to be more easily diffable
+ * @param  {string}  markup   Any valid HTML
+ * @param  {OPTIONS} options  Diffable formatting options
+ * @return {string}           HTML formatted to be more easily diffable
  */
-export const diffableFormatter = function (markup) {
-  const options = {
+export const diffableFormatter = function (markup, options) {
+  markup = markup || '';
+  options = options || {};
+  if (typeof(options.showEmptyAttributes) !== 'boolean') {
+    options.showEmptyAttributes = true;
+  }
+
+  const astOptions = {
     sourceCodeLocationInfo: true
   };
-  const ast = parseFragment(markup, options);
+  const ast = parseFragment(markup, astOptions);
 
   // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
   const VOID_ELEMENTS = Object.freeze([
@@ -31,19 +48,22 @@ export const diffableFormatter = function (markup) {
     'track',
     'wbr'
   ]);
-  const whiteSpaceDependentTags = [
+  const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
     'a',
     'pre'
-  ];
+  ]);
+
   let lastSeenTag = '';
   const formatNode = (node, indent) => {
     indent = indent || 0;
     if (node.tagName) {
       lastSeenTag = node.tagName;
     }
-    const tagIsWhitespaceDependent = whiteSpaceDependentTags.includes(lastSeenTag);
+    const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
+
+    // InnerText
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
         if (tagIsWhitespaceDependent) {
@@ -54,6 +74,7 @@ export const diffableFormatter = function (markup) {
       }
       return '';
     }
+
     // <!-- Comments -->
     if (node.nodeName === '#comment') {
       /**
@@ -98,10 +119,24 @@ export const diffableFormatter = function (markup) {
     // Add attributes
     if (node?.attrs?.length === 1) {
       let attr = node?.attrs[0];
-      result = result + ' ' + attr.name + '="' + attr.value + '"' + endingAngleBracket;
+      if (
+        !attr.value &&
+        !options.showEmptyAttributes
+      ) {
+        result = result + ' ' + attr.name + endingAngleBracket;
+      } else {
+        result = result + ' ' + attr.name + '="' + attr.value + '"' + endingAngleBracket;
+      }
     } else if (node?.attrs?.length) {
       node.attrs.forEach((attr) => {
-        result = result + '\n' + '  '.repeat(indent + 1) + attr.name + '="' + attr.value + '"';
+        if (
+          !attr.value &&
+          !options.showEmptyAttributes
+        ) {
+          result = result + '\n' + '  '.repeat(indent + 1) + attr.name;
+        } else {
+          result = result + '\n' + '  '.repeat(indent + 1) + attr.name + '="' + attr.value + '"';
+        }
       });
       result = result + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
     } else {
@@ -144,7 +179,7 @@ export const formatMarkup = function (markup) {
         logger('Your custom markup formatter must return a string.');
       }
     } else if (globalThis.vueSnapshots.formatter === 'diffable') {
-      return diffableFormatter(markup);
+      return diffableFormatter(markup, globalThis.vueSnapshots.formatting);
     }
   }
   return markup;
