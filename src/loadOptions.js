@@ -75,12 +75,24 @@ export const loadOptions = function () {
     globalThis.vueSnapshots.formatter = 'diffable';
   }
 
-  // Formatting
-  if (!globalThis.vueSnapshots.formatting) {
-    globalThis.vueSnapshots.formatting = {};
+  if (
+    globalThis.vueSnapshots.formatter !== 'diffable' &&
+    typeof(globalThis.vueSnapshots.formatting) === 'object' &&
+    Object.keys(globalThis.vueSnapshots.formatting).length
+  ) {
+    logger('When setting the formatter to "none" or a custom function, all formatting options will be removed.');
   }
-  if (typeof(globalThis.vueSnapshots.formatting.showEmptyAttributes) !== 'boolean') {
-    globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+
+  // Formatting
+  if (globalThis.vueSnapshots.formatter === 'diffable') {
+    if (!globalThis.vueSnapshots.formatting) {
+      globalThis.vueSnapshots.formatting = {};
+    }
+    if (typeof(globalThis.vueSnapshots.formatting.showEmptyAttributes) !== 'boolean') {
+      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+    }
+  } else {
+    delete globalThis.vueSnapshots.formatting;
   }
 
   /**
