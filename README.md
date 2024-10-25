@@ -306,3 +306,12 @@ console.log(formatted);
 ```
 
 The `vueMarkupFormatter` function expects a string starting with `<`, and will return a formatted string based on your `globalThis.vueSnapshots` settings. You can use `global`, `globalThis`, or `window` to set the `vueSnapshots` settings object depending on your JavaScript environment.
+
+
+## Running this repo locally
+
+1. Fork or Clone the repo
+1. Install [Volta](https://volta.sh)
+1. `npm install`
+1. `npm t` (runs tests)
+1. `npm run fix` runs linter
