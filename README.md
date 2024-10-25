@@ -313,5 +313,5 @@ The `vueMarkupFormatter` function expects a string starting with `<`, and will r
 1. Fork or Clone the repo
 1. Install [Volta](https://volta.sh)
 1. `npm install`
-1. `npm t` (runs tests)
-1. `npm run fix` runs linter
+1. `npm t` (runs unit tests)
+1. `npm run fix` (runs linter)
