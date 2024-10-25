@@ -18,7 +18,10 @@ describe('Load options', () => {
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
     attributesToClear: [],
-    formatter: 'diffable'
+    formatter: 'diffable',
+    formatting: {
+      showEmptyAttributes: true
+    }
   });
 
   test('Returns defaults', () => {

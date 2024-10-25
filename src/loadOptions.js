@@ -75,6 +75,14 @@ export const loadOptions = function () {
     globalThis.vueSnapshots.formatter = 'diffable';
   }
 
+  // Formatting
+  if (!globalThis.vueSnapshots.formatting) {
+    globalThis.vueSnapshots.formatting = {};
+  }
+  if (typeof(globalThis.vueSnapshots.formatting.showEmptyAttributes) !== 'boolean') {
+    globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+  }
+
   /**
    * Clean up settings
    */
@@ -82,7 +90,8 @@ export const loadOptions = function () {
   const permittedKeys = [
     ...Object.keys(booleanDefaults),
     'attributesToClear',
-    'formatter'
+    'formatter',
+    'formatting'
   ];
   const allKeys = Object.keys(globalThis.vueSnapshots);
 
