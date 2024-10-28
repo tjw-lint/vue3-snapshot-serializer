@@ -251,7 +251,7 @@ describe('Format markup', () => {
 
   describe('Void elements', () => {
     beforeEach(() => {
-      globalThis.vueSnapshots.formatting = 'diffable';
+      globalThis.vueSnapshots.formatter = 'diffable';
     });
 
     const voidElementTests = [
