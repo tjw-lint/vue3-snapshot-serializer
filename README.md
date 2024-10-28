@@ -93,7 +93,9 @@ Setting                | Default      | Description
 `formatting`           | See below    | An object containing settings specific to the diffable formatter.
 
 
-`globale.vueSnapshots.formmattingOptions` options:
+`global.vueSnapshots.formmatting` options:
+
+These settings only apply if using the default formatter, `'diffable'`.
 
 Setting                | Default      | Description
 :--                    | :--          | :--
