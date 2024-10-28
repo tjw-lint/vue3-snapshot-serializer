@@ -16,6 +16,7 @@ import { logger } from './helpers.js';
  */
 export let DIFFABLE_OPTIONS_TYPE;
 
+// From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 const VOID_ELEMENTS = Object.freeze([
   'area',
   'base',
@@ -59,28 +60,6 @@ export const diffableFormatter = function (markup, options) {
     sourceCodeLocationInfo: true
   };
   const ast = parseFragment(markup, astOptions);
-
-  // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-  const VOID_ELEMENTS = Object.freeze([
-    'area',
-    'base',
-    'br',
-    'col',
-    'embed',
-    'hr',
-    'img',
-    'input',
-    'link',
-    'meta',
-    'param',
-    'source',
-    'track',
-    'wbr'
-  ]);
-  const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
-    'a',
-    'pre'
-  ]);
 
   let lastSeenTag = '';
 
