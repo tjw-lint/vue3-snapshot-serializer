@@ -46,7 +46,7 @@ describe('index.js', () => {
     });
 
     test('Simple markup', () => {
-      globalThis.vueSnapshots = { formatting: 'none' };
+      globalThis.vueSnapshots = { formatter: 'none' };
       const markup = '<div>Hello</div>';
 
       expect(vueMarkupFormatter(markup))

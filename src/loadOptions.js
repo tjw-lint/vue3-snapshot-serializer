@@ -1,9 +1,10 @@
-import { logger } from '@/helpers.js';
+import { logger } from './helpers.js';
 
 export const booleanDefaults = {
   verbose: true,
   addInputValues: true,
   sortAttributes: true,
+  stringifyAttributes: true,
   removeServerRendered: true,
   removeDataVId: true,
   removeDataTest: true,
@@ -60,17 +61,38 @@ export const loadOptions = function () {
   }
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
+  // Formatter
   if (
-    typeof(globalThis.vueSnapshots.formatting) !== 'function' &&
-    !['none', 'diffable'].includes(globalThis.vueSnapshots.formatting)
+    typeof(globalThis.vueSnapshots.formatter) !== 'function' &&
+    !['none', 'diffable'].includes(globalThis.vueSnapshots.formatter)
   ) {
-    if (globalThis.vueSnapshots.formatting) {
-      logger('Allowed values for global.vueSnapshots.formatting are \'none\', \'diffable\', or a custom function');
+    if (globalThis.vueSnapshots.formatter) {
+      logger('Allowed values for global.vueSnapshots.formatter are \'none\', \'diffable\', or a custom function');
     }
-    globalThis.vueSnapshots.formatting = undefined;
+    globalThis.vueSnapshots.formatter = undefined;
   }
-  if (!globalThis.vueSnapshots.formatting) {
-    globalThis.vueSnapshots.formatting = 'diffable';
+  if (!globalThis.vueSnapshots.formatter) {
+    globalThis.vueSnapshots.formatter = 'diffable';
+  }
+
+  if (
+    globalThis.vueSnapshots.formatter !== 'diffable' &&
+    typeof(globalThis.vueSnapshots.formatting) === 'object' &&
+    Object.keys(globalThis.vueSnapshots.formatting).length
+  ) {
+    logger('When setting the formatter to "none" or a custom function, all formatting options will be removed.');
+  }
+
+  // Formatting
+  if (globalThis.vueSnapshots.formatter === 'diffable') {
+    if (!globalThis.vueSnapshots.formatting) {
+      globalThis.vueSnapshots.formatting = {};
+    }
+    if (typeof(globalThis.vueSnapshots.formatting.showEmptyAttributes) !== 'boolean') {
+      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+    }
+  } else {
+    delete globalThis.vueSnapshots.formatting;
   }
 
   /**
@@ -80,6 +102,7 @@ export const loadOptions = function () {
   const permittedKeys = [
     ...Object.keys(booleanDefaults),
     'attributesToClear',
+    'formatter',
     'formatting'
   ];
   const allKeys = Object.keys(globalThis.vueSnapshots);

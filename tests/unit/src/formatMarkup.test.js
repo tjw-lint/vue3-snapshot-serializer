@@ -1,5 +1,9 @@
-import { formatMarkup } from '@/formatMarkup.js';
-import { describe, expect, test } from 'vitest';
+import { mount } from '@vue/test-utils';
+
+import {
+  diffableFormatter,
+  formatMarkup
+} from '@/formatMarkup.js';
 
 const unformattedMarkup = `
 <div id="header">
@@ -64,7 +68,8 @@ describe('Format markup', () => {
 
   beforeEach(() => {
     globalThis.vueSnapshots = {
-      verbose: true
+      verbose: true,
+      formatting: {}
     };
     console.info = vi.fn();
   });
@@ -74,7 +79,7 @@ describe('Format markup', () => {
   });
 
   test('Does no formatting', () => {
-    globalThis.vueSnapshots.formatting = 'none';
+    globalThis.vueSnapshots.formatter = 'none';
 
     expect(formatMarkup(unformattedMarkup))
       .toEqual(unformattedMarkup);
@@ -84,7 +89,7 @@ describe('Format markup', () => {
   });
 
   test('Formats HTML to be diffable', () => {
-    globalThis.vueSnapshots.formatting = 'diffable';
+    globalThis.vueSnapshots.formatter = 'diffable';
 
     expect(formatMarkup(unformattedMarkup))
       .toEqual(formattedMarkup);
@@ -94,7 +99,7 @@ describe('Format markup', () => {
   });
 
   test('Applies custom formatting', () => {
-    globalThis.vueSnapshots.formatting = function () {
+    globalThis.vueSnapshots.formatter = function () {
       return 'test';
     };
 
@@ -106,7 +111,7 @@ describe('Format markup', () => {
   });
 
   test('Logs warning if custom function does not return a string', () => {
-    globalThis.vueSnapshots.formatting = function () {
+    globalThis.vueSnapshots.formatter = function () {
       return 5;
     };
 
@@ -116,24 +121,150 @@ describe('Format markup', () => {
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
   });
-});
 
-describe('Format markup options', () => {
-  beforeEach(() => {
-    globalThis.vueSnapshots = {
-      formatting: 'diffable',
-      verbose: true
-    };
+  describe('diffableFormatter', () => {
+    test('No arguments', () => {
+      expect(diffableFormatter())
+        .toEqual('');
+    });
   });
 
-  test.each([
-    ['html', formattedMarkupVoidElementsWithHTML],
-    ['xhtml', formattedMarkupVoidElementsWithXHTML],
-    ['closingTag', formattedMarkupVoidElementsWithClosingTag]
-  ])('Formats void elements using mode "%s"', (mode, expected) => {
-    globalThis.vueSnapshots.voidElements = mode;
+  describe('Comments', () => {
+    let MyComponent;
 
-    expect(formatMarkup(unformattedMarkupVoidElements))
-      .toEqual(expected);
+    beforeEach(() => {
+      MyComponent = {
+        template: `
+          <div>
+            <!-- Single Line -->
+            <p>1</p>
+            <!--
+              Multi
+              Line
+            -->
+            <p>2</p>
+            <p v-if="false">3</p>
+            <!--         Weird    Spacing
+
+                 Weird   Spacing
+                 -->
+          </div>
+        `
+      };
+    });
+
+    test('Formats comments accurately', () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.removeComments = false;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            <!-- Single Line -->
+            <p>
+              1
+            </p>
+            <!--
+              Multi
+              Line
+            -->
+            <p>
+              2
+            </p>
+            <!-- v-if -->
+            <!--     Weird    Spacing
+
+              Weird   Spacing
+            -->
+          </div>
+        `);
+    });
+
+    test('Removes comments', () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.removeComments = true;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            <p>
+              1
+            </p>
+            <p>
+              2
+            </p>
+          </div>
+        `);
+    });
+  });
+
+  describe('Show empty attributes', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: '<div class="x y" id title="">Text</div><p class></p>'
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Enabled', async () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div
+            class="x y"
+            id=""
+            title=""
+          >
+            Text
+          </div>
+          <p class=""></p>
+        `);
+    });
+
+    test('Disabled', async () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatting.showEmptyAttributes = false;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div
+            class="x y"
+            id
+            title
+          >
+            Text
+          </div>
+          <p class></p>
+        `);
+    });
+  });
+
+  describe('Void elements', () => {
+    beforeEach(() => {
+      globalThis.vueSnapshots.formatting = 'diffable';
+    });
+
+    const voidElementTests = [
+      ['html', formattedMarkupVoidElementsWithHTML],
+      ['xhtml', formattedMarkupVoidElementsWithXHTML],
+      ['closingTag', formattedMarkupVoidElementsWithClosingTag]
+    ];
+
+    test.each(voidElementTests)('Formats void elements using mode "%s"', (mode, expected) => {
+      globalThis.vueSnapshots.voidElements = mode;
+
+      expect(formatMarkup(unformattedMarkupVoidElements))
+        .toEqual(expected);
+    });
   });
 });
