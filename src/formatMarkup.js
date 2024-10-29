@@ -71,7 +71,6 @@ export const diffableFormatter = function (markup, options) {
    * @return {string}                                     Formatted markup
    */
   const formatNode = (node, indent) => {
-    node = node || {};
     indent = indent || 0;
     if (node.tagName) {
       lastSeenTag = node.tagName;
@@ -166,8 +165,6 @@ export const diffableFormatter = function (markup, options) {
         }
       });
       result = result + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
-    } else {
-      result = result + endingAngleBracket;
     }
 
     // Process child nodes
