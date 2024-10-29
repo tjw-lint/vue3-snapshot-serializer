@@ -261,7 +261,7 @@ describe('Format markup', () => {
     ];
 
     test.each(voidElementTests)('Formats void elements using mode "%s"', (mode, expected) => {
-      globalThis.vueSnapshots.voidElements = mode;
+      globalThis.vueSnapshots.formatting.voidElements = mode;
 
       expect(formatMarkup(unformattedMarkupVoidElements))
         .toEqual(expected);
