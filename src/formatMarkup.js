@@ -2,22 +2,14 @@ import { parseFragment } from 'parse5';
 
 import { logger } from './helpers.js';
 
-/**
- * @typedef  {object}  OPTIONS
- * @property {boolean} [showEmptyAttributes=true]  Determines whether empty attributes will include `=""`. <div class> or <div class="">
- */
-
-/**
- * @type {OPTIONS}
- */
-export let DIFFABLE_OPTIONS_TYPE;
+/** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
- * @param  {string}  markup   Any valid HTML
- * @param  {OPTIONS} options  Diffable formatting options
- * @return {string}           HTML formatted to be more easily diffable
+ * @param  {string}     markup   Any valid HTML
+ * @param  {FORMATTING} options  Diffable formatting options
+ * @return {string}              HTML formatted to be more easily diffable
  */
 export const diffableFormatter = function (markup, options) {
   markup = markup || '';
