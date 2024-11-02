@@ -91,6 +91,9 @@ export const loadOptions = function () {
     if (typeof(globalThis.vueSnapshots.formatting.showEmptyAttributes) !== 'boolean') {
       globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
     }
+    if (typeof(globalThis.vueSnapshots.formatting.selfClosingTag) !== 'boolean') {
+      globalThis.vueSnapshots.formatting.selfClosingTag = false;
+    }
   } else {
     delete globalThis.vueSnapshots.formatting;
   }

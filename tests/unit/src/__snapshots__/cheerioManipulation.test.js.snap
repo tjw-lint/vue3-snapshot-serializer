@@ -291,7 +291,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
     stuff.
   </span>
 </div>
-<span person="{name:'bob'}"></span>
+<span person="{name:'bob'}" />
 `;
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on children in shallow mounts 1`] = `
@@ -319,5 +319,5 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on c
     stuff.
   </span>
 </div>
-<stringify-props-stub person="{name:'bob'}"></stringify-props-stub>
+<stringify-props-stub person="{name:'bob'}" />
 `;

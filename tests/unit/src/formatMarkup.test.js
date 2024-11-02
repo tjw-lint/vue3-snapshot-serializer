@@ -194,7 +194,7 @@ describe('Format markup', () => {
           >
             Text
           </div>
-          <p class=""></p>
+          <p class="" />
         `);
     });
 
@@ -212,7 +212,31 @@ describe('Format markup', () => {
           >
             Text
           </div>
-          <p class></p>
+          <p class />
+        `);
+    });
+  });
+
+  describe('Self Closing Tags', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: '<div></div><span class="orange"></span><svg><path d=""></path></svg>'
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Enabled', () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.selfClosingTag = true;
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div />
+          <span class="orange" />
+          <svg>
+            <path d="" />
+          </svg>
         `);
     });
   });

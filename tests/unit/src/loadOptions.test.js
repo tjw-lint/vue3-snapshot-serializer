@@ -20,7 +20,8 @@ describe('Load options', () => {
     attributesToClear: [],
     formatter: 'diffable',
     formatting: {
-      showEmptyAttributes: true
+      showEmptyAttributes: true,
+      selfClosingTag: false
     }
   });
 

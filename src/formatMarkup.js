@@ -53,6 +53,11 @@ export const diffableFormatter = function (markup, options) {
     'pre'
   ]);
 
+  const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
+    'textarea',
+    'title'
+  ]);
+
   let lastSeenTag = '';
   const formatNode = (node, indent) => {
     indent = indent || 0;
@@ -61,6 +66,7 @@ export const diffableFormatter = function (markup, options) {
     }
     const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+    const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
 
     // InnerText
@@ -112,7 +118,7 @@ export const diffableFormatter = function (markup, options) {
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
     let endingAngleBracket = '>';
-    if (tagIsVoidElement) {
+    if (tagIsVoidElement || (!hasChildren && !tagIsEscapabelRawTextElement)) {
       endingAngleBracket = ' />';
     }
 
@@ -150,7 +156,7 @@ export const diffableFormatter = function (markup, options) {
       });
     }
 
-    if (!tagIsVoidElement) {
+    if (!tagIsVoidElement && (tagIsEscapabelRawTextElement || hasChildren)) {
       if (tagIsWhitespaceDependent || !hasChildren) {
         result = result + '</' + node.nodeName + '>';
       } else {
