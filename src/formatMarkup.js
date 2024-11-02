@@ -1,16 +1,43 @@
+// @ts-check
+/** @import { DefaultTreeAdapterMap } from "parse5" */
+
 import { parseFragment } from 'parse5';
 
 import { logger } from './helpers.js';
 
 /**
- * @typedef  {object}  OPTIONS
- * @property {boolean} [showEmptyAttributes=true]  Determines whether empty attributes will include `=""`. <div class> or <div class="">
+ * @typedef  {object}                      OPTIONS
+ * @property {boolean}                     [showEmptyAttributes=true]      Determines whether empty attributes will include `=""`. <div class> or <div class="">
+ * @property {'html'|'xhtml'|'closingTag'} [options.voidElements='xhtml']  How to handle void elements. html = <img>, xhtml = <img />, closingTag = <img></img>
  */
 
 /**
  * @type {OPTIONS}
  */
 export let DIFFABLE_OPTIONS_TYPE;
+
+// From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
+const VOID_ELEMENTS = Object.freeze([
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr'
+]);
+
+const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
+  'a',
+  'pre'
+]);
 
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
@@ -25,40 +52,30 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.showEmptyAttributes) !== 'boolean') {
     options.showEmptyAttributes = true;
   }
+  if (!['html', 'xhtml', 'closingTag'].includes(options.voidElements)) {
+    options.voidElements = 'xhtml';
+  }
 
   const astOptions = {
     sourceCodeLocationInfo: true
   };
   const ast = parseFragment(markup, astOptions);
 
-  // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-  const VOID_ELEMENTS = Object.freeze([
-    'area',
-    'base',
-    'br',
-    'col',
-    'embed',
-    'hr',
-    'img',
-    'input',
-    'link',
-    'meta',
-    'param',
-    'source',
-    'track',
-    'wbr'
-  ]);
-  const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
-    'a',
-    'pre'
-  ]);
-
   let lastSeenTag = '';
+
+  /**
+   * Applies formatting to each DOM Node in the AST.
+   *
+   * @param  {DefaultTreeAdapterMap["childNode"]} node    Parse5 AST of a DOM node
+   * @param  {number}                             indent  The current indentation level for this DOM node in the AST loop
+   * @return {string}                                     Formatted markup
+   */
   const formatNode = (node, indent) => {
     indent = indent || 0;
     if (node.tagName) {
       lastSeenTag = node.tagName;
     }
+
     const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
@@ -109,16 +126,25 @@ export const diffableFormatter = function (markup, options) {
       return '\n' + '  '.repeat(indent) + '<!--' + data + '-->';
     }
 
+    // <tags and="attributes" />
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
     let endingAngleBracket = '>';
-    if (tagIsVoidElement) {
+    if (
+      tagIsVoidElement &&
+      options.voidElements === 'xhtml'
+    ) {
       endingAngleBracket = ' />';
     }
 
     // Add attributes
-    if (node?.attrs?.length === 1) {
-      let attr = node?.attrs[0];
+    if (
+      !node.tagName ||
+      !node.attrs.length
+    ) {
+      result = result + endingAngleBracket;
+    } else if (node.attrs?.length === 1) {
+      let attr = node.attrs[0];
       if (
         !attr.value &&
         !options.showEmptyAttributes
@@ -127,7 +153,7 @@ export const diffableFormatter = function (markup, options) {
       } else {
         result = result + ' ' + attr.name + '="' + attr.value + '"' + endingAngleBracket;
       }
-    } else if (node?.attrs?.length) {
+    } else if (node.attrs?.length) {
       node.attrs.forEach((attr) => {
         if (
           !attr.value &&
@@ -139,8 +165,6 @@ export const diffableFormatter = function (markup, options) {
         }
       });
       result = result + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
-    } else {
-      result = result + endingAngleBracket;
     }
 
     // Process child nodes
@@ -150,12 +174,21 @@ export const diffableFormatter = function (markup, options) {
       });
     }
 
-    if (!tagIsVoidElement) {
-      if (tagIsWhitespaceDependent || !hasChildren) {
-        result = result + '</' + node.nodeName + '>';
-      } else {
-        result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
-      }
+    // Add closing tag
+    if (
+      tagIsWhitespaceDependent ||
+      (
+        !tagIsVoidElement &&
+        !hasChildren
+      ) ||
+      (
+        tagIsVoidElement &&
+        options.voidElements === 'closingTag'
+      )
+    ) {
+      result = result + '</' + node.nodeName + '>';
+    } else if (!tagIsVoidElement) {
+      result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
     }
 
     return result;
