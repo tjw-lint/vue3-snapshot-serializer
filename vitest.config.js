@@ -17,9 +17,9 @@ export default defineConfig({
   test: {
     coverage: {
       exclude: [
-        ...(configDefaults?.coverage?.exclude || [])
-        // '.eslintrc.cjs',
-        // '**/app/'
+        ...(configDefaults?.coverage?.exclude || []),
+        'types.js'
+        // '**/dist/'
       ],
       reportsDirectory: './tests/unit/coverage',
       thresholds: {

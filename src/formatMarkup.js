@@ -5,16 +5,7 @@ import { parseFragment } from 'parse5';
 
 import { logger } from './helpers.js';
 
-/**
- * @typedef  {object}                      OPTIONS
- * @property {boolean}                     [showEmptyAttributes=true]      Determines whether empty attributes will include `=""`. <div class> or <div class="">
- * @property {'html'|'xhtml'|'closingTag'} [options.voidElements='xhtml']  How to handle void elements. html = <img>, xhtml = <img />, closingTag = <img></img>
- */
-
-/**
- * @type {OPTIONS}
- */
-export let DIFFABLE_OPTIONS_TYPE;
+/** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
 // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 const VOID_ELEMENTS = Object.freeze([
@@ -42,9 +33,9 @@ const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
- * @param  {string}  markup   Any valid HTML
- * @param  {OPTIONS} options  Diffable formatting options
- * @return {string}           HTML formatted to be more easily diffable
+ * @param  {string}     markup   Any valid HTML
+ * @param  {FORMATTING} options  Diffable formatting options
+ * @return {string}              HTML formatted to be more easily diffable
  */
 export const diffableFormatter = function (markup, options) {
   markup = markup || '';
