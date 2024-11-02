@@ -31,6 +31,38 @@ const formattedMarkup = `
 </div>
 `.trim();
 
+const unformattedMarkupVoidElements = `
+<input>
+<input type="range"><input type="range" max="50">
+`.trim();
+
+const formattedMarkupVoidElementsWithHTML = `
+<input>
+<input type="range">
+<input
+  type="range"
+  max="50"
+>
+`.trim();
+
+const formattedMarkupVoidElementsWithXHTML = `
+<input />
+<input type="range" />
+<input
+  type="range"
+  max="50"
+/>
+`.trim();
+
+const formattedMarkupVoidElementsWithClosingTag = `
+<input></input>
+<input type="range"></input>
+<input
+  type="range"
+  max="50"
+></input>
+`.trim();
+
 describe('Format markup', () => {
   const info = console.info;
 
@@ -238,6 +270,25 @@ describe('Format markup', () => {
             <path d="" />
           </svg>
         `);
+    });
+  });
+
+  describe('Void elements', () => {
+    beforeEach(() => {
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    const voidElementTests = [
+      ['html', formattedMarkupVoidElementsWithHTML],
+      ['xhtml', formattedMarkupVoidElementsWithXHTML],
+      ['closingTag', formattedMarkupVoidElementsWithClosingTag]
+    ];
+
+    test.each(voidElementTests)('Formats void elements using mode "%s"', (mode, expected) => {
+      globalThis.vueSnapshots.formatting.voidElements = mode;
+
+      expect(formatMarkup(unformattedMarkupVoidElements))
+        .toEqual(expected);
     });
   });
 });

@@ -1,5 +1,7 @@
 import { logger } from './helpers.js';
 
+/** @typedef {import('../types.js').SETTINGS} SETTINGS */
+
 export const booleanDefaults = {
   verbose: true,
   addInputValues: true,
@@ -20,6 +22,7 @@ export const booleanDefaults = {
 };
 
 export const loadOptions = function () {
+  /** @type {SETTINGS} globalThis.vueSnapshots */
   globalThis.vueSnapshots = globalThis.vueSnapshots || {};
 
   /**
