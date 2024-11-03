@@ -45,11 +45,14 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
 export const diffableFormatter = function (markup, options) {
   markup = markup || '';
   options = options || {};
-  if (typeof(options.showEmptyAttributes) !== 'boolean') {
-    options.showEmptyAttributes = true;
+  if (typeof(options.emptyAttributes) !== 'boolean') {
+    options.emptyAttributes = true;
   }
   if (!['html', 'xhtml', 'closingTag'].includes(options.voidElements)) {
     options.voidElements = 'xhtml';
+  }
+  if (typeof(options.selfClosingTag) !== 'boolean') {
+    options.selfClosingTag = false;
   }
 
   const astOptions = {
@@ -126,14 +129,8 @@ export const diffableFormatter = function (markup, options) {
     // <tags and="attributes" />
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
-    let endingAngleBracket = '>';
-    // if (tagIsVoidElement || (!hasChildren && !tagIsEscapabelRawTextElement)) {
-    if (
-      tagIsVoidElement &&
-      options.voidElements === 'xhtml'
-    ) {
-      endingAngleBracket = ' />';
-    }
+    const shouldSelfClose = (tagIsVoidElement && options.voidElements === 'xhtml') || (options.selfClosingTag && !hasChildren && !tagIsEscapabelRawTextElement);
+    const endingAngleBracket = shouldSelfClose ? ' />' : '>';
 
     // Add attributes
     if (
@@ -145,7 +142,7 @@ export const diffableFormatter = function (markup, options) {
       let attr = node.attrs[0];
       if (
         !attr.value &&
-        !options.showEmptyAttributes
+        !options.emptyAttributes
       ) {
         result = result + ' ' + attr.name + endingAngleBracket;
       } else {
@@ -155,7 +152,7 @@ export const diffableFormatter = function (markup, options) {
       node.attrs.forEach((attr) => {
         if (
           !attr.value &&
-          !options.showEmptyAttributes
+          !options.emptyAttributes
         ) {
           result = result + '\n' + '  '.repeat(indent + 1) + attr.name;
         } else {
@@ -171,14 +168,12 @@ export const diffableFormatter = function (markup, options) {
         result = result + formatNode(child, indent + 1);
       });
     }
+  
+    // Return without closing tag
+    if (shouldSelfClose) {
+      return result;
+    }
 
-    // if (!tagIsVoidElement && (tagIsEscapabelRawTextElement || hasChildren)) {
-    //   if (tagIsWhitespaceDependent || !hasChildren) {
-    //     result = result + '</' + node.nodeName + '>';
-    //   } else {
-    //     result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
-    //   }
-    
     // Add closing tag
     if (
       tagIsWhitespaceDependent ||
@@ -201,7 +196,7 @@ export const diffableFormatter = function (markup, options) {
 
   let formattedOutput = '';
   ast.childNodes.forEach((node) => {
-    formattedOutput = formattedOutput + formatNode(node);
+    formattedOutput = formattedOutput + formatNode(node, 0);
   });
 
   return formattedOutput.trim();

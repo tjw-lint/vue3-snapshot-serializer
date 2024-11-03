@@ -91,8 +91,8 @@ export const loadOptions = function () {
     if (!globalThis.vueSnapshots.formatting) {
       globalThis.vueSnapshots.formatting = {};
     }
-    if (typeof(globalThis.vueSnapshots.formatting.showEmptyAttributes) !== 'boolean') {
-      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+    if (typeof(globalThis.vueSnapshots.formatting.emptyAttributes) !== 'boolean') {
+      globalThis.vueSnapshots.formatting.emptyAttributes = true;
     }
     if (typeof(globalThis.vueSnapshots.formatting.selfClosingTag) !== 'boolean') {
       globalThis.vueSnapshots.formatting.selfClosingTag = false;

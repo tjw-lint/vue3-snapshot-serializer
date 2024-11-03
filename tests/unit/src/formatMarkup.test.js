@@ -215,7 +215,7 @@ describe('Format markup', () => {
     test('Enabled', async () => {
       const wrapper = mount(MyComponent);
 
-      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+      globalThis.vueSnapshots.formatting.emptyAttributes = true;
 
       expect(wrapper)
         .toMatchInlineSnapshot(`
@@ -226,14 +226,14 @@ describe('Format markup', () => {
           >
             Text
           </div>
-          <p class="" />
+          <p class=""></p>
         `);
     });
 
     test('Disabled', async () => {
       const wrapper = mount(MyComponent);
 
-      globalThis.vueSnapshots.formatting.showEmptyAttributes = false;
+      globalThis.vueSnapshots.formatting.emptyAttributes = false;
 
       expect(wrapper)
         .toMatchInlineSnapshot(`
@@ -244,7 +244,7 @@ describe('Format markup', () => {
           >
             Text
           </div>
-          <p class />
+          <p class></p>
         `);
     });
   });
@@ -254,7 +254,7 @@ describe('Format markup', () => {
 
     beforeEach(() => {
       MyComponent = {
-        template: '<div></div><span class="orange"></span><svg><path d=""></path></svg>'
+        template: '<div></div><span class="orange"></span><svg><path d=""></path></svg> <input></input> <input type="range"> <textarea></textarea>'
       };
       globalThis.vueSnapshots.formatter = 'diffable';
     });
@@ -269,6 +269,30 @@ describe('Format markup', () => {
           <svg>
             <path d="" />
           </svg>
+          <input value="''" />
+          <input
+            type="range"
+            value="''"
+          />
+          <textarea value="''"></textarea>
+        `);
+    });
+
+    test('Disabled', () => {
+      const wrapper = mount(MyComponent);
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div></div>
+          <span class="orange"></span>
+          <svg>
+            <path d=""></path>
+          </svg>
+          <input value="''" />
+          <input
+            type="range"
+            value="''"
+          />
+          <textarea value="''"></textarea>
         `);
     });
   });
