@@ -215,7 +215,7 @@ describe('Format markup', () => {
     test('Enabled', async () => {
       const wrapper = mount(MyComponent);
 
-      globalThis.vueSnapshots.formatting.showEmptyAttributes = true;
+      globalThis.vueSnapshots.formatting.emptyAttributes = true;
 
       expect(wrapper)
         .toMatchInlineSnapshot(`
@@ -233,7 +233,7 @@ describe('Format markup', () => {
     test('Disabled', async () => {
       const wrapper = mount(MyComponent);
 
-      globalThis.vueSnapshots.formatting.showEmptyAttributes = false;
+      globalThis.vueSnapshots.formatting.emptyAttributes = false;
 
       expect(wrapper)
         .toMatchInlineSnapshot(`
