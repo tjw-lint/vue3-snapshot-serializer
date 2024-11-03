@@ -143,7 +143,7 @@ export const diffableFormatter = function (markup, options) {
     );
     let endingAngleBracket = '>';
     if (shouldSelfClose) {
-     endingAngleBracket = ' />';
+      endingAngleBracket = ' />';
     }
 
     // Add attributes
