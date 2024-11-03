@@ -135,6 +135,7 @@ export const diffableFormatter = function (markup, options) {
         options.voidElements === 'xhtml'
       ) ||
       (
+        !tagIsVoidElement &&
         options.selfClosingTag &&
         !hasChildren &&
         !tagIsEscapabelRawTextElement
