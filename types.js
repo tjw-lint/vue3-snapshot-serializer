@@ -22,7 +22,7 @@
 /**
  * @typedef  {object}     SETTINGS
  * @property {boolean}    [verbose=true]                Logs to the console errors or other messages if true.
- * @property {array}      [attributesToClear=[]]        Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
+ * @property {string[]}   [attributesToClear=[]]        Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
  * @property {boolean}    [addInputValues=true]         Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU `wrapper`, not `wrapper.html()`.
  * @property {boolean}    [sortAttributes=true]         Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
  * @property {boolean}    [stringifyAttributes=true]    Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU `wrapper`, not `wrapper.html()`.
@@ -41,18 +41,3 @@
  * @property {FORMATTER}  [formatter='diffable']        Function to use for formatting the markup output. Accepts 'none', 'diffable', or a function. If using a custom function it will be handed a string of markup and must return a string (not a promise).
  * @property {FORMATTING} [formatting]                  An object containing settings specific to the "diffable" formatter.
  */
-
-/** @type FORMATTERCB */
-export let FORMATTERCB;
-
-/** @type FORMATTER */
-export let FORMATTER;
-
-/** @type VOIDELEMENTS */
-export let VOIDELEMENTS;
-
-/** @type FORMATTING */
-export let FORMATTING;
-
-/** @type SETTINGS */
-export let SETTINGS;
