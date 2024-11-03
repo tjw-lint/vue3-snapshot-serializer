@@ -20,7 +20,7 @@ describe('Load options', () => {
     attributesToClear: [],
     formatter: 'diffable',
     formatting: {
-      showEmptyAttributes: true
+      emptyAttributes: true
     }
   });
 
@@ -155,7 +155,7 @@ describe('Load options', () => {
 
     test('Warns and deletes formatting options if not using diffable formatter', () => {
       global.vueSnapshots.formatter = 'none';
-      global.vueSnapshots.formatting = { showEmptyAttributes: true };
+      global.vueSnapshots.formatting = { emptyAttributes: true };
 
       loadOptions();
 

@@ -40,8 +40,8 @@ const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
 export const diffableFormatter = function (markup, options) {
   markup = markup || '';
   options = options || {};
-  if (typeof(options.showEmptyAttributes) !== 'boolean') {
-    options.showEmptyAttributes = true;
+  if (typeof(options.emptyAttributes) !== 'boolean') {
+    options.emptyAttributes = true;
   }
   if (!['html', 'xhtml', 'closingTag'].includes(options.voidElements)) {
     options.voidElements = 'xhtml';
@@ -138,7 +138,7 @@ export const diffableFormatter = function (markup, options) {
       let attr = node.attrs[0];
       if (
         !attr.value &&
-        !options.showEmptyAttributes
+        !options.emptyAttributes
       ) {
         result = result + ' ' + attr.name + endingAngleBracket;
       } else {
@@ -148,7 +148,7 @@ export const diffableFormatter = function (markup, options) {
       node.attrs.forEach((attr) => {
         if (
           !attr.value &&
-          !options.showEmptyAttributes
+          !options.emptyAttributes
         ) {
           result = result + '\n' + '  '.repeat(indent + 1) + attr.name;
         } else {
