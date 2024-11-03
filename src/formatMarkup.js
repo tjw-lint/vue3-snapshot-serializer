@@ -129,8 +129,21 @@ export const diffableFormatter = function (markup, options) {
     // <tags and="attributes" />
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
-    const shouldSelfClose = (tagIsVoidElement && options.voidElements === 'xhtml') || (options.selfClosingTag && !hasChildren && !tagIsEscapabelRawTextElement);
-    const endingAngleBracket = shouldSelfClose ? ' />' : '>';
+    const shouldSelfClose = (
+      (
+        tagIsVoidElement &&
+        options.voidElements === 'xhtml'
+      ) ||
+      (
+        options.selfClosingTag &&
+        !hasChildren &&
+        !tagIsEscapabelRawTextElement
+      )
+    );
+    let endingAngleBracket = '>';
+    if (shouldSelfClose) {
+     endingAngleBracket = ' />';
+    }
 
     // Add attributes
     if (
