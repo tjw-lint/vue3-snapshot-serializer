@@ -30,6 +30,11 @@ const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
   'pre'
 ]);
 
+const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
+  'textarea',
+  'title'
+]);
+
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
@@ -45,6 +50,9 @@ export const diffableFormatter = function (markup, options) {
   }
   if (!['html', 'xhtml', 'closingTag'].includes(options.voidElements)) {
     options.voidElements = 'xhtml';
+  }
+  if (typeof(options.selfClosingTag) !== 'boolean') {
+    options.selfClosingTag = false;
   }
 
   const astOptions = {
@@ -69,6 +77,7 @@ export const diffableFormatter = function (markup, options) {
 
     const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+    const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
 
     // InnerText
@@ -120,11 +129,20 @@ export const diffableFormatter = function (markup, options) {
     // <tags and="attributes" />
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
+    const shouldSelfClose = (
+      (
+        tagIsVoidElement &&
+        options.voidElements === 'xhtml'
+      ) ||
+      (
+        !tagIsVoidElement &&
+        options.selfClosingTag &&
+        !hasChildren &&
+        !tagIsEscapabelRawTextElement
+      )
+    );
     let endingAngleBracket = '>';
-    if (
-      tagIsVoidElement &&
-      options.voidElements === 'xhtml'
-    ) {
+    if (shouldSelfClose) {
       endingAngleBracket = ' />';
     }
 
@@ -164,6 +182,11 @@ export const diffableFormatter = function (markup, options) {
         result = result + formatNode(child, indent + 1);
       });
     }
+  
+    // Return without closing tag
+    if (shouldSelfClose) {
+      return result;
+    }
 
     // Add closing tag
     if (
@@ -187,7 +210,7 @@ export const diffableFormatter = function (markup, options) {
 
   let formattedOutput = '';
   ast.childNodes.forEach((node) => {
-    formattedOutput = formattedOutput + formatNode(node);
+    formattedOutput = formattedOutput + formatNode(node, 0);
   });
 
   return formattedOutput.trim();

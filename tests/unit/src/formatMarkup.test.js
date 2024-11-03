@@ -249,6 +249,59 @@ describe('Format markup', () => {
     });
   });
 
+  describe('Self Closing Tags', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: '<div></div><span class="orange"></span><svg><path d=""></path></svg> <input></input> <input type="range"> <textarea></textarea>'
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Enabled', () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.selfClosingTag = true;
+      globalThis.vueSnapshots.formatting.voidElements = 'html';
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div />
+          <span class="orange" />
+          <svg>
+            <path d="" />
+          </svg>
+          <input value="''">
+          <input
+            type="range"
+            value="''"
+          >
+          <textarea value="''"></textarea>
+        `);
+    });
+
+    test('Disabled', () => {
+      const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatting.selfClosingTag = false;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div></div>
+          <span class="orange"></span>
+          <svg>
+            <path d=""></path>
+          </svg>
+          <input value="''" />
+          <input
+            type="range"
+            value="''"
+          />
+          <textarea value="''"></textarea>
+        `);
+    });
+  });
+
   describe('Void elements', () => {
     beforeEach(() => {
       globalThis.vueSnapshots.formatter = 'diffable';
