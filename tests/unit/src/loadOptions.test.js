@@ -217,7 +217,9 @@ describe('Load options', () => {
       [0, 0],
       ['', 1],
       [true, 1],
-      [100, 100]
+      [100, 100],
+      [7.5, 1],
+      [null, 1]
     ];
 
     test.each(testCases)('Attributes per line when value is "%s"', (value, expected) => {

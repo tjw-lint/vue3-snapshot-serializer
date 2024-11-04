@@ -99,7 +99,8 @@ export const loadOptions = function () {
     }
     if (
       typeof(globalThis.vueSnapshots.formatting.attributesPerLine) !== 'number' || 
-      globalThis.vueSnapshots.formatting.attributesPerLine < 0
+      globalThis.vueSnapshots.formatting.attributesPerLine < 0 ||
+      globalThis.vueSnapshots.formatting.attributesPerLine % 1 !== 0
     ) {
       globalThis.vueSnapshots.formatting.attributesPerLine = 1;
     }
