@@ -20,6 +20,7 @@ describe('Load options', () => {
     attributesToClear: [],
     formatter: 'diffable',
     formatting: {
+      attributesPerLine: 1,
       emptyAttributes: true,
       selfClosingTag: false
     }
@@ -202,6 +203,28 @@ describe('Load options', () => {
 
       expect(console.info)
         .not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Diffable Formatter AttributesPerLine Options', () => {
+    beforeEach(()=>{
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.formatting = {};
+    });
+
+    const testCases = [
+      [-1, 1],
+      [0, 0],
+      ['', 1],
+      [true, 1],
+      [100, 100]
+    ];
+
+    test.each(testCases)('Attributes per line when value is "%s"', (value, expected) => {
+      globalThis.vueSnapshots.formatting.attributesPerLine = value;
+      loadOptions();
+      expect(global.vueSnapshots.formatting.attributesPerLine)
+        .toEqual(expected);
     });
   });
 });
