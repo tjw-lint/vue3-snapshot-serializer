@@ -262,6 +262,8 @@ describe('Format markup', () => {
     test('Enabled', () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.selfClosingTag = true;
+      globalThis.vueSnapshots.formatting.voidElements = 'html';
+
       expect(wrapper)
         .toMatchInlineSnapshot(`
           <div />
@@ -269,17 +271,20 @@ describe('Format markup', () => {
           <svg>
             <path d="" />
           </svg>
-          <input value="''" />
+          <input value="''">
           <input
             type="range"
             value="''"
-          />
+          >
           <textarea value="''"></textarea>
         `);
     });
 
     test('Disabled', () => {
       const wrapper = mount(MyComponent);
+
+      globalThis.vueSnapshots.formatting.selfClosingTag = false;
+
       expect(wrapper)
         .toMatchInlineSnapshot(`
           <div></div>
