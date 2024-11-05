@@ -41,3 +41,5 @@
  * @property {FORMATTER}  [formatter='diffable']        Function to use for formatting the markup output. Accepts 'none', 'diffable', or a function. If using a custom function it will be handed a string of markup and must return a string (not a promise).
  * @property {FORMATTING} [formatting]                  An object containing settings specific to the "diffable" formatter.
  */
+
+export const types = {};

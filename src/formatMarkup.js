@@ -1,5 +1,4 @@
 // @ts-check
-/** @import { DefaultTreeAdapterMap } from "parse5" */
 
 import { parseFragment } from 'parse5';
 
@@ -62,11 +61,23 @@ export const diffableFormatter = function (markup, options) {
 
   let lastSeenTag = '';
 
+  const isWithinPreTag = function (node) {
+    let current = node;
+    while (current) {
+      if (current.nodeName === 'PRE') {
+        return true;
+      }
+      current = current.parentNode;
+    }
+    return false;
+  };
+
+
   /**
    * Applies formatting to each DOM Node in the AST.
    *
-   * @param  {DefaultTreeAdapterMap["childNode"]} node    Parse5 AST of a DOM node
-   * @param  {number}                             indent  The current indentation level for this DOM node in the AST loop
+   * @param  {Object} node    Parse5 AST of a DOM node
+   * @param  {number} indent  The current indentation level for this DOM node in the AST loop
    * @return {string}                                     Formatted markup
    */
   const formatNode = (node, indent) => {
@@ -83,7 +94,7 @@ export const diffableFormatter = function (markup, options) {
     // InnerText
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
-        if (tagIsWhitespaceDependent) {
+        if (tagIsWhitespaceDependent || isWithinPreTag(node)) {
           return node.value;
         } else {
           return '\n' + '  '.repeat(indent) + node.value.trim();
