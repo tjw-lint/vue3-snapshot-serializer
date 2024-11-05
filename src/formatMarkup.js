@@ -54,11 +54,17 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.selfClosingTag) !== 'boolean') {
     options.selfClosingTag = false;
   }
+  if (!Array.isArray(options.tagsWithWhitespacePreserved) && 
+      typeof(options.tagsWithWhitespacePreserved) !== 'boolean') {
+    options.tagsWithWhitespacePreserved = [...WHITESPACE_DEPENDENT_TAGS];
+  }
 
   const astOptions = {
     sourceCodeLocationInfo: true
   };
   const ast = parseFragment(markup, astOptions);
+  const areAllTagsWhiteSpacePreserved = typeof(options.tagsWithWhitespacePreserved) === 'boolean' && 
+  options.tagsWithWhitespacePreserved;
 
   let lastSeenTag = '';
 
@@ -75,7 +81,7 @@ export const diffableFormatter = function (markup, options) {
       lastSeenTag = node.tagName;
     }
 
-    const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
+    const tagIsWhitespaceDependent = (Array.isArray(options.tagsWithWhitespacePreserved) && options.tagsWithWhitespacePreserved.includes(lastSeenTag));
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
@@ -83,7 +89,7 @@ export const diffableFormatter = function (markup, options) {
     // InnerText
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
-        if (tagIsWhitespaceDependent) {
+        if (areAllTagsWhiteSpacePreserved || tagIsWhitespaceDependent) {
           return node.value;
         } else {
           return '\n' + '  '.repeat(indent) + node.value.trim();
@@ -190,6 +196,7 @@ export const diffableFormatter = function (markup, options) {
 
     // Add closing tag
     if (
+      areAllTagsWhiteSpacePreserved ||
       tagIsWhitespaceDependent ||
       (
         !tagIsVoidElement &&

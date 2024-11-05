@@ -21,7 +21,8 @@ describe('Load options', () => {
     formatter: 'diffable',
     formatting: {
       emptyAttributes: true,
-      selfClosingTag: false
+      selfClosingTag: false,
+      tagsWithWhitespacePreserved: ['a', 'pre']
     }
   });
 
@@ -202,6 +203,32 @@ describe('Load options', () => {
 
       expect(console.info)
         .not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Diffable Formatter Preserve WhiteSpace in Tags Options', () => {
+    beforeEach(()=>{
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.formatting = {};
+    });
+
+    const testCases = [
+      [-1, ['a', 'pre']],
+      ['', ['a', 'pre']],
+      [null, ['a', 'pre']],
+      [undefined, ['a', 'pre']],
+      [true, true],
+      [false, []],
+      [[], []],
+      [['div'], ['div']],
+      ['orange jucie', ['a', 'pre']]
+    ];
+
+    test.each(testCases)('White Space Preserved Tags when value is %s', (value, expected) => {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
+      loadOptions();
+      expect(global.vueSnapshots.formatting.tagsWithWhitespacePreserved)
+        .toEqual(expected);
     });
   });
 });

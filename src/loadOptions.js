@@ -97,6 +97,17 @@ export const loadOptions = function () {
     if (typeof(globalThis.vueSnapshots.formatting.selfClosingTag) !== 'boolean') {
       globalThis.vueSnapshots.formatting.selfClosingTag = false;
     }
+        
+    const whiteSpacePreservedOption = globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved;
+    if (Array.isArray(whiteSpacePreservedOption)) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [...whiteSpacePreservedOption];
+    } else if (whiteSpacePreservedOption === false) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
+    } else if (whiteSpacePreservedOption === true) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
+    } else {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
+    }
   } else {
     delete globalThis.vueSnapshots.formatting;
   }
