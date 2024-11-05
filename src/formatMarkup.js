@@ -170,7 +170,7 @@ export const diffableFormatter = function (markup, options) {
       }).join('');
   
       if (node.attrs.length <= options.attributesPerLine) {
-        result += `${formattedAttr}${endingAngleBracket}`;
+        result += formattedAttr + endingAngleBracket;
       } else {
         result += formattedAttr + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
       }

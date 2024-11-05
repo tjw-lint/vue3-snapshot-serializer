@@ -225,6 +225,7 @@ describe('Load options', () => {
     test.each(testCases)('Attributes per line when value is "%s"', (value, expected) => {
       globalThis.vueSnapshots.formatting.attributesPerLine = value;
       loadOptions();
+
       expect(global.vueSnapshots.formatting.attributesPerLine)
         .toEqual(expected);
     });
