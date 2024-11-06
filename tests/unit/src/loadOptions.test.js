@@ -246,8 +246,12 @@ describe('Load options', () => {
     test.each(testCases)('White Space Preserved Tags when value is %s', (value, expected) => {
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
       loadOptions();
+
       expect(global.vueSnapshots.formatting.tagsWithWhitespacePreserved)
         .toEqual(expected);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: vueSnapshots.formatting.tagsWithWhitespacePreserved must an be Array of tag names, like [\'a\' ,\'pre\'], or a boolean for all tags, or no tags.');
     });
   });
 });
