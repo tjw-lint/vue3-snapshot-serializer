@@ -253,7 +253,6 @@ describe('Load options', () => {
 
       expect(global.vueSnapshots.formatting.tagsWithWhitespacePreserved)
         .toEqual(expected);
-
     });
   });
 });
