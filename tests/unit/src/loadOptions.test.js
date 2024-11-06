@@ -212,17 +212,36 @@ describe('Load options', () => {
       globalThis.vueSnapshots.formatting = {};
     });
 
-    const testCases = [
-      [-1, ['a', 'pre']],
-      ['', ['a', 'pre']],
-      [null, ['a', 'pre']],
-      [undefined, ['a', 'pre']],
+    const validInputScenarios = [
       [true, true],
       [false, []],
       [[], []],
-      [['div'], ['div']],
-      ['orange jucie', ['a', 'pre']]
+      [['div'], ['div']]
     ];
+
+    const invalidInputScenarios = [
+      [-1, ['a', 'pre']],
+      ['', ['a', 'pre']],
+      [null, ['a', 'pre']],
+      ['orange jucie', ['a', 'pre']],
+      [['div', 'a', 'input', 1, null], ['div', 'a', 'input']]
+    ];
+
+    const testCases = [...validInputScenarios, ...invalidInputScenarios];
+
+    test.each(invalidInputScenarios)('Logs if value passed is %s', (value) => {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
+      loadOptions();
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: vueSnapshots.formatting.tagsWithWhitespacePreserved must an be Array of tag names, like [\'a\' ,\'pre\'], or a boolean for all tags, or no tags.');
+    });
+
+    test.each(validInputScenarios)('Logs if value passed is %s', (value) => {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
+      loadOptions();
+      expect(console.info)
+        .not.toHaveBeenCalled();
+    });
 
     test.each(testCases)('White Space Preserved Tags when value is %s', (value, expected) => {
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;

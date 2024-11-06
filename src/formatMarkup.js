@@ -54,8 +54,10 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.selfClosingTag) !== 'boolean') {
     options.selfClosingTag = false;
   }
-  if (!Array.isArray(options.tagsWithWhitespacePreserved) && 
-      typeof(options.tagsWithWhitespacePreserved) !== 'boolean') {
+  if (
+    !Array.isArray(options.tagsWithWhitespacePreserved) && 
+    typeof(options.tagsWithWhitespacePreserved) !== 'boolean'
+  ) {
     options.tagsWithWhitespacePreserved = [...WHITESPACE_DEPENDENT_TAGS];
   }
 
@@ -63,8 +65,6 @@ export const diffableFormatter = function (markup, options) {
     sourceCodeLocationInfo: true
   };
   const ast = parseFragment(markup, astOptions);
-  const areAllTagsWhiteSpacePreserved = typeof(options.tagsWithWhitespacePreserved) === 'boolean' && 
-  options.tagsWithWhitespacePreserved;
 
   let lastSeenTag = '';
 
@@ -81,7 +81,12 @@ export const diffableFormatter = function (markup, options) {
       lastSeenTag = node.tagName;
     }
 
-    const tagIsWhitespaceDependent = (Array.isArray(options.tagsWithWhitespacePreserved) && options.tagsWithWhitespacePreserved.includes(lastSeenTag));
+    const tagIsWhitespaceDependent = (
+      options.tagsWithWhitespacePreserved === true ||
+      (
+        Array.isArray(options.tagsWithWhitespacePreserved) && 
+        options.tagsWithWhitespacePreserved.includes(lastSeenTag)
+      ));
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
@@ -89,7 +94,7 @@ export const diffableFormatter = function (markup, options) {
     // InnerText
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
-        if (areAllTagsWhiteSpacePreserved || tagIsWhitespaceDependent) {
+        if (tagIsWhitespaceDependent) {
           return node.value;
         } else {
           return '\n' + '  '.repeat(indent) + node.value.trim();
@@ -196,7 +201,6 @@ export const diffableFormatter = function (markup, options) {
 
     // Add closing tag
     if (
-      areAllTagsWhiteSpacePreserved ||
       tagIsWhitespaceDependent ||
       (
         !tagIsVoidElement &&
