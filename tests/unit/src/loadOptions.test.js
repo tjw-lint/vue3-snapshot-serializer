@@ -207,7 +207,7 @@ describe('Load options', () => {
   });
 
   describe('Diffable Formatter Preserve WhiteSpace in Tags Options', () => {
-    beforeEach(()=>{
+    beforeEach(() => {
       globalThis.vueSnapshots.formatter = 'diffable';
       globalThis.vueSnapshots.formatting = {};
     });
