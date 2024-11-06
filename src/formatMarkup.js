@@ -54,6 +54,12 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.selfClosingTag) !== 'boolean') {
     options.selfClosingTag = false;
   }
+  if (
+    !Array.isArray(options.tagsWithWhitespacePreserved) && 
+    typeof(options.tagsWithWhitespacePreserved) !== 'boolean'
+  ) {
+    options.tagsWithWhitespacePreserved = [...WHITESPACE_DEPENDENT_TAGS];
+  }
 
   const astOptions = {
     sourceCodeLocationInfo: true
@@ -75,7 +81,12 @@ export const diffableFormatter = function (markup, options) {
       lastSeenTag = node.tagName;
     }
 
-    const tagIsWhitespaceDependent = WHITESPACE_DEPENDENT_TAGS.includes(lastSeenTag);
+    const tagIsWhitespaceDependent = (
+      options.tagsWithWhitespacePreserved === true ||
+      (
+        Array.isArray(options.tagsWithWhitespacePreserved) && 
+        options.tagsWithWhitespacePreserved.includes(lastSeenTag)
+      ));
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;

@@ -97,6 +97,32 @@ export const loadOptions = function () {
     if (typeof(globalThis.vueSnapshots.formatting.selfClosingTag) !== 'boolean') {
       globalThis.vueSnapshots.formatting.selfClosingTag = false;
     }
+
+    const whiteSpacePreservedOption = globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved;
+    const preserveWhitespaceMessage = [
+      'vueSnapshots.formatting.tagsWithWhitespacePreserved',
+      'must an be Array of tag names, like [\'a\' ,\'pre\'],',
+      'or a boolean for all tags, or no tags.'
+    ].join(' ');
+
+    if (Array.isArray(whiteSpacePreservedOption)) {
+      const justStrings = whiteSpacePreservedOption.filter(function (tag) {
+        return typeof(tag) === 'string';
+      });
+      if (whiteSpacePreservedOption.length !== justStrings.length) {
+        logger(preserveWhitespaceMessage);
+      }
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = justStrings;
+    } else if (typeof(whiteSpacePreservedOption) !== 'boolean') {
+      if (whiteSpacePreservedOption !== undefined) {
+        logger(preserveWhitespaceMessage);
+      }
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
+    } else if (whiteSpacePreservedOption === false) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
+    } else if (whiteSpacePreservedOption === true) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
+    }
   } else {
     delete globalThis.vueSnapshots.formatting;
   }

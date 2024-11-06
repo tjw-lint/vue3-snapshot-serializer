@@ -320,4 +320,89 @@ describe('Format markup', () => {
         .toEqual(expected);
     });
   });
+
+  describe('Tags with White Space Preserved', () => {
+    let MyComponent;
+    beforeEach(() => {
+      MyComponent = {
+        template: `<div>Hello World</div>
+          <a>Hello World</a>
+          <pre>Hello World</pre>`
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Default WhiteSpace Preserved Tags', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
+
+      expect(wrapper).toMatchInlineSnapshot(`
+        <div>
+          Hello World
+        </div>
+        <a>Hello World</a>
+        <pre>Hello World</pre>
+        `);
+    });
+
+    test('Provided Tags are WhiteSpace Preserved Tags', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['div'];
+
+      expect(wrapper).toMatchInlineSnapshot(`
+        <div>Hello World</div>
+        <a>
+          Hello World
+        </a>
+        <pre>
+          Hello World
+        </pre>
+        `);
+    });
+
+    test('No Tags are WhiteSpace Preserved Tags', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
+
+      expect(wrapper).toMatchInlineSnapshot(`
+        <div>
+          Hello World
+        </div>
+        <a>
+          Hello World
+        </a>
+        <pre>
+          Hello World
+        </pre>
+        `);
+    });
+
+    test('No Tags are WhiteSpace Preserved Tags using boolean', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = false;
+
+      expect(wrapper).toMatchInlineSnapshot(`
+        <div>
+          Hello World
+        </div>
+        <a>
+          Hello World
+        </a>
+        <pre>
+          Hello World
+        </pre>
+        `);
+    });
+
+    test('All tags are WhiteSpace Preserved Tags', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
+
+      expect(wrapper).toMatchInlineSnapshot(`
+        <div>Hello World</div>
+        <a>Hello World</a>
+        <pre>Hello World</pre>
+        `);
+    });
+  });
 });
