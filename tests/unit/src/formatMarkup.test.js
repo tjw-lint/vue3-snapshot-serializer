@@ -336,12 +336,13 @@ describe('Format markup', () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
 
-      expect(wrapper).toMatchInlineSnapshot(`
-        <div>
-          Hello World
-        </div>
-        <a>Hello World</a>
-        <pre>Hello World</pre>
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            Hello World
+          </div>
+          <a>Hello World</a>
+          <pre>Hello World</pre>
         `);
     });
 
@@ -349,14 +350,15 @@ describe('Format markup', () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['div'];
 
-      expect(wrapper).toMatchInlineSnapshot(`
-        <div>Hello World</div>
-        <a>
-          Hello World
-        </a>
-        <pre>
-          Hello World
-        </pre>
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>Hello World</div>
+          <a>
+            Hello World
+          </a>
+          <pre>
+            Hello World
+          </pre>
         `);
     });
 
@@ -364,16 +366,17 @@ describe('Format markup', () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
 
-      expect(wrapper).toMatchInlineSnapshot(`
-        <div>
-          Hello World
-        </div>
-        <a>
-          Hello World
-        </a>
-        <pre>
-          Hello World
-        </pre>
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            Hello World
+          </div>
+          <a>
+            Hello World
+          </a>
+          <pre>
+            Hello World
+          </pre>
         `);
     });
 
@@ -381,16 +384,17 @@ describe('Format markup', () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = false;
 
-      expect(wrapper).toMatchInlineSnapshot(`
-        <div>
-          Hello World
-        </div>
-        <a>
-          Hello World
-        </a>
-        <pre>
-          Hello World
-        </pre>
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            Hello World
+          </div>
+          <a>
+            Hello World
+          </a>
+          <pre>
+            Hello World
+          </pre>
         `);
     });
 
@@ -398,10 +402,11 @@ describe('Format markup', () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
 
-      expect(wrapper).toMatchInlineSnapshot(`
-        <div>Hello World</div>
-        <a>Hello World</a>
-        <pre>Hello World</pre>
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>Hello World</div>
+          <a>Hello World</a>
+          <pre>Hello World</pre>
         `);
     });
   });
