@@ -275,6 +275,21 @@ describe('Load options', () => {
       expect(global.vueSnapshots.formatting.attributesPerLine)
         .toEqual(expected);
     });
+
+    test('Logger message', () => {
+      globalThis.vueSnapshots.formatting.attributesPerLine = 3.5;
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting.attributesPerLine)
+        .toEqual(1);
+
+      expect(console.info)
+        .toHaveBeenCalledWith([
+          'Vue 3 Snapshot Serializer:',
+          'global.vueSnapshots.formatting.attributesPerLine',
+          'must be a whole number.'
+        ].join(' '))
+    });
   });
 
   describe('Diffable Formatter Preserve WhiteSpace in Tags Options', () => {
