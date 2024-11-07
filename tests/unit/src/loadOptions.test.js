@@ -288,7 +288,7 @@ describe('Load options', () => {
           'Vue 3 Snapshot Serializer:',
           'global.vueSnapshots.formatting.attributesPerLine',
           'must be a whole number.'
-        ].join(' '))
+        ].join(' '));
     });
   });
 
