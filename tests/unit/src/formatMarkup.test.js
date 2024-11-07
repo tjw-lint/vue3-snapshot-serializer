@@ -127,6 +127,18 @@ describe('Format markup', () => {
       expect(diffableFormatter())
         .toEqual('');
     });
+
+    test('Retain HTML entity encoding', () => {
+      const input = [
+        '<pre>',
+        '  <code>',
+        '    &lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;',
+        '  </code></pre>'
+      ].join('\n');
+
+      expect(formatMarkup(input))
+        .toEqual(input);
+    });
   });
 
   describe('Comments', () => {

@@ -3,7 +3,10 @@
 
 import { parseFragment } from 'parse5';
 
-import { logger } from './helpers.js';
+import {
+  escapeHtml,
+  logger
+} from './helpers.js';
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
@@ -95,9 +98,9 @@ export const diffableFormatter = function (markup, options) {
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
         if (tagIsWhitespaceDependent) {
-          return node.value;
+          return escapeHtml(node.value);
         } else {
-          return '\n' + '  '.repeat(indent) + node.value.trim();
+          return '\n' + '  '.repeat(indent) + escapeHtml(node.value).trim();
         }
       }
       return '';
