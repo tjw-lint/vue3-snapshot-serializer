@@ -57,6 +57,9 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.selfClosingTag) !== 'boolean') {
     options.selfClosingTag = false;
   }
+  if (typeof(options.escapeInnerText) !== 'boolean') {
+    options.escapeInnerText = true;
+  }
   if (
     !Array.isArray(options.tagsWithWhitespacePreserved) && 
     typeof(options.tagsWithWhitespacePreserved) !== 'boolean'
@@ -97,10 +100,14 @@ export const diffableFormatter = function (markup, options) {
     // InnerText
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
+        let nodeValue = node.value;
+        if (options.escapeInnerText) {
+          nodeValue = escapeHtml(nodeValue);
+        }
         if (tagIsWhitespaceDependent) {
-          return escapeHtml(node.value);
+          return nodeValue;
         } else {
-          return '\n' + '  '.repeat(indent) + escapeHtml(node.value).trim();
+          return '\n' + '  '.repeat(indent) + nodeValue.trim();
         }
       }
       return '';

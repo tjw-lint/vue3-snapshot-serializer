@@ -32,14 +32,14 @@ export const loadOptions = function () {
   for (const booleanSetting in booleanDefaults) {
     const value = globalThis.vueSnapshots[booleanSetting];
     if (typeof(value) !== 'boolean') {
-      globalThis.vueSnapshots[booleanSetting] = booleanDefaults[booleanSetting];
       if (value !== undefined) {
         logger([
           'global.vueSnapshots.' + booleanSetting,
-          ' should be a boolean or undefined. Using default value ',
+          'should be a boolean or undefined. Using default value',
           '(' + booleanDefaults[booleanSetting] + ').'
-        ].join(''));
+        ].join(' '));
       }
+      globalThis.vueSnapshots[booleanSetting] = booleanDefaults[booleanSetting];
     }
   }
 
@@ -91,11 +91,24 @@ export const loadOptions = function () {
     if (!globalThis.vueSnapshots.formatting) {
       globalThis.vueSnapshots.formatting = {};
     }
-    if (typeof(globalThis.vueSnapshots.formatting.emptyAttributes) !== 'boolean') {
-      globalThis.vueSnapshots.formatting.emptyAttributes = true;
-    }
-    if (typeof(globalThis.vueSnapshots.formatting.selfClosingTag) !== 'boolean') {
-      globalThis.vueSnapshots.formatting.selfClosingTag = false;
+    const formattingBooleans = {
+      emptyAttributes: true,
+      escapeInnerText: true,
+      selfClosingTag: false
+    };
+
+    for (const booleanSetting in formattingBooleans) {
+      const value = globalThis.vueSnapshots.formatting[booleanSetting];
+      if (typeof(value) !== 'boolean') {
+        if (value !== undefined) {
+          logger([
+            'global.vueSnapshots.formatting.' + booleanSetting,
+            'should be a boolean or undefined. Using default value',
+            '(' + formattingBooleans[booleanSetting] + ').'
+          ].join(' '));
+        }
+        globalThis.vueSnapshots.formatting[booleanSetting] = formattingBooleans[booleanSetting];
+      }
     }
 
     const whiteSpacePreservedOption = globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved;
