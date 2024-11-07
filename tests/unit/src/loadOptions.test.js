@@ -1,5 +1,6 @@
 import {
   booleanDefaults,
+  formattingBooleanDefaults,
   loadOptions
 } from '@/loadOptions.js';
 
@@ -20,10 +21,8 @@ describe('Load options', () => {
     attributesToClear: [],
     formatter: 'diffable',
     formatting: {
+      ...formattingBooleanDefaults,
       attributesPerLine: 1,
-      emptyAttributes: true,
-      escapeInnerText: true,
-      selfClosingTag: false,
       tagsWithWhitespacePreserved: ['a', 'pre']
     }
   });
@@ -80,6 +79,31 @@ describe('Load options', () => {
 
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Removed invalid setting global.vueSnapshots.notReal');
+  });
+
+  test('Removes formatting non-settings', () => {
+    globalThis.vueSnapshots = {
+      formatter: 'diffable',
+      formatting: {
+        attributesPerLine: 3,
+        fake: true,
+        notReal: false
+      }
+    };
+
+    loadOptions();
+
+    expect(globalThis.vueSnapshots.formatting.fake)
+      .toEqual(undefined);
+
+    expect(globalThis.vueSnapshots.formatting.notReal)
+      .toEqual(undefined);
+
+    expect(console.info)
+      .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Removed invalid setting global.vueSnapshots.formatting.fake');
+
+    expect(console.info)
+      .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Removed invalid setting global.vueSnapshots.formatting.notReal');
   });
 
   describe('Attributes to clear', () => {
