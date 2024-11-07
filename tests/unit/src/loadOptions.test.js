@@ -21,6 +21,7 @@ describe('Load options', () => {
     formatter: 'diffable',
     formatting: {
       emptyAttributes: true,
+      escapeInnerText: true,
       selfClosingTag: false,
       tagsWithWhitespacePreserved: ['a', 'pre']
     }
@@ -203,6 +204,26 @@ describe('Load options', () => {
 
       expect(console.info)
         .not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Diffable formatter booleans', () => {
+    test('Logs if falsy boolean is non-boolean', () => {
+      globalThis.vueSnapshots = {
+        formatting: {
+          escapeInnerText: 22
+        }
+      };
+
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith([
+          'Vue 3 Snapshot Serializer:',
+          'global.vueSnapshots.formatting.escapeInnerText',
+          'should be a boolean or undefined.',
+          'Using default value (true).'
+        ].join(' '));
     });
   });
 

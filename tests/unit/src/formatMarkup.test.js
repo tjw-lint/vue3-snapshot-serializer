@@ -127,6 +127,32 @@ describe('Format markup', () => {
       expect(diffableFormatter())
         .toEqual('');
     });
+
+    test('Retain HTML entity encoding', () => {
+      globalThis.vueSnapshots.formatting.escapeInnerText = true;
+      const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
+
+      expect(formatMarkup(input))
+        .toMatchInlineSnapshot(`
+          <pre>
+            <code>
+              &lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;
+            </code></pre>
+        `);
+    });
+
+    test('Discard HTML entity encoding', () => {
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
+      const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
+
+      expect(formatMarkup(input))
+        .toMatchInlineSnapshot(`
+          <pre>
+            <code>
+              <div title="text">1 & 2</div>
+            </code></pre>
+        `);
+    });
   });
 
   describe('Comments', () => {

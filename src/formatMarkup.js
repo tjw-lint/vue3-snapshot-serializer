@@ -3,7 +3,10 @@
 
 import { parseFragment } from 'parse5';
 
-import { logger } from './helpers.js';
+import {
+  escapeHtml,
+  logger
+} from './helpers.js';
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
@@ -54,6 +57,9 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.selfClosingTag) !== 'boolean') {
     options.selfClosingTag = false;
   }
+  if (typeof(options.escapeInnerText) !== 'boolean') {
+    options.escapeInnerText = true;
+  }
   if (
     !Array.isArray(options.tagsWithWhitespacePreserved) && 
     typeof(options.tagsWithWhitespacePreserved) !== 'boolean'
@@ -94,10 +100,14 @@ export const diffableFormatter = function (markup, options) {
     // InnerText
     if (node.nodeName === '#text') {
       if (node.value.trim()) {
+        let nodeValue = node.value;
+        if (options.escapeInnerText) {
+          nodeValue = escapeHtml(nodeValue);
+        }
         if (tagIsWhitespaceDependent) {
-          return node.value;
+          return nodeValue;
         } else {
-          return '\n' + '  '.repeat(indent) + node.value.trim();
+          return '\n' + '  '.repeat(indent) + nodeValue.trim();
         }
       }
       return '';
