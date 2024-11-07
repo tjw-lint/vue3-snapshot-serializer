@@ -76,6 +76,7 @@ export const diffableFormatter = function (markup, options) {
   const ast = parseFragment(markup, astOptions);
 
   let lastSeenTag = '';
+  let preChildElementCount = 0;
 
   /**
    * Applies formatting to each DOM Node in the AST.
@@ -107,7 +108,7 @@ export const diffableFormatter = function (markup, options) {
         if (options.escapeInnerText) {
           nodeValue = escapeHtml(nodeValue);
         }
-        if (tagIsWhitespaceDependent) {
+        if (tagIsWhitespaceDependent || preChildElementCount > 0) {
           return nodeValue;
         } else {
           return '\n' + '  '.repeat(indent) + nodeValue.trim();
@@ -199,6 +200,9 @@ export const diffableFormatter = function (markup, options) {
 
     // Process child nodes
     if (hasChildren) {
+      if(node.nodeName === 'PRE' || preChildElementCount > 0) {
+        preChildElementCount++;
+      }
       node.childNodes.forEach((child) => {
         result = result + formatNode(child, indent + 1);
       });
@@ -225,7 +229,7 @@ export const diffableFormatter = function (markup, options) {
     } else if (!tagIsVoidElement) {
       result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
     }
-
+    preChildElementCount--;
     return result;
   };
 
