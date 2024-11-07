@@ -1,6 +1,6 @@
 <template>
   <div :title="person">
-    {{ person }}
+    {{ person.name }}
   </div>
 </template>
 

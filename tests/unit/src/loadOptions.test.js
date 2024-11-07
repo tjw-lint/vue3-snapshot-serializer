@@ -22,7 +22,9 @@ describe('Load options', () => {
     formatting: {
       attributesPerLine: 1,
       emptyAttributes: true,
-      selfClosingTag: false
+      escapeInnerText: true,
+      selfClosingTag: false,
+      tagsWithWhitespacePreserved: ['a', 'pre']
     }
   });
 
@@ -206,8 +208,28 @@ describe('Load options', () => {
     });
   });
 
-  describe('Diffable Formatter AttributesPerLine Options', () => {
-    beforeEach(()=>{
+  describe('Diffable formatter booleans', () => {
+    test('Logs if falsy boolean is non-boolean', () => {
+      globalThis.vueSnapshots = {
+        formatting: {
+          escapeInnerText: 22
+        }
+      };
+
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith([
+          'Vue 3 Snapshot Serializer:',
+          'global.vueSnapshots.formatting.escapeInnerText',
+          'should be a boolean or undefined.',
+          'Using default value (true).'
+        ].join(' '));
+    });
+  });
+
+  describe('Diffable Formatter attributesPerLine Options', () => {
+    beforeEach(() => {
       globalThis.vueSnapshots.formatter = 'diffable';
       globalThis.vueSnapshots.formatting = {};
     });
@@ -227,6 +249,54 @@ describe('Load options', () => {
       loadOptions();
 
       expect(global.vueSnapshots.formatting.attributesPerLine)
+        .toEqual(expected);
+    });
+  });
+
+  describe('Diffable Formatter Preserve WhiteSpace in Tags Options', () => {
+    beforeEach(() => {
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.formatting = {};
+    });
+
+    const validInputScenarios = [
+      [true, true],
+      [false, []],
+      [[], []],
+      [['div'], ['div']]
+    ];
+
+    const invalidInputScenarios = [
+      [-1, ['a', 'pre']],
+      ['', ['a', 'pre']],
+      [null, ['a', 'pre']],
+      ['orange jucie', ['a', 'pre']],
+      [['div', 'a', 'input', 1, null], ['div', 'a', 'input']]
+    ];
+
+    const testCases = [...validInputScenarios, ...invalidInputScenarios];
+
+    test.each(invalidInputScenarios)('Logs if value passed is %s', (value) => {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: vueSnapshots.formatting.tagsWithWhitespacePreserved must an be Array of tag names, like [\'a\' ,\'pre\'], or a boolean for all tags, or no tags.');
+    });
+
+    test.each(validInputScenarios)('Logs if value passed is %s', (value) => {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
+      loadOptions();
+
+      expect(console.info)
+        .not.toHaveBeenCalled();
+    });
+
+    test.each(testCases)('White Space Preserved Tags when value is %s', (value, expected) => {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = value;
+      loadOptions();
+
+      expect(global.vueSnapshots.formatting.tagsWithWhitespacePreserved)
         .toEqual(expected);
     });
   });

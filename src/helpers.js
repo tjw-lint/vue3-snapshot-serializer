@@ -94,3 +94,31 @@ export const stringify = function (obj) {
 
   return '{' + props + '}';
 };
+
+/**
+ * Escapes special HTML characters.
+ *
+ * @example
+ * '<div title="text">1 & 2</div>'
+ * becomes
+ * '&lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;'
+ *
+ * @param  {string} value  Any input string.
+ * @return {string}        The same string, but with encoded HTML entities.
+ */
+export const escapeHtml = function (value) {
+  // https://html.spec.whatwg.org/multipage/named-characters.html
+  const namedHtmlEntityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;'
+  };
+  const charactersToEncode = Object.keys(namedHtmlEntityMap);
+  const regexp = new RegExp('[' + charactersToEncode.join('') + ']', 'g');
+  const encode = function (character) {
+    return namedHtmlEntityMap[character];
+  };
+
+  return value.replace(regexp, encode);
+};

@@ -228,9 +228,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Does not stringify attrib
   </span>
 </div>
 <div title="[object Object]">
-  {
-  "name": "bob"
-  }
+  bob
 </div>
 `;
 
@@ -260,9 +258,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
   </span>
 </div>
 <div title="{name:'bob'}">
-  {
-  "name": "bob"
-  }
+  bob
 </div>
 `;
 

@@ -32,14 +32,14 @@ export const loadOptions = function () {
   for (const booleanSetting in booleanDefaults) {
     const value = globalThis.vueSnapshots[booleanSetting];
     if (typeof(value) !== 'boolean') {
-      globalThis.vueSnapshots[booleanSetting] = booleanDefaults[booleanSetting];
       if (value !== undefined) {
         logger([
           'global.vueSnapshots.' + booleanSetting,
-          ' should be a boolean or undefined. Using default value ',
+          'should be a boolean or undefined. Using default value',
           '(' + booleanDefaults[booleanSetting] + ').'
-        ].join(''));
+        ].join(' '));
       }
+      globalThis.vueSnapshots[booleanSetting] = booleanDefaults[booleanSetting];
     }
   }
 
@@ -91,11 +91,50 @@ export const loadOptions = function () {
     if (!globalThis.vueSnapshots.formatting) {
       globalThis.vueSnapshots.formatting = {};
     }
-    if (typeof(globalThis.vueSnapshots.formatting.emptyAttributes) !== 'boolean') {
-      globalThis.vueSnapshots.formatting.emptyAttributes = true;
+    const formattingBooleans = {
+      emptyAttributes: true,
+      escapeInnerText: true,
+      selfClosingTag: false
+    };
+
+    for (const booleanSetting in formattingBooleans) {
+      const value = globalThis.vueSnapshots.formatting[booleanSetting];
+      if (typeof(value) !== 'boolean') {
+        if (value !== undefined) {
+          logger([
+            'global.vueSnapshots.formatting.' + booleanSetting,
+            'should be a boolean or undefined. Using default value',
+            '(' + formattingBooleans[booleanSetting] + ').'
+          ].join(' '));
+        }
+        globalThis.vueSnapshots.formatting[booleanSetting] = formattingBooleans[booleanSetting];
+      }
     }
-    if (typeof(globalThis.vueSnapshots.formatting.selfClosingTag) !== 'boolean') {
-      globalThis.vueSnapshots.formatting.selfClosingTag = false;
+
+    const whiteSpacePreservedOption = globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved;
+    const preserveWhitespaceMessage = [
+      'vueSnapshots.formatting.tagsWithWhitespacePreserved',
+      'must an be Array of tag names, like [\'a\' ,\'pre\'],',
+      'or a boolean for all tags, or no tags.'
+    ].join(' ');
+
+    if (Array.isArray(whiteSpacePreservedOption)) {
+      const justStrings = whiteSpacePreservedOption.filter(function (tag) {
+        return typeof(tag) === 'string';
+      });
+      if (whiteSpacePreservedOption.length !== justStrings.length) {
+        logger(preserveWhitespaceMessage);
+      }
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = justStrings;
+    } else if (typeof(whiteSpacePreservedOption) !== 'boolean') {
+      if (whiteSpacePreservedOption !== undefined) {
+        logger(preserveWhitespaceMessage);
+      }
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
+    } else if (whiteSpacePreservedOption === false) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
+    } else if (whiteSpacePreservedOption === true) {
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
     }
     if (
       typeof(globalThis.vueSnapshots.formatting.attributesPerLine) !== 'number' || 
