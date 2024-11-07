@@ -136,6 +136,13 @@ export const loadOptions = function () {
     } else if (whiteSpacePreservedOption === true) {
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
     }
+    if (
+      typeof(globalThis.vueSnapshots.formatting.attributesPerLine) !== 'number' || 
+      globalThis.vueSnapshots.formatting.attributesPerLine < 0 ||
+      globalThis.vueSnapshots.formatting.attributesPerLine % 1 !== 0
+    ) {
+      globalThis.vueSnapshots.formatting.attributesPerLine = 1;
+    }
   } else {
     delete globalThis.vueSnapshots.formatting;
   }

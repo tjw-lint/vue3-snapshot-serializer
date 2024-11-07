@@ -57,6 +57,9 @@ export const diffableFormatter = function (markup, options) {
   if (typeof(options.selfClosingTag) !== 'boolean') {
     options.selfClosingTag = false;
   }
+  if (typeof(options.attributesPerLine) !== 'number' || options.attributesPerLine < 0) {
+    options.attributesPerLine = 1;
+  }
   if (typeof(options.escapeInnerText) !== 'boolean') {
     options.escapeInnerText = true;
   }
@@ -168,33 +171,30 @@ export const diffableFormatter = function (markup, options) {
     }
 
     // Add attributes
-    if (
-      !node.tagName ||
-      !node.attrs.length
-    ) {
-      result = result + endingAngleBracket;
-    } else if (node.attrs?.length === 1) {
-      let attr = node.attrs[0];
-      if (
-        !attr.value &&
-        !options.emptyAttributes
-      ) {
-        result = result + ' ' + attr.name + endingAngleBracket;
-      } else {
-        result = result + ' ' + attr.name + '="' + attr.value + '"' + endingAngleBracket;
-      }
-    } else if (node.attrs?.length) {
-      node.attrs.forEach((attr) => {
-        if (
-          !attr.value &&
-          !options.emptyAttributes
-        ) {
-          result = result + '\n' + '  '.repeat(indent + 1) + attr.name;
+    if (!node.attrs.length) {
+      result += endingAngleBracket;
+    } else {
+      const isNewLine = node.attrs.length > options.attributesPerLine;
+      const formattedAttr = node.attrs.map((attr) => {
+        const hasValue = attr.value || options.emptyAttributes;
+        let attrVal;
+        if (hasValue) {
+          attrVal = attr.name + '="' + (attr.value || '') + '"';
         } else {
-          result = result + '\n' + '  '.repeat(indent + 1) + attr.name + '="' + attr.value + '"';
+          attrVal = attr.name;
         }
-      });
-      result = result + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
+        if (isNewLine) {
+          return '\n' + '  '.repeat(indent + 1) + attrVal;
+        } else {
+          return ' ' + attrVal;
+        }
+      }).join('');
+  
+      if (node.attrs.length <= options.attributesPerLine) {
+        result += formattedAttr + endingAngleBracket;
+      } else {
+        result += formattedAttr + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
+      }
     }
 
     // Process child nodes

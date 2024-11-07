@@ -127,8 +127,10 @@ describe('Format markup', () => {
       expect(diffableFormatter())
         .toEqual('');
     });
+  });
 
-    test('Retain HTML entity encoding', () => {
+  describe('HTML entity encoding', () => {
+    test('Retain', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = true;
       const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
 
@@ -141,7 +143,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Discard HTML entity encoding', () => {
+    test('Discard', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
       const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
 
@@ -344,6 +346,92 @@ describe('Format markup', () => {
 
       expect(formatMarkup(unformattedMarkupVoidElements))
         .toEqual(expected);
+    });
+  });
+
+  describe('Attributes Per Line', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: `<span></span>
+        <span class="cow dog"></span>
+        <span class="cow dog" id="animals"></span>
+        <span class="cow dog" id="animals" title="Moo"></span>`
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Attributes Per Line set to 0', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span
+            class="cow dog"
+          ></span>
+          <span
+            class="cow dog"
+            id="animals"
+          ></span>
+          <span
+            class="cow dog"
+            id="animals"
+            title="Moo"
+          ></span>
+        `);
+    });
+
+    test('Attributes Per Line set to Default', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="cow dog"></span>
+          <span
+            class="cow dog"
+            id="animals"
+          ></span>
+          <span
+            class="cow dog"
+            id="animals"
+            title="Moo"
+          ></span>
+        `);
+    });
+
+    test('Attributes Per Line set to 2', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 2;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="cow dog"></span>
+          <span class="cow dog" id="animals"></span>
+          <span
+            class="cow dog"
+            id="animals"
+            title="Moo"
+          ></span>
+        `);
+    });
+
+    test('Attributes Per Line set to 3', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 3;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="cow dog"></span>
+          <span class="cow dog" id="animals"></span>
+          <span class="cow dog" id="animals" title="Moo"></span>
+        `);
     });
   });
 
