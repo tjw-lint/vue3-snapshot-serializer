@@ -1,7 +1,7 @@
 {
   "name": "vue3-snapshot-serializer",
   "type": "module",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
