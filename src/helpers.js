@@ -112,7 +112,6 @@ export const escapeHtml = function (value) {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
-    '\'': '&apos;',
     '"': '&quot;'
   };
   const charactersToEncode = Object.keys(namedHtmlEntityMap);
