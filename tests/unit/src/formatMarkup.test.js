@@ -12,63 +12,11 @@ const unformattedMarkup = `
 </div>
 `.trim();
 
-const formattedMarkup = `
-<div id="header">
-  <h1>
-    Hello World!
-  </h1>
-  <ul
-    id="main-list"
-    class="list"
-  >
-    <li>
-      <a
-        class="link"
-        href="#"
-      >My HTML</a>
-    </li>
-  </ul>
-</div>
-`.trim();
-
-const unformattedMarkupVoidElements = `
-<input>
-<input type="range"><input type="range" max="50">
-`.trim();
-
-const formattedMarkupVoidElementsWithHTML = `
-<input>
-<input type="range">
-<input
-  type="range"
-  max="50"
->
-`.trim();
-
-const formattedMarkupVoidElementsWithXHTML = `
-<input />
-<input type="range" />
-<input
-  type="range"
-  max="50"
-/>
-`.trim();
-
-const formattedMarkupVoidElementsWithClosingTag = `
-<input></input>
-<input type="range"></input>
-<input
-  type="range"
-  max="50"
-></input>
-`.trim();
-
 describe('Format markup', () => {
   const info = console.info;
 
   beforeEach(() => {
     globalThis.vueSnapshots = {
-      verbose: true,
       formatting: {}
     };
     console.info = vi.fn();
@@ -91,8 +39,25 @@ describe('Format markup', () => {
   test('Formats HTML to be diffable', () => {
     globalThis.vueSnapshots.formatter = 'diffable';
 
-    expect(formatMarkup(unformattedMarkup))
-      .toEqual(formattedMarkup);
+    expect(unformattedMarkup)
+      .toMatchInlineSnapshot(`
+        <div id="header">
+          <h1>
+            Hello World!
+          </h1>
+          <ul
+            class="list"
+            id="main-list"
+          >
+            <li>
+              <a
+                class="link"
+                href="#"
+              >My HTML</a>
+            </li>
+          </ul>
+        </div>
+      `);
 
     expect(console.info)
       .not.toHaveBeenCalled();
@@ -115,8 +80,13 @@ describe('Format markup', () => {
       return 5;
     };
 
-    expect(formatMarkup(unformattedMarkup))
-      .toEqual(unformattedMarkup);
+    expect(unformattedMarkup)
+      .toMatchInlineSnapshot(`
+        <div id="header">
+          <h1>Hello World!</h1>
+          <ul class="list" id="main-list"><li><a class="link" href="#">My HTML</a></li></ul>
+        </div>
+      `);
 
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
@@ -335,17 +305,48 @@ describe('Format markup', () => {
       globalThis.vueSnapshots.formatter = 'diffable';
     });
 
-    const voidElementTests = [
-      ['html', formattedMarkupVoidElementsWithHTML],
-      ['xhtml', formattedMarkupVoidElementsWithXHTML],
-      ['closingTag', formattedMarkupVoidElementsWithClosingTag]
-    ];
+    const INPUT = '<input><input type="range"><input type="range" max="50">';
 
-    test.each(voidElementTests)('Formats void elements using mode "%s"', (mode, expected) => {
-      globalThis.vueSnapshots.formatting.voidElements = mode;
+    test('Formats void elements using in HTML style', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'html';
 
-      expect(formatMarkup(unformattedMarkupVoidElements))
-        .toEqual(expected);
+      expect(INPUT)
+        .toMatchInlineSnapshot(`
+          <input>
+          <input type="range">
+          <input
+            max="50"
+            type="range"
+          >
+        `);
+    });
+
+    test('Formats void elements using in XHTML style', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'xhtml';
+
+      expect(INPUT)
+        .toMatchInlineSnapshot(`
+          <input />
+          <input type="range" />
+          <input
+            max="50"
+            type="range"
+          />
+        `);
+    });
+
+    test('Formats void elements using in XML style', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'closingTag';
+
+      expect(INPUT)
+        .toMatchInlineSnapshot(`
+          <input></input>
+          <input type="range"></input>
+          <input
+            max="50"
+            type="range"
+          ></input>
+        `);
     });
   });
 
