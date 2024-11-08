@@ -25,6 +25,13 @@ export const formattingBooleanDefaults = {
   escapeInnerText: true,
   selfClosingTag: false
 };
+const TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS = ['a', 'pre'];
+const VOID_ELEMENTS_DEFAULT = 'xhtml';
+const ALLOWED_VOID_ELEMENTS = Object.freeze([
+  'html',
+  'xhtml',
+  'closingTag'
+]);
 
 export const loadOptions = function () {
   /** @type {SETTINGS} globalThis.vueSnapshots */
@@ -131,7 +138,7 @@ export const loadOptions = function () {
       if (whiteSpacePreservedOption !== undefined) {
         logger(preserveWhitespaceMessage);
       }
-      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS;
     } else if (whiteSpacePreservedOption === false) {
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
     } else if (whiteSpacePreservedOption === true) {
@@ -151,6 +158,17 @@ export const loadOptions = function () {
         ].join(' '));
       }
       globalThis.vueSnapshots.formatting.attributesPerLine = 1;
+    }
+
+    // Formatting - Void Elements
+    if (!ALLOWED_VOID_ELEMENTS.includes(globalThis.vueSnapshots.formatting.voidElements)) {
+      if (globalThis.vueSnapshots.formatting.voidElements !== undefined) {
+        logger([
+          'global.vueSnapshots.formatting.voidElements',
+          'must be either \'xhtml\', \'html\', \'closingTag\', or undefined.'
+        ].join(' '));
+      }
+      globalThis.vueSnapshots.formatting.voidElements = VOID_ELEMENTS_DEFAULT;
     }
   } else {
     delete globalThis.vueSnapshots.formatting;

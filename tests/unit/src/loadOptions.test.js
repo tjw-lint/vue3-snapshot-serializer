@@ -9,7 +9,9 @@ describe('Load options', () => {
 
   beforeEach(() => {
     console.info = vi.fn();
-    globalThis.vueSnapshots = {};
+    globalThis.vueSnapshots = {
+      formatting: {}
+    };
   });
 
   afterEach(() => {
@@ -23,7 +25,8 @@ describe('Load options', () => {
     formatting: {
       ...formattingBooleanDefaults,
       attributesPerLine: 1,
-      tagsWithWhitespacePreserved: ['a', 'pre']
+      tagsWithWhitespacePreserved: ['a', 'pre'],
+      voidElements: 'xhtml'
     }
   });
 
@@ -229,6 +232,19 @@ describe('Load options', () => {
 
       expect(console.info)
         .not.toHaveBeenCalled();
+    });
+
+    test('Logs if invalid voidElements input', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'fake value';
+
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith([
+          'Vue 3 Snapshot Serializer:',
+          'global.vueSnapshots.formatting.voidElements',
+          'must be either \'xhtml\', \'html\', \'closingTag\', or undefined.'
+        ].join(' '));
     });
   });
 

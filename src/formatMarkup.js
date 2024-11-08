@@ -28,11 +28,6 @@ const VOID_ELEMENTS = Object.freeze([
   'wbr'
 ]);
 
-const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
-  'a',
-  'pre'
-]);
-
 const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
   'textarea',
   'title'
@@ -41,34 +36,12 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
- * @param  {string}     markup   Any valid HTML
- * @param  {FORMATTING} options  Diffable formatting options
- * @return {string}              HTML formatted to be more easily diffable
+ * @param  {string} markup  Any valid HTML
+ * @return {string}         HTML formatted to be more easily diffable
  */
-export const diffableFormatter = function (markup, options) {
+export const diffableFormatter = function (markup) {
   markup = markup || '';
-  options = options || {};
-  if (typeof(options.emptyAttributes) !== 'boolean') {
-    options.emptyAttributes = true;
-  }
-  if (!['html', 'xhtml', 'closingTag'].includes(options.voidElements)) {
-    options.voidElements = 'xhtml';
-  }
-  if (typeof(options.selfClosingTag) !== 'boolean') {
-    options.selfClosingTag = false;
-  }
-  if (typeof(options.attributesPerLine) !== 'number' || options.attributesPerLine < 0) {
-    options.attributesPerLine = 1;
-  }
-  if (typeof(options.escapeInnerText) !== 'boolean') {
-    options.escapeInnerText = true;
-  }
-  if (
-    !Array.isArray(options.tagsWithWhitespacePreserved) && 
-    typeof(options.tagsWithWhitespacePreserved) !== 'boolean'
-  ) {
-    options.tagsWithWhitespacePreserved = [...WHITESPACE_DEPENDENT_TAGS];
-  }
+  const options = globalThis.vueSnapshots.formatting;
 
   const astOptions = {
     sourceCodeLocationInfo: true
