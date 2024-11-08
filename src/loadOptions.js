@@ -30,7 +30,7 @@ const VOID_ELEMENTS_DEFAULT = 'xhtml';
 const ALLOWED_VOID_ELEMENTS = Object.freeze([
   'html',
   'xhtml',
-  'closingTag'
+  'xml'
 ]);
 
 export const loadOptions = function () {
@@ -165,7 +165,7 @@ export const loadOptions = function () {
       if (globalThis.vueSnapshots.formatting.voidElements !== undefined) {
         logger([
           'global.vueSnapshots.formatting.voidElements',
-          'must be either \'xhtml\', \'html\', \'closingTag\', or undefined.'
+          'must be either \'xhtml\', \'html\', \'xml\', or undefined.'
         ].join(' '));
       }
       globalThis.vueSnapshots.formatting.voidElements = VOID_ELEMENTS_DEFAULT;

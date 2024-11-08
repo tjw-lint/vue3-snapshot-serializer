@@ -9,14 +9,14 @@
 
 /** @typedef {'none'|'diffable'|FORMATTERCB} FORMATTER */
 
-/** @typedef {'html'|'xhtml'|'closingTag'} VOIDELEMENTS */
+/** @typedef {'html'|'xhtml'|'xml'} VOIDELEMENTS */
 
 /**
  * @typedef  {object}       FORMATTING
  * @property {number}       [attributesPerLine=1]   How many attributes are allowed on the same line as the starting tag.
  * @property {boolean}      [emptyAttributes=true]  Determines whether empty attributes will include `=""`. If false then `<span class="" id=""></span>`` becomes `<span class id></span>`.
  * @property {boolean}      [selfClosingTag=false]  Converts `<div></div>` to `<div />` or `<p class="x"></p>` to `<p class="x" />`. Does not affect void elements (like `<input>`), use the `voidElements` setting for them.
- * @property {VOIDELEMENTS} [voidElements='xhtml']  Determines how void elements are closed. Accepts 'html' for `<input>`, 'xhtml' for `<input />`, and 'closingTag' for `<input></input>`.
+ * @property {VOIDELEMENTS} [voidElements='xhtml']  Determines how void elements are closed. Accepts 'html' for `<input>`, 'xhtml' for `<input />`, and 'xml' for `<input></input>`.
  */
 
 /**
