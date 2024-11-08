@@ -191,7 +191,7 @@ export const diffableFormatter = function (markup) {
       ) ||
       (
         tagIsVoidElement &&
-        options.voidElements === 'closingTag'
+        options.voidElements === 'xml'
       )
     ) {
       result = result + '</' + node.nodeName + '>';

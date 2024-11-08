@@ -243,7 +243,7 @@ describe('Load options', () => {
         .toHaveBeenCalledWith([
           'Vue 3 Snapshot Serializer:',
           'global.vueSnapshots.formatting.voidElements',
-          'must be either \'xhtml\', \'html\', \'closingTag\', or undefined.'
+          'must be either \'xhtml\', \'html\', \'xml\', or undefined.'
         ].join(' '));
     });
   });

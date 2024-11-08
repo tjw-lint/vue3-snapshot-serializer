@@ -336,7 +336,7 @@ describe('Format markup', () => {
     });
 
     test('Formats void elements using in XML style', () => {
-      globalThis.vueSnapshots.formatting.voidElements = 'closingTag';
+      globalThis.vueSnapshots.formatting.voidElements = 'xml';
 
       expect(INPUT)
         .toMatchInlineSnapshot(`
