@@ -99,6 +99,9 @@ export const diffableFormatter = function (markup) {
        *   Text
        * -->
        */
+      if (!node.data.trim()) {
+        return '\n' + '  '.repeat(indent) + '<!---->';
+      }
       let data = node.data
         .split('\n')
         .map((line, index, lines) => {
