@@ -443,6 +443,7 @@ describe('Format markup', () => {
 
   describe('Tags with White Space Preserved', () => {
     let MyComponent;
+
     beforeEach(() => {
       MyComponent = {
         template: `<div>Hello World</div>
@@ -527,6 +528,36 @@ describe('Format markup', () => {
           <div>Hello World</div>
           <a>Hello World</a>
           <pre>Hello World</pre>
+        `);
+    });
+
+    test('Returns occur after whitespace preserved tag', async () => {
+      const input = [
+        '<h3>This boilerplate uses <a href="#" title="vitejs.dev">Vite</a> +',
+        '<a href="#" title="vuejs.org">Vue 3</a> + and the astounding',
+        '<a href="#" title="pinia.vuejs.org">Pinia</a>.</h3>'
+      ].join(' ');
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <h3>
+            This boilerplate uses
+            <a
+              href="#"
+              title="vitejs.dev"
+            >Vite</a>
+            +
+            <a
+              href="#"
+              title="vuejs.org"
+            >Vue 3</a>
+            + and the astounding
+            <a
+              href="#"
+              title="pinia.vuejs.org"
+            >Pinia</a>
+            .
+          </h3>
         `);
     });
   });
