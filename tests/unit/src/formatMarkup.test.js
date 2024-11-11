@@ -100,28 +100,34 @@ describe('Format markup', () => {
   });
 
   describe('HTML entity encoding', () => {
+    // non-breaking-space character code
+    const nbsp = '\xa0';
+    const input = [
+      '<pre><code>',
+      '&lt;div title="text"&gt;1 &amp; 2&nbsp;+' + nbsp + '3&lt;/div&gt;',
+      '</code></pre>'
+    ].join('');
+
     test('Retain', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = true;
-      const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
 
       expect(formatMarkup(input))
         .toMatchInlineSnapshot(`
           <pre>
             <code>
-              &lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;
+              &lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;
             </code></pre>
         `);
     });
 
     test('Discard', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
-      const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
 
       expect(formatMarkup(input))
         .toMatchInlineSnapshot(`
           <pre>
             <code>
-              <div title="text">1 & 2</div>
+              <div title="text">1 & 2 + 3</div>
             </code></pre>
         `);
     });
