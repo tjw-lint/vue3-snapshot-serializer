@@ -120,6 +120,7 @@ describe('Format markup', () => {
         `);
     });
 
+    /* eslint-disable no-irregular-whitespace */
     test('Discard', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
 
@@ -131,6 +132,7 @@ describe('Format markup', () => {
             </code></pre>
         `);
     });
+    /* eslint-enable no-irregular-whitespace */
   });
 
   describe('Comments', () => {
