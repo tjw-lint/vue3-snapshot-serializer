@@ -109,10 +109,10 @@ export const stringify = function (obj) {
 export const escapeHtml = function (value) {
   // https://html.spec.whatwg.org/multipage/named-characters.html
   const namedHtmlEntityMap = {
+    '\xa0': '&nbsp;',
     '&': '&amp;',
     '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;'
+    '>': '&gt;'
   };
   const charactersToEncode = Object.keys(namedHtmlEntityMap);
   const regexp = new RegExp('[' + charactersToEncode.join('') + ']', 'g');
