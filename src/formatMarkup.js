@@ -10,6 +10,17 @@ import {
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
+const SELF_CLOSING_SVG_ELEMENTS = Object.freeze([
+  'circle',
+  'ellipse',
+  'line',
+  'path',
+  'polygon',
+  'polyline',
+  'rect',
+  'stop',
+  'use'
+]);
 // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 const VOID_ELEMENTS = Object.freeze([
   'area',
@@ -70,6 +81,7 @@ export const diffableFormatter = function (markup) {
         options.tagsWithWhitespacePreserved.includes(lastSeenTag)
       ));
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+    const tagIsSvgElement = SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
 
@@ -131,6 +143,10 @@ export const diffableFormatter = function (markup) {
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
     const shouldSelfClose = (
+      (
+        tagIsSvgElement &&
+        ['html', 'xhtml'].includes(options.voidElements)
+      ) ||
       (
         tagIsVoidElement &&
         options.voidElements === 'xhtml'
@@ -194,8 +210,11 @@ export const diffableFormatter = function (markup) {
         !hasChildren
       ) ||
       (
-        tagIsVoidElement &&
-        options.voidElements === 'xml'
+        options.voidElements === 'xml' &&
+        (
+          tagIsVoidElement ||
+          tagIsSvgElement
+        )
       )
     ) {
       result = result + '</' + node.nodeName + '>';

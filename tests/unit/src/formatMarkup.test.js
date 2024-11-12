@@ -301,7 +301,7 @@ describe('Format markup', () => {
           <div></div>
           <span class="orange"></span>
           <svg>
-            <path d=""></path>
+            <path d="" />
           </svg>
           <input value="''" />
           <input
@@ -320,7 +320,7 @@ describe('Format markup', () => {
 
     const INPUT = '<input><input type="range"><input type="range" max="50">';
 
-    test('Formats void elements using in HTML style', () => {
+    test('Formats void elements using HTML style', () => {
       globalThis.vueSnapshots.formatting.voidElements = 'html';
 
       expect(INPUT)
@@ -334,7 +334,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Formats void elements using in XHTML style', () => {
+    test('Formats void elements using XHTML style', () => {
       globalThis.vueSnapshots.formatting.voidElements = 'xhtml';
 
       expect(INPUT)
@@ -348,7 +348,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Formats void elements using in XML style', () => {
+    test('Formats void elements using XML style', () => {
       globalThis.vueSnapshots.formatting.voidElements = 'xml';
 
       expect(INPUT)
@@ -360,6 +360,68 @@ describe('Format markup', () => {
             type="range"
           ></input>
         `);
+    });
+
+    describe('SVG elements', () => {
+      const svg = [
+        '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">',
+        '<path fill="none" stroke="red" d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"></path>',
+        '</svg>'
+      ].join('');
+
+      test('Formats SVG elements using HTML style', () => {
+        globalThis.vueSnapshots.formatting.voidElements = 'html';
+
+        expect(svg)
+          .toMatchInlineSnapshot(`
+            <svg
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"
+                fill="none"
+                stroke="red"
+              />
+            </svg>
+          `);
+      });
+
+      test('Formats SVG elements using XHTML style', () => {
+        globalThis.vueSnapshots.formatting.voidElements = 'xhtml';
+
+        expect(svg)
+          .toMatchInlineSnapshot(`
+            <svg
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"
+                fill="none"
+                stroke="red"
+              />
+            </svg>
+          `);
+      });
+
+      test('Formats SVG elements using XML style', () => {
+        globalThis.vueSnapshots.formatting.voidElements = 'xml';
+
+        expect(svg)
+          .toMatchInlineSnapshot(`
+            <svg
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"
+                fill="none"
+                stroke="red"
+              ></path>
+            </svg>
+          `);
+      });
     });
   });
 
