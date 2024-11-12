@@ -206,6 +206,11 @@ describe('Format markup', () => {
           </div>
         `);
     });
+
+    test('Minifies empty comment', () => {
+      expect('<!--  -->')
+        .toMatchInlineSnapshot('<!---->');
+    });
   });
 
   describe('Show empty attributes', () => {
