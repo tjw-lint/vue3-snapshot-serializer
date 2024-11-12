@@ -66,7 +66,7 @@ export const diffableFormatter = function (markup) {
     const tagIsWhitespaceDependent = (
       options.tagsWithWhitespacePreserved === true ||
       (
-        Array.isArray(options.tagsWithWhitespacePreserved) && 
+        Array.isArray(options.tagsWithWhitespacePreserved) &&
         options.tagsWithWhitespacePreserved.includes(lastSeenTag)
       ));
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
@@ -99,7 +99,11 @@ export const diffableFormatter = function (markup) {
        *   Text
        * -->
        */
-      let data = node.data
+      let comment = node.data;
+      if (!comment.trim()) {
+        return '\n' + '  '.repeat(indent) + '<!---->';
+      }
+      comment = comment
         .split('\n')
         .map((line, index, lines) => {
           if (!line) {
@@ -112,15 +116,15 @@ export const diffableFormatter = function (markup) {
           return '  '.repeat(indent + 1) + line.trimStart();
         })
         .join('\n');
-      if (!data.startsWith('\n')) {
-        data = ' ' + data;
+      if (!comment.startsWith('\n')) {
+        comment = ' ' + comment;
       }
-      if (!data.endsWith('\n')) {
-        data = data + ' ';
+      if (!comment.endsWith('\n')) {
+        comment = comment + ' ';
       } else {
-        data = data + '  '.repeat(indent);
+        comment = comment + '  '.repeat(indent);
       }
-      return '\n' + '  '.repeat(indent) + '<!--' + data + '-->';
+      return '\n' + '  '.repeat(indent) + '<!--' + comment + '-->';
     }
 
     // <tags and="attributes" />
@@ -162,7 +166,7 @@ export const diffableFormatter = function (markup) {
           return ' ' + attrVal;
         }
       }).join('');
-  
+
       if (node.attrs.length <= options.attributesPerLine) {
         result += formattedAttr + endingAngleBracket;
       } else {
@@ -176,7 +180,7 @@ export const diffableFormatter = function (markup) {
         result = result + formatNode(child, indent + 1);
       });
     }
-  
+
     // Return without closing tag
     if (shouldSelfClose) {
       return result;
