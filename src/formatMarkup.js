@@ -1,4 +1,11 @@
 // @ts-check
+
+/**
+ * @file After all other adjustments have been made to the markup,
+ * just prior to returning it to be stored as a snapshot,
+ * we apply custom formatting based on the global vueSnapshots.formatting settings.
+ */
+
 /** @import { DefaultTreeAdapterMap } from "parse5" */
 
 import { parseFragment } from 'parse5';
@@ -233,6 +240,13 @@ export const diffableFormatter = function (markup) {
   return formattedOutput.trim();
 };
 
+/**
+ * Applies the usere's supplied formatting function, or uses the built-in
+ * "diffable" option, or skips formatting.
+ *
+ * @param  {string} markup  Any valid HTML markup string
+ * @return {string}         The same string, formatted based on user settings.
+ */
 export const formatMarkup = function (markup) {
   if (globalThis.vueSnapshots?.formatter) {
     if (typeof(globalThis.vueSnapshots.formatter) === 'function') {

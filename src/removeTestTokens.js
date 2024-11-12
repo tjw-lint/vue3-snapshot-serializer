@@ -1,8 +1,8 @@
 /**
  * Removes any data-* attribute passed in.
  *
- * @param  {object} $          The markup as a Cheerio DOM node.
- * @param  {string} attribute  The attribute suffix.
+ * @param {object} $          The markup as a Cheerio DOM node.
+ * @param {string} attribute  The attribute suffix.
  */
 const removeDataAttribute = function ($, attribute) {
   $('[data-' + attribute + ']').removeAttr('data-' + attribute);
@@ -11,8 +11,8 @@ const removeDataAttribute = function ($, attribute) {
 /**
  * Removes ID attributes from elements where the id starts with `test`.
  *
- * @param  {object} $        The markup as a Cheerio DOM node.
- * @param  {object} options  User options
+ * @param {object} $        The markup as a Cheerio DOM node.
+ * @param {object} options  User options
  */
 const removeIdTest = function ($) {
   $('[id]').each(function (index, element) {
@@ -25,8 +25,8 @@ const removeIdTest = function ($) {
 /**
  * Removes classes from elements where the class starts with `test`.
  *
- * @param  {object} $        The markup as a Cheerio DOM node.
- * @param  {object} options  User options
+ * @param {object} $        The markup as a Cheerio DOM node.
+ * @param {object} options  User options
  */
 const removeClassTest = function ($) {
   $('[class]').each(function (index, element) {
@@ -66,8 +66,8 @@ const removeClassTest = function ($) {
  * If you also want to remove them from your production builds, see:
  * https://forum.vuejs.org/t/how-to-remove-attributes-from-tags-inside-vue-components/24138
  *
- * @param  {object} $        The markup as a cheerio object
- * @param  {object} options  Options object for this serializer
+ * @param {object} $        The markup as a cheerio object
+ * @param {object} options  Options object for this serializer
  */
 export const removeTestTokens = function ($) {
   if (globalThis.vueSnapshots?.removeDataTest) {
