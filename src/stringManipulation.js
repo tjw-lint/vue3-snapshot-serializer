@@ -1,7 +1,13 @@
+/**
+ * @file Applies regex-based string manipulations to the supplied markup, after Cheerio manipulation is complete.
+ */
+
 import { cheerioManipulation } from './cheerioManipulation.js';
 
 /**
  * This removes all HTML comments from your snapshots.
+ *
+ * @example
  * Normal <!---->
  * Multi-line <!-- \n asdf \n asdf \n -->
  * Containing HTML <!-- <div></div> -->
@@ -18,6 +24,12 @@ function removeAllComments (html) {
   return html;
 }
 
+/**
+ * Composes the order of all string manipulation to run on the supplied markup.
+ *
+ * @param  {object | string} html  A VTU wrapper or string of markup
+ * @return {string}                A manipulated string of markup, ready for formatting
+ */
 export const stringManipulation = function (html) {
   html = cheerioManipulation(html);
   html = removeAllComments(html);

@@ -1,8 +1,12 @@
 /**
+ * @file Reusable, flattend, JSDoc comment blocks and types that can be imported by other files.
+ */
+
+/**
  * Optional custom function to format the output of the markup prior to being used in the snapshot.
  * Must return a string (not a promise).
  *
- * @typedef {function} FORMATTERCB
+ * @typedef {Function} FORMATTERCB
  * @param   {string}   markup       A string of HTML markup to format.
  * @return  {string}                Your formatted string to use as the snapshot.
  */
