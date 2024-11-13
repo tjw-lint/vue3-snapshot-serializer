@@ -218,6 +218,7 @@ const clearInlineFunctions = function ($) {
      * @return {boolean}      true = matches function pattern
      */
     const isFunctionDeclaration = function (str) {
+      /* eslint-disable-next-line jsdoc/check-line-alignment */
       /**
        * Matches strings that look like functions
        * START:

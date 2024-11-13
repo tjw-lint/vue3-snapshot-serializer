@@ -110,6 +110,7 @@ export const diffableFormatter = function (markup) {
 
     // <!-- Comments -->
     if (node.nodeName === '#comment') {
+      /* eslint-disable-next-line jsdoc/check-line-alignment */
       /**
        * The " Some Text " part in <!-- Some Text -->
        * Or the "\n  Some\n  Text\n" in
