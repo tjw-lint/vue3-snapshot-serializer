@@ -1,3 +1,7 @@
+/**
+ * @file Loads in the user's settings, validates them, and sets defaults.
+ */
+
 import { logger } from './helpers.js';
 
 /** @typedef {import('../types.js').SETTINGS} SETTINGS */
@@ -33,6 +37,10 @@ const ALLOWED_VOID_ELEMENTS = Object.freeze([
   'xml'
 ]);
 
+/**
+ * Loads the default settings if valid settings are not supplied.
+ * Warns the user if passing in invalid settings (if verbose = true).
+ */
 export const loadOptions = function () {
   /** @type {SETTINGS} globalThis.vueSnapshots */
   globalThis.vueSnapshots = globalThis.vueSnapshots || {};
