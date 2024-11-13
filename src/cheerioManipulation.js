@@ -1,3 +1,7 @@
+/**
+ * @file Uses the Cheerio library to mutate the markup based on the global vueSnapshots settings.
+ */
+
 import * as cheerio from 'cheerio';
 import * as htmlparser2 from 'htmlparser2';
 
@@ -11,6 +15,13 @@ const KEY_NAME = 'data-vue-snapshot-serializer-key';
 let key = 0;
 let alreadyRemovedKey = true;
 
+/**
+ * Safety check to ensure the vueWrapper contains the needed
+ * methods for attribute stringification.
+ *
+ * @param  {object}  vueWrapper  The VTU Wrapper object
+ * @return {boolean}             If criteria is met
+ */
 const attributesCanBeStringified = function (vueWrapper) {
   return (
     (
@@ -41,6 +52,7 @@ const addSerializerKeys = function (vueWrapper) {
 /**
  * Removes all data-keys from the vueWrapper and Cheerio object.
  *
+ * @example
  * <h1 data-vue-snapshot-serializer-key="6">Hello World</h1>
  * <h1>Hello World</h1>
  *
@@ -63,7 +75,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
  * Creates a cheerio ($) object from the html for DOM manipulation.
  *
  * @param  {string} html  The markup to use for the cheerio object
- * @return {object} $     The cheerio object
+ * @return {object}       The cheerio object
  */
 const cheerioize = function (html) {
   // https://github.com/fb55/DomHandler
@@ -84,6 +96,7 @@ const cheerioize = function (html) {
  * Appends a value attribute to input, select, and textareas
  * to show the current value of the element in the snapshot.
  *
+ * @example
  * <input>
  * <input value="Hello World">
  *
@@ -107,6 +120,7 @@ const addInputValues = function ($, vueWrapper) {
 /**
  * Replaces dynamic attribute values with a stringified version.
  *
+ * @example
  * <h1 title="[object Object]"></h1>
  * <h1 title="{x:'asdf'}"></h1>
  *
@@ -201,9 +215,10 @@ const clearInlineFunctions = function ($) {
      * Takes a string and tells you if it is a function.
      *
      * @param  {string}  str  Any string
-     * @return {Boolean}      true = matches function pattern
+     * @return {boolean}      true = matches function pattern
      */
     const isFunctionDeclaration = function (str) {
+      /* eslint-disable-next-line jsdoc/check-line-alignment */
       /**
        * Matches strings that look like functions
        * START:
@@ -251,6 +266,7 @@ const clearInlineFunctions = function ($) {
 /**
  * Sorts the attributes of all HTML elements to make diffs easier to read.
  *
+ * @example
  * <div id="dog" class="cat bat"><h1 title="a" class="b">Text</h1></div>
  * <div class="cat bat" id="dog"><h1 class="b" title="a">Text</h1></div>
  *
@@ -272,8 +288,8 @@ const sortAttributes = function ($) {
  * Applies desired DOM manipulations based on
  * global.vueSnapshots settings for improved snapshots.
  *
- * @param  {Object|string} vueWrapper  Either the Vue-Test-Utils mounted component object, or a string of html.
- * @return {string}                    String of manipulated HTML, ready for formatting.
+ * @param  {object | string} vueWrapper  Either the Vue-Test-Utils mounted component object, or a string of html.
+ * @return {string}                      String of manipulated HTML, ready for formatting.
  */
 export const cheerioManipulation = function (vueWrapper) {
   addSerializerKeys(vueWrapper);

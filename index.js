@@ -1,3 +1,8 @@
+/**
+ * @file Entry point for the library. Exports test/print functions for Vitest/Jest.
+ * Also exports `vueMarkupFormatter` function for any other uses.
+ */
+
 import { isHtmlString, isVueWrapper } from './src/helpers.js';
 import { loadOptions } from './src/loadOptions.js';
 import { stringManipulation } from './src/stringManipulation.js';
@@ -29,6 +34,14 @@ const print = function (received) {
   return formatMarkup(html);
 };
 
+/**
+ * For external use. Takes in a string of HTML, applies changes to
+ * the markup (based on global vueSnapshots settings). Then
+ * formats the markup.
+ *
+ * @param  {string} html  The markup to be formatted.
+ * @return {string}       The formatted markup.
+ */
 export const vueMarkupFormatter = function (html) {
   loadOptions();
   if (!isHtmlString(html)) {
