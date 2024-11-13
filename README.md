@@ -7,6 +7,8 @@ For install & usage instructions, API documentation, live playground, and more, 
 
 * https://TheJaredWilcurt.com/vue-snapshot-serializer
 
+This library is only for Vue 3, if you need Vue 2 support, use [Jest-Serializer-Vue-TJW](https://github.com/tjw-lint/jest-serializer-vue-tjw).
+
 
 ## Running this repo locally
 
