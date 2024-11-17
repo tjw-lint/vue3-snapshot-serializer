@@ -12,63 +12,11 @@ const unformattedMarkup = `
 </div>
 `.trim();
 
-const formattedMarkup = `
-<div id="header">
-  <h1>
-    Hello World!
-  </h1>
-  <ul
-    id="main-list"
-    class="list"
-  >
-    <li>
-      <a
-        class="link"
-        href="#"
-      >My HTML</a>
-    </li>
-  </ul>
-</div>
-`.trim();
-
-const unformattedMarkupVoidElements = `
-<input>
-<input type="range"><input type="range" max="50">
-`.trim();
-
-const formattedMarkupVoidElementsWithHTML = `
-<input>
-<input type="range">
-<input
-  type="range"
-  max="50"
->
-`.trim();
-
-const formattedMarkupVoidElementsWithXHTML = `
-<input />
-<input type="range" />
-<input
-  type="range"
-  max="50"
-/>
-`.trim();
-
-const formattedMarkupVoidElementsWithClosingTag = `
-<input></input>
-<input type="range"></input>
-<input
-  type="range"
-  max="50"
-></input>
-`.trim();
-
 describe('Format markup', () => {
   const info = console.info;
 
   beforeEach(() => {
     globalThis.vueSnapshots = {
-      verbose: true,
       formatting: {}
     };
     console.info = vi.fn();
@@ -91,8 +39,25 @@ describe('Format markup', () => {
   test('Formats HTML to be diffable', () => {
     globalThis.vueSnapshots.formatter = 'diffable';
 
-    expect(formatMarkup(unformattedMarkup))
-      .toEqual(formattedMarkup);
+    expect(unformattedMarkup)
+      .toMatchInlineSnapshot(`
+        <div id="header">
+          <h1>
+            Hello World!
+          </h1>
+          <ul
+            class="list"
+            id="main-list"
+          >
+            <li>
+              <a
+                class="link"
+                href="#"
+              >My HTML</a>
+            </li>
+          </ul>
+        </div>
+      `);
 
     expect(console.info)
       .not.toHaveBeenCalled();
@@ -115,8 +80,13 @@ describe('Format markup', () => {
       return 5;
     };
 
-    expect(formatMarkup(unformattedMarkup))
-      .toEqual(unformattedMarkup);
+    expect(unformattedMarkup)
+      .toMatchInlineSnapshot(`
+        <div id="header">
+          <h1>Hello World!</h1>
+          <ul class="list" id="main-list"><li><a class="link" href="#">My HTML</a></li></ul>
+        </div>
+      `);
 
     expect(console.info)
       .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
@@ -130,31 +100,39 @@ describe('Format markup', () => {
   });
 
   describe('HTML entity encoding', () => {
+    // non-breaking-space character code
+    const nbsp = '\xa0';
+    const input = [
+      '<pre><code>',
+      '&lt;div title="text"&gt;1 &amp; 2&nbsp;+' + nbsp + '3&lt;/div&gt;',
+      '</code></pre>'
+    ].join('');
+
     test('Retain', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = true;
-      const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
 
       expect(formatMarkup(input))
         .toMatchInlineSnapshot(`
           <pre>
             <code>
-              &lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;
+              &lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;
             </code></pre>
         `);
     });
 
+    /* eslint-disable no-irregular-whitespace */
     test('Discard', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
-      const input = '<pre><code>&lt;div title="text"&gt;1 &amp; 2&lt;/div&gt;</code></pre>';
 
       expect(formatMarkup(input))
         .toMatchInlineSnapshot(`
           <pre>
             <code>
-              <div title="text">1 & 2</div>
+              <div title="text">1 & 2 + 3</div>
             </code></pre>
         `);
     });
+    /* eslint-enable no-irregular-whitespace */
   });
 
   describe('Comments', () => {
@@ -227,6 +205,11 @@ describe('Format markup', () => {
             </p>
           </div>
         `);
+    });
+
+    test('Minifies empty comment', () => {
+      expect('<!--  -->')
+        .toMatchInlineSnapshot('<!---->');
     });
   });
 
@@ -318,7 +301,7 @@ describe('Format markup', () => {
           <div></div>
           <span class="orange"></span>
           <svg>
-            <path d=""></path>
+            <path d="" />
           </svg>
           <input value="''" />
           <input
@@ -335,17 +318,110 @@ describe('Format markup', () => {
       globalThis.vueSnapshots.formatter = 'diffable';
     });
 
-    const voidElementTests = [
-      ['html', formattedMarkupVoidElementsWithHTML],
-      ['xhtml', formattedMarkupVoidElementsWithXHTML],
-      ['closingTag', formattedMarkupVoidElementsWithClosingTag]
-    ];
+    const INPUT = '<input><input type="range"><input type="range" max="50">';
 
-    test.each(voidElementTests)('Formats void elements using mode "%s"', (mode, expected) => {
-      globalThis.vueSnapshots.formatting.voidElements = mode;
+    test('Formats void elements using HTML style', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'html';
 
-      expect(formatMarkup(unformattedMarkupVoidElements))
-        .toEqual(expected);
+      expect(INPUT)
+        .toMatchInlineSnapshot(`
+          <input>
+          <input type="range">
+          <input
+            max="50"
+            type="range"
+          >
+        `);
+    });
+
+    test('Formats void elements using XHTML style', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'xhtml';
+
+      expect(INPUT)
+        .toMatchInlineSnapshot(`
+          <input />
+          <input type="range" />
+          <input
+            max="50"
+            type="range"
+          />
+        `);
+    });
+
+    test('Formats void elements using XML style', () => {
+      globalThis.vueSnapshots.formatting.voidElements = 'xml';
+
+      expect(INPUT)
+        .toMatchInlineSnapshot(`
+          <input></input>
+          <input type="range"></input>
+          <input
+            max="50"
+            type="range"
+          ></input>
+        `);
+    });
+
+    describe('SVG elements', () => {
+      const svg = [
+        '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">',
+        '<path fill="none" stroke="red" d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"></path>',
+        '</svg>'
+      ].join('');
+
+      test('Formats SVG elements using HTML style', () => {
+        globalThis.vueSnapshots.formatting.voidElements = 'html';
+
+        expect(svg)
+          .toMatchInlineSnapshot(`
+            <svg
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"
+                fill="none"
+                stroke="red"
+              />
+            </svg>
+          `);
+      });
+
+      test('Formats SVG elements using XHTML style', () => {
+        globalThis.vueSnapshots.formatting.voidElements = 'xhtml';
+
+        expect(svg)
+          .toMatchInlineSnapshot(`
+            <svg
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"
+                fill="none"
+                stroke="red"
+              />
+            </svg>
+          `);
+      });
+
+      test('Formats SVG elements using XML style', () => {
+        globalThis.vueSnapshots.formatting.voidElements = 'xml';
+
+        expect(svg)
+          .toMatchInlineSnapshot(`
+            <svg
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 10,30 A 20,20 0,0,1 50,30 A 20,20 0,0,1 90,30 Q 90,60 50,90 Q 10,60 10,30 z"
+                fill="none"
+                stroke="red"
+              ></path>
+            </svg>
+          `);
+      });
     });
   });
 

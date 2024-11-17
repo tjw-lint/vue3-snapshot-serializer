@@ -1,4 +1,11 @@
 // @ts-check
+
+/**
+ * @file After all other adjustments have been made to the markup,
+ * just prior to returning it to be stored as a snapshot,
+ * we apply custom formatting based on the global vueSnapshots.formatting settings.
+ */
+
 /** @import { DefaultTreeAdapterMap } from "parse5" */
 
 import { parseFragment } from 'parse5';
@@ -10,6 +17,17 @@ import {
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
+const SELF_CLOSING_SVG_ELEMENTS = Object.freeze([
+  'circle',
+  'ellipse',
+  'line',
+  'path',
+  'polygon',
+  'polyline',
+  'rect',
+  'stop',
+  'use'
+]);
 // From https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 const VOID_ELEMENTS = Object.freeze([
   'area',
@@ -28,11 +46,6 @@ const VOID_ELEMENTS = Object.freeze([
   'wbr'
 ]);
 
-const WHITESPACE_DEPENDENT_TAGS = Object.freeze([
-  'a',
-  'pre'
-]);
-
 const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
   'textarea',
   'title'
@@ -41,34 +54,12 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
- * @param  {string}     markup   Any valid HTML
- * @param  {FORMATTING} options  Diffable formatting options
- * @return {string}              HTML formatted to be more easily diffable
+ * @param  {string} markup  Any valid HTML
+ * @return {string}         HTML formatted to be more easily diffable
  */
-export const diffableFormatter = function (markup, options) {
+export const diffableFormatter = function (markup) {
   markup = markup || '';
-  options = options || {};
-  if (typeof(options.emptyAttributes) !== 'boolean') {
-    options.emptyAttributes = true;
-  }
-  if (!['html', 'xhtml', 'closingTag'].includes(options.voidElements)) {
-    options.voidElements = 'xhtml';
-  }
-  if (typeof(options.selfClosingTag) !== 'boolean') {
-    options.selfClosingTag = false;
-  }
-  if (typeof(options.attributesPerLine) !== 'number' || options.attributesPerLine < 0) {
-    options.attributesPerLine = 1;
-  }
-  if (typeof(options.escapeInnerText) !== 'boolean') {
-    options.escapeInnerText = true;
-  }
-  if (
-    !Array.isArray(options.tagsWithWhitespacePreserved) && 
-    typeof(options.tagsWithWhitespacePreserved) !== 'boolean'
-  ) {
-    options.tagsWithWhitespacePreserved = [...WHITESPACE_DEPENDENT_TAGS];
-  }
+  const options = globalThis.vueSnapshots.formatting;
 
   const astOptions = {
     sourceCodeLocationInfo: true
@@ -94,10 +85,11 @@ export const diffableFormatter = function (markup, options) {
     const tagIsWhitespaceDependent = (
       options.tagsWithWhitespacePreserved === true ||
       (
-        Array.isArray(options.tagsWithWhitespacePreserved) && 
+        Array.isArray(options.tagsWithWhitespacePreserved) &&
         options.tagsWithWhitespacePreserved.includes(lastSeenTag)
       ));
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+    const tagIsSvgElement = SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
 
@@ -119,6 +111,7 @@ export const diffableFormatter = function (markup, options) {
 
     // <!-- Comments -->
     if (node.nodeName === '#comment') {
+      /* eslint-disable-next-line jsdoc/check-line-alignment */
       /**
        * The " Some Text " part in <!-- Some Text -->
        * Or the "\n  Some\n  Text\n" in
@@ -127,7 +120,11 @@ export const diffableFormatter = function (markup, options) {
        *   Text
        * -->
        */
-      let data = node.data
+      let comment = node.data;
+      if (!comment.trim()) {
+        return '\n' + '  '.repeat(indent) + '<!---->';
+      }
+      comment = comment
         .split('\n')
         .map((line, index, lines) => {
           if (!line) {
@@ -140,21 +137,25 @@ export const diffableFormatter = function (markup, options) {
           return '  '.repeat(indent + 1) + line.trimStart();
         })
         .join('\n');
-      if (!data.startsWith('\n')) {
-        data = ' ' + data;
+      if (!comment.startsWith('\n')) {
+        comment = ' ' + comment;
       }
-      if (!data.endsWith('\n')) {
-        data = data + ' ';
+      if (!comment.endsWith('\n')) {
+        comment = comment + ' ';
       } else {
-        data = data + '  '.repeat(indent);
+        comment = comment + '  '.repeat(indent);
       }
-      return '\n' + '  '.repeat(indent) + '<!--' + data + '-->';
+      return '\n' + '  '.repeat(indent) + '<!--' + comment + '-->';
     }
 
     // <tags and="attributes" />
     let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
 
     const shouldSelfClose = (
+      (
+        tagIsSvgElement &&
+        ['html', 'xhtml'].includes(options.voidElements)
+      ) ||
       (
         tagIsVoidElement &&
         options.voidElements === 'xhtml'
@@ -190,7 +191,7 @@ export const diffableFormatter = function (markup, options) {
           return ' ' + attrVal;
         }
       }).join('');
-  
+
       if (node.attrs.length <= options.attributesPerLine) {
         result += formattedAttr + endingAngleBracket;
       } else {
@@ -207,7 +208,7 @@ export const diffableFormatter = function (markup, options) {
         result = result + formatNode(child, indent + 1);
       });
     }
-  
+
     // Return without closing tag
     if (shouldSelfClose) {
       return result;
@@ -221,8 +222,11 @@ export const diffableFormatter = function (markup, options) {
         !hasChildren
       ) ||
       (
-        tagIsVoidElement &&
-        options.voidElements === 'closingTag'
+        options.voidElements === 'xml' &&
+        (
+          tagIsVoidElement ||
+          tagIsSvgElement
+        )
       )
     ) {
       result = result + '</' + node.nodeName + '>';
@@ -241,6 +245,13 @@ export const diffableFormatter = function (markup, options) {
   return formattedOutput.trim();
 };
 
+/**
+ * Applies the usere's supplied formatting function, or uses the built-in
+ * "diffable" option, or skips formatting.
+ *
+ * @param  {string} markup  Any valid HTML markup string
+ * @return {string}         The same string, formatted based on user settings.
+ */
 export const formatMarkup = function (markup) {
   if (globalThis.vueSnapshots?.formatter) {
     if (typeof(globalThis.vueSnapshots.formatter) === 'function') {

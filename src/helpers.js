@@ -1,4 +1,8 @@
 /**
+ * @file Utility functions imported by other files.
+ */
+
+/**
  * Determines if the passed in value is markup.
  *
  * @param  {string}  received  The markup to be serialized
@@ -12,6 +16,12 @@ export const isHtmlString = function (received) {
   );
 };
 
+/**
+ * Determines if the passed value is a VTU wrapper.
+ *
+ * @param  {object}  received  A Vue-Test-Utils wrapper.
+ * @return {boolean}           true = VTU wrapper
+ */
 export const isVueWrapper = function (received) {
   return (
     typeof(received) === 'object' &&
@@ -19,6 +29,12 @@ export const isVueWrapper = function (received) {
   );
 };
 
+/**
+ * Logs to the console helpful information when trying to
+ * run this library, like invalid settings (if verbose = true).
+ *
+ * @param {string} message  Any information to log to the console
+ */
 export const logger = function (message) {
   if (globalThis.vueSnapshots?.verbose) {
     console.info('Vue 3 Snapshot Serializer: ' + message);
@@ -28,6 +44,7 @@ export const logger = function (message) {
 /**
  * Swaps single and double quotes.
  *
+ * @example
  * 'Text' => "Text"
  * "Text" => 'Text'
  *
@@ -109,10 +126,10 @@ export const stringify = function (obj) {
 export const escapeHtml = function (value) {
   // https://html.spec.whatwg.org/multipage/named-characters.html
   const namedHtmlEntityMap = {
+    '\xa0': '&nbsp;',
     '&': '&amp;',
     '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;'
+    '>': '&gt;'
   };
   const charactersToEncode = Object.keys(namedHtmlEntityMap);
   const regexp = new RegExp('[' + charactersToEncode.join('') + ']', 'g');

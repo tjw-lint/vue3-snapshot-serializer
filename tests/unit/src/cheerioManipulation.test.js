@@ -10,7 +10,9 @@ import StringifyAttributes from '@@/mockComponents/StringifyAttributes.vue';
 
 describe('Cheerio Manipulation', () => {
   beforeEach(() => {
-    globalThis.vueSnapshots = {};
+    globalThis.vueSnapshots = {
+      formatting: {}
+    };
   });
 
   test('Empty string', () => {
@@ -172,22 +174,20 @@ describe('Cheerio Manipulation', () => {
 
   describe('Add input values', () => {
     test('Adds values into DOM', async () => {
-      globalThis.vueSnapshots.addInputValues = true;
-
       const wrapper = await mount(SeveralInputs);
-
       await wrapper.find('[data-test="button"]').trigger('click');
+
+      globalThis.vueSnapshots.addInputValues = true;
 
       expect(wrapper)
         .toMatchSnapshot();
     });
 
     test('Does not add values into DOM', async () => {
-      globalThis.vueSnapshots.addInputValues = false;
-
       const wrapper = await mount(SeveralInputs);
-
       await wrapper.find('[data-test="button"]').trigger('click');
+
+      globalThis.vueSnapshots.addInputValues = false;
 
       expect(wrapper)
         .toMatchSnapshot();
