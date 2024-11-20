@@ -601,7 +601,7 @@ describe('Format markup', () => {
     });
   });
 
-  describe.only('Complex', () => {
+  describe('Complex', () => {
     let MyComponent = {
       template: `
       <div id="header" data-server-rendered>

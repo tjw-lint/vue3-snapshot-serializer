@@ -51,19 +51,38 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
   'title'
 ]);
 
+/**
+ * Returns the last child node of an AST node if it exists or returns null
+ *
+ * @param  {DefaultTreeAdapterMap["element"]}  node  Current AST DOM Node
+ * @return {DefaultTreeAdapterMap["childNode"]}       Last child node or null
+ */
 const getNonTextChildNode = (node) => {
   for (let i = node.childNodes.length - 1; i >= 0; i--) {
-    if (!(defaultTreeAdapter.isTextNode(node.childNodes[i]) && (node.childNodes[i].value).trim() === '')) {
+    const childNode = node.childNodes[i];
+    const isTextNode = defaultTreeAdapter.isTextNode(childNode);
+    const isEmptyString = isTextNode && childNode.value.trim() === '';
+    
+    if(!isEmptyString) {
       return node.childNodes[i];
     }
   }
   return null;
 };
 
+/**
+ * Detects if the DOM Node tag is on the same line as the child.
+ *
+ * @example
+ * '<div><strong>X</strong></div>'
+ *
+ * @param  {object}  node  Current AST DOM Node being looped over in the formatting function
+ * @return {boolean}       true = same line as child
+ */
 const isTagInSameLineAsChild = (node) => {
   if (node.childNodes.length) {
     const lastChild = getNonTextChildNode(node);
-    return lastChild.sourceCodeLocation.endLine === node.sourceCodeLocation.endTag.startLine;
+    return lastChild?.sourceCodeLocation.endLine === node.sourceCodeLocation.endTag.startLine;
   }
   return node.sourceCodeLocation.startTag.endLine === node?.sourceCodeLocation.endTag?.startLine; 
 };
@@ -87,10 +106,10 @@ export const diffableFormatter = function (markup) {
   let lastSeenTag = '';
 
   /**
-   * Applies formatting to each DOM Node in the AST.
+   * Checks for various important properties on the AST DOM Node.
    *
-   * @param  {string} lastSeenTag  The current indentation level for this DOM node in the AST loop
-   * @return {object}              Formatted markup
+   * @param  {string} lastSeenTag  The last HTML tag seen during the AST formatting loop.
+   * @return {object}              Meta data about the tag, like if it is Void, SVG, white space dependent, etc.
    */
   const getTagProperties = (lastSeenTag) => {
     const tagIsWhitespaceDependent = (
