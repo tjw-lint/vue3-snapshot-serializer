@@ -600,4 +600,56 @@ describe('Format markup', () => {
         `);
     });
   });
+
+  describe.only('Complex', () => {
+    let MyComponent = {
+      template: `
+      <div id="header" data-server-rendered>
+        <!--v-if-->
+        <label data-test="input" data-v-1ae75a9f="">
+          Void and Attributes per line Example:
+          <input />
+          <input type="range" />
+          <input type="range" max="50" />
+          <input type="range" max="50" id="slider" >
+        </label>
+        <p class="">Empty attribute example</p>
+        <div></div>
+        <ul><li><a href="#">Link text on same line</a></li></ul>
+      </div>`
+    };
+    test('Two Complex', async () => {
+      const wrapper = mount(MyComponent);
+      // const markup = wrapper.html();
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
+
+      expect(wrapper).toMatchInlineSnapshot(`
+        <div id="header">
+          <!-- v-if -->
+          <label> Void and Attributes per line Example: 
+            <input value="''" />
+            <input
+              type="range"
+              value="''"
+            />
+            <input
+              max="50"
+              type="range"
+              value="''"
+            />
+            <input
+              id="slider"
+              max="50"
+              type="range"
+              value="''"
+            />
+          </label>
+          <p class="">Empty attribute example</p>
+          <div></div>
+          <ul><li><a href="#">Link text on same line</a></li></ul>
+        </div>
+      `);
+    });
+  });
 });

@@ -8,7 +8,7 @@
 
 /** @import { DefaultTreeAdapterMap } from "parse5" */
 
-import { parseFragment } from 'parse5';
+import { parseFragment, defaultTreeAdapter } from 'parse5';
 
 import {
   escapeHtml,
@@ -51,6 +51,23 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
   'title'
 ]);
 
+const getNonTextChildNode = (node) => {
+  for (let i = node.childNodes.length - 1; i >= 0; i--) {
+    if (!(defaultTreeAdapter.isTextNode(node.childNodes[i]) && (node.childNodes[i].value).trim() === '')) {
+      return node.childNodes[i];
+    }
+  }
+  return null;
+};
+
+const isTagInSameLineAsChild = (node) => {
+  if (node.childNodes.length) {
+    const lastChild = getNonTextChildNode(node);
+    return lastChild.sourceCodeLocation.endLine === node.sourceCodeLocation.endTag.startLine;
+  }
+  return node.sourceCodeLocation.startTag.endLine === node?.sourceCodeLocation.endTag?.startLine; 
+};
+
 /**
  * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
  *
@@ -65,8 +82,110 @@ export const diffableFormatter = function (markup) {
     sourceCodeLocationInfo: true
   };
   const ast = parseFragment(markup, astOptions);
+  const areAllTagsAreWhiteSpaceDependent = options.tagsWithWhitespacePreserved === true;
 
   let lastSeenTag = '';
+
+  /**
+   * Applies formatting to each DOM Node in the AST.
+   *
+   * @param  {string} lastSeenTag  The current indentation level for this DOM node in the AST loop
+   * @return {object}              Formatted markup
+   */
+  const getTagProperties = (lastSeenTag) => {
+    const tagIsWhitespaceDependent = (
+      areAllTagsAreWhiteSpaceDependent ||
+      (
+        Array.isArray(options.tagsWithWhitespacePreserved) &&
+        options.tagsWithWhitespacePreserved.includes(lastSeenTag)
+      ));
+    const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
+    const tagIsSvgElement = SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
+    const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
+
+    return {
+      tagIsWhitespaceDependent,
+      tagIsVoidElement,
+      tagIsSvgElement,
+      tagIsEscapabelRawTextElement
+    };
+  };
+
+  /**
+   * Applies formatting to each coment Node in the AST.
+   *
+   * @param  {DefaultTreeAdapterMap["commentNode"]} node    Parse5 AST of a DOM node
+   * @param  {number}                               indent  The current indentation level for this DOM node in the AST loop
+   * @return {string}                                       Formatted markup
+   */
+  const formatCommentNode = (node, indent) => {
+    /* eslint-disable-next-line jsdoc/check-line-alignment */
+    /**
+     * The " Some Text " part in <!-- Some Text -->
+     * Or the "\n  Some\n  Text\n" in
+     * <!--
+     *   Some
+     *   Text
+     * -->
+     */
+    let comment = node.data;
+    if (!comment.trim()) {
+      return '\n' + '  '.repeat(indent) + '<!---->';
+    }
+    comment = comment
+      .split('\n')
+      .map((line, index, lines) => {
+        if (!line) {
+          return line;
+        }
+        // Is last item in loop
+        if (index + 1 === lines.length) {
+          return line.trim();
+        }
+        return '  '.repeat(indent + 1) + line.trimStart();
+      })
+      .join('\n');
+    if (!comment.startsWith('\n')) {
+      comment = ' ' + comment;
+    }
+    if (!comment.endsWith('\n')) {
+      comment = comment + ' ';
+    } else {
+      comment = comment + '  '.repeat(indent);
+    }
+    return '\n' + '  '.repeat(indent) + '<!--' + comment + '-->';  
+  };
+
+  /**
+   * Applies formatting to atttributes of DOM Node in the AST.
+   *
+   * @param  {DefaultTreeAdapterMap["element"]} node    Parse5 AST of a DOM node
+   * @param  {number}                           indent  The current indentation level for this DOM node in the AST loop
+   * @return {string}                                   Formatted markup
+   */
+  const processNodeAttributes = (node, indent) => {
+    const isNewLine = node.attrs.length > options.attributesPerLine;
+    const formattedAttr = node.attrs.map((attr) => {
+      const hasValue = attr.value || options.emptyAttributes;
+      let attrVal;
+      if (hasValue) {
+        attrVal = attr.name + '="' + (attr.value || '') + '"';
+      } else {
+        attrVal = attr.name;
+      }
+      if (isNewLine) {
+        return '\n' + '  '.repeat(indent + 1) + attrVal;
+      } else {
+        return ' ' + attrVal;
+      }
+    }).join('');
+
+    if (node.attrs.length <= options.attributesPerLine) {
+      return formattedAttr;
+    } else {
+      return formattedAttr + '\n' + '  '.repeat(indent);
+    }
+  };
 
   /**
    * Applies formatting to each DOM Node in the AST.
@@ -81,75 +200,14 @@ export const diffableFormatter = function (markup) {
       lastSeenTag = node.tagName;
     }
 
-    const tagIsWhitespaceDependent = (
-      options.tagsWithWhitespacePreserved === true ||
-      (
-        Array.isArray(options.tagsWithWhitespacePreserved) &&
-        options.tagsWithWhitespacePreserved.includes(lastSeenTag)
-      ));
-    const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
-    const tagIsSvgElement = SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
-    const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
+    const { 
+      tagIsEscapabelRawTextElement,
+      tagIsSvgElement,
+      tagIsVoidElement,
+      tagIsWhitespaceDependent
+    } = getTagProperties(lastSeenTag);
+
     const hasChildren = node.childNodes && node.childNodes.length;
-
-    // InnerText
-    if (node.nodeName === '#text') {
-      if (node.value.trim()) {
-        let nodeValue = node.value;
-        if (options.escapeInnerText) {
-          nodeValue = escapeHtml(nodeValue);
-        }
-        if (tagIsWhitespaceDependent) {
-          return nodeValue;
-        } else {
-          return '\n' + '  '.repeat(indent) + nodeValue.trim();
-        }
-      }
-      return '';
-    }
-
-    // <!-- Comments -->
-    if (node.nodeName === '#comment') {
-      /* eslint-disable-next-line jsdoc/check-line-alignment */
-      /**
-       * The " Some Text " part in <!-- Some Text -->
-       * Or the "\n  Some\n  Text\n" in
-       * <!--
-       *   Some
-       *   Text
-       * -->
-       */
-      let comment = node.data;
-      if (!comment.trim()) {
-        return '\n' + '  '.repeat(indent) + '<!---->';
-      }
-      comment = comment
-        .split('\n')
-        .map((line, index, lines) => {
-          if (!line) {
-            return line;
-          }
-          // Is last item in loop
-          if (index + 1 === lines.length) {
-            return line.trim();
-          }
-          return '  '.repeat(indent + 1) + line.trimStart();
-        })
-        .join('\n');
-      if (!comment.startsWith('\n')) {
-        comment = ' ' + comment;
-      }
-      if (!comment.endsWith('\n')) {
-        comment = comment + ' ';
-      } else {
-        comment = comment + '  '.repeat(indent);
-      }
-      return '\n' + '  '.repeat(indent) + '<!--' + comment + '-->';
-    }
-
-    // <tags and="attributes" />
-    let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
-
     const shouldSelfClose = (
       (
         tagIsSvgElement &&
@@ -166,36 +224,50 @@ export const diffableFormatter = function (markup) {
         !tagIsEscapabelRawTextElement
       )
     );
+
+    // InnerText
+    if (defaultTreeAdapter.isTextNode(node)) {
+      if (areAllTagsAreWhiteSpaceDependent) {
+        return node.value;
+      }
+      if (node.value.trim()) {
+        let nodeValue = node.value;
+        if (options.escapeInnerText) {
+          nodeValue = escapeHtml(nodeValue);
+        }
+        if (tagIsWhitespaceDependent) {
+          return nodeValue;
+        } else {
+          return '\n' + '  '.repeat(indent) + nodeValue.trim();
+        }
+      }
+      return '';
+    }
+
+    // <!-- Comments -->
+    if (defaultTreeAdapter.isCommentNode(node)) {
+      return formatCommentNode(node, indent);
+    }
+
+    // <tags and="attributes" />
+    // const sameLine = areAllTagsAreWhiteSpaceDependent ? (isTagInSameLineAsPrevious(node) || isTagInSameLineAsParent(node)) : false;
+    let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
+
+    
     let endingAngleBracket = '>';
     if (shouldSelfClose) {
       endingAngleBracket = ' />';
     }
 
     // Add attributes
-    if (!node.attrs.length) {
+    if (node.attrs.length > 0) {
+      result += processNodeAttributes(node, indent);
+    }
+
+    if (node.attrs.length <= options.attributesPerLine) {
       result += endingAngleBracket;
     } else {
-      const isNewLine = node.attrs.length > options.attributesPerLine;
-      const formattedAttr = node.attrs.map((attr) => {
-        const hasValue = attr.value || options.emptyAttributes;
-        let attrVal;
-        if (hasValue) {
-          attrVal = attr.name + '="' + (attr.value || '') + '"';
-        } else {
-          attrVal = attr.name;
-        }
-        if (isNewLine) {
-          return '\n' + '  '.repeat(indent + 1) + attrVal;
-        } else {
-          return ' ' + attrVal;
-        }
-      }).join('');
-
-      if (node.attrs.length <= options.attributesPerLine) {
-        result += formattedAttr + endingAngleBracket;
-      } else {
-        result += formattedAttr + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
-      }
+      result += endingAngleBracket.trim();
     }
 
     // Process child nodes
@@ -211,8 +283,9 @@ export const diffableFormatter = function (markup) {
     }
 
     // Add closing tag
+    const endSameLine = areAllTagsAreWhiteSpaceDependent ? (isTagInSameLineAsChild(node)) : false;
     if (
-      tagIsWhitespaceDependent ||
+      tagIsWhitespaceDependent && endSameLine ||
       (
         !tagIsVoidElement &&
         !hasChildren
