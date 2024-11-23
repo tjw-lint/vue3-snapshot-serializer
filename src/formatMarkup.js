@@ -63,7 +63,7 @@ const getNonTextChildNode = (node) => {
     const isTextNode = defaultTreeAdapter.isTextNode(childNode);
     const isEmptyString = isTextNode && childNode.value.trim() === '';
     
-    if(!isEmptyString) {
+    if (!isEmptyString) {
       return node.childNodes[i];
     }
   }
