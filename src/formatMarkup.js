@@ -52,9 +52,9 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
 ]);
 
 /**
- * Returns the last child node of an AST node if it exists or returns null
+ * Returns the last child node of an AST node if it exists or returns null.
  *
- * @param  {DefaultTreeAdapterMap["element"]}  node  Current AST DOM Node
+ * @param  {DefaultTreeAdapterMap["element"]}   node  Current AST DOM Node
  * @return {DefaultTreeAdapterMap["childNode"]}       Last child node or null
  */
 const getNonTextChildNode = (node) => {
