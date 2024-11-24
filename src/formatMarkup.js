@@ -81,12 +81,7 @@ export const diffableFormatter = function (markup) {
       lastSeenTag = node.tagName;
     }
 
-    const tagIsWhitespaceDependent = (
-      options.tagsWithWhitespacePreserved === true ||
-      (
-        Array.isArray(options.tagsWithWhitespacePreserved) &&
-        options.tagsWithWhitespacePreserved.includes(lastSeenTag)
-      ));
+    const tagIsWhitespaceDependent = options.tagsWithWhitespacePreserved.includes(lastSeenTag);
     const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
     const tagIsSvgElement = SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);

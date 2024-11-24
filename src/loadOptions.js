@@ -131,8 +131,7 @@ export const loadOptions = function () {
     const whiteSpacePreservedOption = globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved;
     const preserveWhitespaceMessage = [
       'vueSnapshots.formatting.tagsWithWhitespacePreserved',
-      'must an be Array of tag names, like [\'a\' ,\'pre\'],',
-      'or a boolean for all tags, or no tags.'
+      'must an be Array of tag names, like [\'a\' ,\'pre\'].'
     ].join(' ');
     if (Array.isArray(whiteSpacePreservedOption)) {
       const justStrings = whiteSpacePreservedOption.filter(function (tag) {
@@ -142,15 +141,11 @@ export const loadOptions = function () {
         logger(preserveWhitespaceMessage);
       }
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = justStrings;
-    } else if (typeof(whiteSpacePreservedOption) !== 'boolean') {
+    } else {
       if (whiteSpacePreservedOption !== undefined) {
         logger(preserveWhitespaceMessage);
       }
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS;
-    } else if (whiteSpacePreservedOption === false) {
-      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
-    } else if (whiteSpacePreservedOption === true) {
-      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
     }
 
     // Formatting - Attributes Per Line
