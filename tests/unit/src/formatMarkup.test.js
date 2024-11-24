@@ -511,7 +511,7 @@ describe('Format markup', () => {
     });
   });
 
-  describe('Tags with White Space Preserved', () => {
+  describe('Tags with whitespace preserved', () => {
     let MyComponent;
 
     beforeEach(() => {
@@ -523,9 +523,9 @@ describe('Format markup', () => {
       globalThis.vueSnapshots.formatter = 'diffable';
     });
 
-    test('Default WhiteSpace Preserved Tags', async () => {
+    test('Default whitespace preserved tags', async () => {
       const wrapper = mount(MyComponent);
-      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['a', 'pre'];
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = undefined;
 
       expect(wrapper)
         .toMatchInlineSnapshot(`
@@ -537,7 +537,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Provided Tags are WhiteSpace Preserved Tags', async () => {
+    test('Provided tags are whitespace preserved tags', async () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['div'];
 
@@ -553,7 +553,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('No Tags are WhiteSpace Preserved Tags', async () => {
+    test('No tags have whitespace preserved', async () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
 
@@ -568,36 +568,6 @@ describe('Format markup', () => {
           <pre>
             Hello World
           </pre>
-        `);
-    });
-
-    test('No Tags are WhiteSpace Preserved Tags using boolean', async () => {
-      const wrapper = mount(MyComponent);
-      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = false;
-
-      expect(wrapper)
-        .toMatchInlineSnapshot(`
-          <div>
-            Hello World
-          </div>
-          <a>
-            Hello World
-          </a>
-          <pre>
-            Hello World
-          </pre>
-        `);
-    });
-
-    test('All tags are WhiteSpace Preserved Tags', async () => {
-      const wrapper = mount(MyComponent);
-      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = true;
-
-      expect(wrapper)
-        .toMatchInlineSnapshot(`
-          <div>Hello World</div>
-          <a>Hello World</a>
-          <pre>Hello World</pre>
         `);
     });
 
