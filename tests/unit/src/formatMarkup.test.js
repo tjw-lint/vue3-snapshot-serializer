@@ -569,5 +569,19 @@ describe('Format markup', () => {
           </pre>
         `);
     });
+
+    test('WhiteSpace Preserved for PRE child elements', async () => {
+      const markup = `
+          <pre>
+            Hello World <div>Hello World <p>Hello World</p></div>
+          </pre>
+        `
+      expect(markup)
+        .toMatchInlineSnapshot(`"
+          <pre>
+            Hello World <div>Hello World <p>Hello World</p></div>
+          </pre>
+        "`);
+    })
   });
 });
