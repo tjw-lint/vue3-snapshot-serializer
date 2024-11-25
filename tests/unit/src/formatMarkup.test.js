@@ -570,18 +570,19 @@ describe('Format markup', () => {
         `);
     });
 
-    test('WhiteSpace Preserved for PRE child elements', async () => {
-      const markup = `
-          <pre>
-            Hello World <div>Hello World <p>Hello World</p></div>
-          </pre>
-        `;
+    test.only('WhiteSpace Preserved for PRE child elements', async () => {
+      const markup = [
+          '<pre>',
+          '  Hello World <div>Hello World <p>Hello World</p></div>',
+          '</pre>'
+      ].join('\n');
+
       expect(markup)
-        .toMatchInlineSnapshot(`"
+        .toMatchInlineSnapshot(`
           <pre>
             Hello World <div>Hello World <p>Hello World</p></div>
           </pre>
-        "`);
+        `);
     });
   });
 });

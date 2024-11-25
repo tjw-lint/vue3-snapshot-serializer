@@ -196,7 +196,8 @@ export const diffableFormatter = function (markup) {
 
     // Process child nodes
     if (hasChildren) {
-      if (node.nodeName === 'PRE' || preChildElementCount > 0) {
+      console.log({node})
+      if (node.nodeName === 'pre' || preChildElementCount > 0) {
         preChildElementCount++;
       }
       node.childNodes.forEach((child) => {
