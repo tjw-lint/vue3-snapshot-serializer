@@ -144,11 +144,10 @@ export const diffableFormatter = function (markup) {
     }
 
     // <tags and="attributes" />
-    let result = ''
-    if(preChildElementCount == 0) {
+    let result = '';
+    if (preChildElementCount == 0) {
       result = '\n' + ''.repeat(indent) + '<' + node.nodeName;
-    } 
-    else {
+    } else {
       result = ''.repeat(indent) + '<' + node.nodeName;
     }
 
@@ -233,9 +232,8 @@ export const diffableFormatter = function (markup) {
       result = result + '</' + node.nodeName + '>';
     } else if (!tagIsVoidElement && !preChildElementCount) {
       result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
-    } 
-    else if (preChildElementCount > 0) {
-      result = result + '</' + node.nodeName + '>'
+    } else if (preChildElementCount > 0) {
+      result = result + '</' + node.nodeName + '>';
     }
     preChildElementCount--;
     return result;
