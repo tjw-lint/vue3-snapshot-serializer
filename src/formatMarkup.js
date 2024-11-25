@@ -144,7 +144,13 @@ export const diffableFormatter = function (markup) {
     }
 
     // <tags and="attributes" />
-    let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
+    let result = ''
+    if(preChildElementCount == 0) {
+      result = '\n' + ''.repeat(indent) + '<' + node.nodeName;
+    } 
+    else {
+      result = ''.repeat(indent) + '<' + node.nodeName;
+    }
 
     const shouldSelfClose = (
       (
@@ -196,7 +202,6 @@ export const diffableFormatter = function (markup) {
 
     // Process child nodes
     if (hasChildren) {
-      console.log({node})
       if (node.nodeName === 'pre' || preChildElementCount > 0) {
         preChildElementCount++;
       }
@@ -226,8 +231,11 @@ export const diffableFormatter = function (markup) {
       )
     ) {
       result = result + '</' + node.nodeName + '>';
-    } else if (!tagIsVoidElement) {
+    } else if (!tagIsVoidElement && !preChildElementCount) {
       result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
+    } 
+    else if (preChildElementCount > 0) {
+      result = result + '</' + node.nodeName + '>'
     }
     preChildElementCount--;
     return result;

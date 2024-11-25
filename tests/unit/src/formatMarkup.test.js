@@ -577,11 +577,16 @@ describe('Format markup', () => {
           '</pre>'
       ].join('\n');
 
+      // const markup = `<pre> Hello World <div>   Hello   World</div></pre>`
+
+      // expect(markup)
+      //   .toMatchInlineSnapshot(`
+      //     <pre> Hello World <div>   Hello   World</div></pre>
+      //   `);
+
       expect(markup)
         .toMatchInlineSnapshot(`
-          <pre>
-            Hello World <div>Hello World <p>Hello World</p></div>
-          </pre>
+          <pre>  Hello World <div>Hello World <p>Hello World</p></div></pre>
         `);
     });
   });
