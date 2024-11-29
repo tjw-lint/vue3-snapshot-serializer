@@ -637,5 +637,34 @@ describe('Format markup', () => {
           </div>
         `);
     });
+
+    test('Proper attribute indentation on nested children', () => {
+      const markup = [
+        '<div>',
+        '<pre>',
+        '<code>',
+        '<span title="c" class="d">',
+        '<strong title="a" class="b">',
+        'text',
+        '</strong>',
+        '</span>',
+        '</code>',
+        '</pre>',
+        '</div>'
+      ].join('');
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <div>
+            <pre><code><span
+              class="d"
+              title="c"
+            ><strong
+              class="b"
+              title="a"
+            >text</strong></span></code></pre>
+          </div>
+        `);
+    });
   });
 });

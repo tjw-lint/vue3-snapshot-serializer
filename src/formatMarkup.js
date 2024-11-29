@@ -206,7 +206,11 @@ export const diffableFormatter = function (markup) {
     // Process child nodes
     if (hasChildren) {
       node.childNodes.forEach((child) => {
-        result = result + formatNode(child, indent + 1);
+        if (ancestorTagIsWhitespaceDependent) {
+          result = result + formatNode(child, indent);
+        } else {
+          result = result + formatNode(child, indent + 1);
+        }
       });
     }
 
