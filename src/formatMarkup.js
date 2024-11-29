@@ -100,7 +100,8 @@ export const diffableFormatter = function (markup) {
       }
       if (ancestorTagIsWhitespaceDependent) {
         return nodeValue;
-      } else if (nodeValue.trim()) {
+      }
+      if (nodeValue.trim()) {
         return '\n' + '  '.repeat(indent) + nodeValue.trim();
       }
       return '';
