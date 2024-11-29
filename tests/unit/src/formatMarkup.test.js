@@ -111,12 +111,9 @@ describe('Format markup', () => {
     test('Retain', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = true;
 
-      expect(formatMarkup(input))
+      expect(input)
         .toMatchInlineSnapshot(`
-          <pre>
-            <code>
-              &lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;
-            </code></pre>
+          <pre><code>&lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
         `);
     });
 
@@ -124,12 +121,9 @@ describe('Format markup', () => {
     test('Discard', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
 
-      expect(formatMarkup(input))
+      expect(input)
         .toMatchInlineSnapshot(`
-          <pre>
-            <code>
-              <div title="text">1 & 2 + 3</div>
-            </code></pre>
+          <pre><code><div title="text">1 & 2 + 3</div></code></pre>
         `);
     });
     /* eslint-enable no-irregular-whitespace */
@@ -511,8 +505,9 @@ describe('Format markup', () => {
     });
   });
 
-  describe('Tags with White Space Preserved', () => {
+  describe('Tags with whitespace preserved', () => {
     let MyComponent;
+
     beforeEach(() => {
       MyComponent = {
         template: `<div>Hello World</div>
@@ -522,7 +517,7 @@ describe('Format markup', () => {
       globalThis.vueSnapshots.formatter = 'diffable';
     });
 
-    test('Default WhiteSpace Preserved Tags', async () => {
+    test('Default whitespace preserved tags', async () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = undefined;
 
@@ -536,7 +531,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Provided Tags are WhiteSpace Preserved Tags', async () => {
+    test('Provided tags are whitespace preserved tags', async () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['div'];
 
@@ -552,7 +547,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('No Tags are WhiteSpace Preserved Tags', async () => {
+    test('No tags have whitespace preserved', async () => {
       const wrapper = mount(MyComponent);
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = [];
 
@@ -566,6 +561,53 @@ describe('Format markup', () => {
           </a>
           <pre>
             Hello World
+          </pre>
+        `);
+    });
+
+    test('Returns occur after whitespace preserved tag', () => {
+      const markup = [
+        '<h3>This boilerplate uses <a href="#" title="vitejs.dev">Vite</a> +',
+        '<a href="#" title="vuejs.org">Vue 3</a> + and the astounding',
+        '<a href="#" title="pinia.vuejs.org">Pinia</a>.</h3>'
+      ].join(' ');
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <h3>
+            This boilerplate uses
+            <a
+              href="#"
+              title="vitejs.dev"
+            >Vite</a>
+            +
+            <a
+              href="#"
+              title="vuejs.org"
+            >Vue 3</a>
+            + and the astounding
+            <a
+              href="#"
+              title="pinia.vuejs.org"
+            >Pinia</a>
+            .
+          </h3>
+        `);
+    });
+
+    test('Pre tag returns match browser parsing', () => {
+      const markup = [
+        '<pre>',
+        '  Hello World <div>Hello World <p>Hello World</p></div>',
+        '</pre>'
+      ].join('\n');
+
+      // Browsers and parse5 ignore the first return in a <pre> tag.
+      // So although the snapshot looks weird, it's "accurate".
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <pre>  Hello World <div>Hello World <p>Hello World</p></div>
           </pre>
         `);
     });
