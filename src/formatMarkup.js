@@ -66,7 +66,7 @@ export const diffableFormatter = function (markup) {
   };
   const ast = parseFragment(markup, astOptions);
 
-  let lastSeenTag = '';
+  const domPath = [];
 
   /**
    * Applies formatting to each DOM Node in the AST.
@@ -77,14 +77,19 @@ export const diffableFormatter = function (markup) {
    */
   const formatNode = (node, indent) => {
     indent = indent || 0;
-    if (node.tagName) {
-      lastSeenTag = node.tagName;
+    const isTag = !!node.tagName;
+    if (isTag) {
+      domPath.push(node.tagName);
     }
 
-    const tagIsWhitespaceDependent = options.tagsWithWhitespacePreserved.includes(lastSeenTag);
-    const tagIsVoidElement = VOID_ELEMENTS.includes(lastSeenTag);
-    const tagIsSvgElement = SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
-    const tagIsEscapabelRawTextElement = ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
+    const lastSeenTag = domPath[domPath.length - 1];
+    const tagIsWhitespaceDependent = isTag && options.tagsWithWhitespacePreserved.includes(lastSeenTag);
+    const ancestorTagIsWhitespaceDependent = domPath.some((tag) => {
+      return options.tagsWithWhitespacePreserved.includes(tag);
+    });
+    const tagIsVoidElement = isTag && VOID_ELEMENTS.includes(lastSeenTag);
+    const tagIsSvgElement = isTag && SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
+    const tagIsEscapabelRawTextElement = isTag && ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
     const hasChildren = node.childNodes && node.childNodes.length;
 
     // InnerText
@@ -94,7 +99,7 @@ export const diffableFormatter = function (markup) {
         if (options.escapeInnerText) {
           nodeValue = escapeHtml(nodeValue);
         }
-        if (tagIsWhitespaceDependent) {
+        if (ancestorTagIsWhitespaceDependent) {
           return nodeValue;
         } else {
           return '\n' + '  '.repeat(indent) + nodeValue.trim();
@@ -202,6 +207,7 @@ export const diffableFormatter = function (markup) {
 
     // Return without closing tag
     if (shouldSelfClose) {
+      domPath.pop();
       return result;
     }
 
@@ -225,6 +231,7 @@ export const diffableFormatter = function (markup) {
       result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
     }
 
+    domPath.pop();
     return result;
   };
 

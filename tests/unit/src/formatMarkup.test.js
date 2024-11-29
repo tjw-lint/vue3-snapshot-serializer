@@ -111,11 +111,10 @@ describe('Format markup', () => {
     test('Retain', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = true;
 
-      expect(formatMarkup(input))
+      expect(input)
         .toMatchInlineSnapshot(`
           <pre>
-            <code>
-              &lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;
+            <code>&lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;
             </code></pre>
         `);
     });
@@ -124,11 +123,10 @@ describe('Format markup', () => {
     test('Discard', () => {
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
 
-      expect(formatMarkup(input))
+      expect(input)
         .toMatchInlineSnapshot(`
           <pre>
-            <code>
-              <div title="text">1 & 2 + 3</div>
+            <code><div title="text">1 & 2 + 3</div>
             </code></pre>
         `);
     });
