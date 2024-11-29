@@ -94,16 +94,14 @@ export const diffableFormatter = function (markup) {
 
     // InnerText
     if (node.nodeName === '#text') {
-      if (node.value.trim()) {
-        let nodeValue = node.value;
-        if (options.escapeInnerText) {
-          nodeValue = escapeHtml(nodeValue);
-        }
-        if (ancestorTagIsWhitespaceDependent) {
-          return nodeValue;
-        } else {
-          return '\n' + '  '.repeat(indent) + nodeValue.trim();
-        }
+      let nodeValue = node.value;
+      if (options.escapeInnerText) {
+        nodeValue = escapeHtml(nodeValue);
+      }
+      if (ancestorTagIsWhitespaceDependent) {
+        return nodeValue;
+      } else if (nodeValue.trim()) {
+        return '\n' + '  '.repeat(indent) + nodeValue.trim();
       }
       return '';
     }
@@ -148,7 +146,13 @@ export const diffableFormatter = function (markup) {
     }
 
     // <tags and="attributes" />
-    let result = '\n' + '  '.repeat(indent) + '<' + node.nodeName;
+    let result = '';
+
+    if (ancestorTagIsWhitespaceDependent && !tagIsWhitespaceDependent) {
+      result = result + '<' + node.nodeName;
+    } else {
+      result = result + '\n' + '  '.repeat(indent) + '<' + node.nodeName;
+    }
 
     const shouldSelfClose = (
       (
@@ -213,7 +217,7 @@ export const diffableFormatter = function (markup) {
 
     // Add closing tag
     if (
-      tagIsWhitespaceDependent ||
+      ancestorTagIsWhitespaceDependent ||
       (
         !tagIsVoidElement &&
         !hasChildren

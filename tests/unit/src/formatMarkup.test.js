@@ -113,9 +113,7 @@ describe('Format markup', () => {
 
       expect(input)
         .toMatchInlineSnapshot(`
-          <pre>
-            <code>&lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;
-            </code></pre>
+          <pre><code>&lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
         `);
     });
 
@@ -125,9 +123,7 @@ describe('Format markup', () => {
 
       expect(input)
         .toMatchInlineSnapshot(`
-          <pre>
-            <code><div title="text">1 & 2 + 3</div>
-            </code></pre>
+          <pre><code><div title="text">1 & 2 + 3</div></code></pre>
         `);
     });
     /* eslint-enable no-irregular-whitespace */
@@ -569,14 +565,14 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Returns occur after whitespace preserved tag', async () => {
-      const input = [
+    test('Returns occur after whitespace preserved tag', () => {
+      const markup = [
         '<h3>This boilerplate uses <a href="#" title="vitejs.dev">Vite</a> +',
         '<a href="#" title="vuejs.org">Vue 3</a> + and the astounding',
         '<a href="#" title="pinia.vuejs.org">Pinia</a>.</h3>'
       ].join(' ');
 
-      expect(input)
+      expect(markup)
         .toMatchInlineSnapshot(`
           <h3>
             This boilerplate uses
@@ -596,6 +592,23 @@ describe('Format markup', () => {
             >Pinia</a>
             .
           </h3>
+        `);
+    });
+
+    test('Pre tag returns match browser parsing', () => {
+      const markup = [
+        '<pre>',
+        '  Hello World <div>Hello World <p>Hello World</p></div>',
+        '</pre>'
+      ].join('\n');
+
+      // Browsers and parse5 ignore the first return in a <pre> tag.
+      // So although the snapshot looks weird, it's "accurate".
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <pre>  Hello World <div>Hello World <p>Hello World</p></div>
+          </pre>
         `);
     });
   });
