@@ -17,9 +17,38 @@ import {
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
 
+const SVG_FILTER_TAGS = Object.freeze([
+  'feBlend',
+  'feColorMatrix',
+  'feComponentTransfer',
+  'feComposite',
+  'feConvolveMatrix',
+  'feDiffuseLighting',
+  'feDisplacementMap',
+  'feDistantLight',
+  'feDropShadow',
+  'feFlood',
+  'feFuncA',
+  'feFuncB',
+  'feFuncG',
+  'feFuncR',
+  'feGaussianBlur',
+  'feImage',
+  'feMerge',
+  'feMergeNode',
+  'feMorphology',
+  'feOffset',
+  'fePointLight',
+  'feSpecularLighting',
+  'feSpotLight',
+  'feTile',
+  'feTurbulence'
+]);
+
 const SELF_CLOSING_SVG_ELEMENTS = Object.freeze([
   'circle',
   'ellipse',
+  ...SVG_FILTER_TAGS,
   'line',
   'path',
   'polygon',
