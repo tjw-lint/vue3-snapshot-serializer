@@ -25,6 +25,7 @@ export const isHtmlString = function (received) {
 export const isVueWrapper = function (received) {
   return (
     typeof(received) === 'object' &&
+    received !== null &&
     typeof(received.html) === 'function'
   );
 };
