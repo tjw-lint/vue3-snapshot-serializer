@@ -21,6 +21,11 @@ describe('index.js', () => {
         .toEqual(false);
     });
 
+    test('Null is invalid', () => {
+      expect(vue3SnapshotSerializer.test(null))
+        .toEqual(false);
+    });
+
     test('Object resembling Vue wrapper is valid', () => {
       expect(vue3SnapshotSerializer.test({ html: vi.fn() }))
         .toEqual(true);
