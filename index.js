@@ -15,7 +15,7 @@ import { formatMarkup } from './src/formatMarkup.js';
  * @param  {string|object} received  The markup or Vue wrapper to be formatted
  * @return {boolean}                 true = Tells Vitest to run the print function
  */
-const test = function (received) {
+export const test = function (received) {
   return isHtmlString(received) || isVueWrapper(received);
 };
 
@@ -26,7 +26,7 @@ const test = function (received) {
  * @param  {string|object} received  The markup or Vue wrapper to be formatted
  * @return {string}                  The formatted markup
  */
-const print = function (received) {
+export const print = function (received) {
   loadOptions();
   let html = received || '';
   html = stringManipulation(html);
