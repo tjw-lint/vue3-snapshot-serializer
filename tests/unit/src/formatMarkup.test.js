@@ -618,6 +618,54 @@ describe('Format markup', () => {
     });
   });
 
+  describe('Stubbed components', () => {
+    test('In tbody', () => {
+      const markup = `
+        <tbody>
+          <tr><td>Text</td></tr>
+          <fake-tr />
+        </tbody>
+      `.trim();
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <tbody>
+            <tr>
+              <td>
+                Text
+              </td>
+            </tr>
+            <fake-tr></fake-tr>
+          </tbody>
+        `);
+    });
+
+    test('In table', () => {
+      const markup = `
+        <table>
+          <tbody>
+            <tr><td>Text</td></tr>
+            <fake-tr />
+          </tbody>
+        </table>
+      `.trim();
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  Text
+                </td>
+              </tr>
+              <fake-tr></fake-tr>
+            </tbody>
+          </table>
+        `);
+    });
+  });
+
   describe('Attributes Per Line', () => {
     let MyComponent;
 
