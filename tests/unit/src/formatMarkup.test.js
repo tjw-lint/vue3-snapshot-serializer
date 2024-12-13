@@ -619,7 +619,7 @@ describe('Format markup', () => {
   });
 
   describe('Stubbed components', () => {
-    test('In tbody', () => {
+    test('Fake TR In TBODY fragment', () => {
       const markup = `
         <tbody>
           <tr><td>Text</td></tr>
@@ -640,7 +640,7 @@ describe('Format markup', () => {
         `);
     });
 
-    test('In table', () => {
+    test('Fake TR in normal table', () => {
       const markup = `
         <table>
           <tbody>
