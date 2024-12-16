@@ -289,16 +289,16 @@ export const diffableFormatter = function (markup) {
  * @return {string}         The same string, formatted based on user settings.
  */
 export const formatMarkup = function (markup) {
-  if (globalThis.vueSnapshots?.formatter) {
-    if (typeof(globalThis.vueSnapshots.formatter) === 'function') {
-      const result = globalThis.vueSnapshots.formatter(markup);
-      if (typeof(result) === 'string') {
-        return result;
-      } else {
-        logger('Your custom markup formatter must return a string.');
+  if (globalThis.vueSnapshots) {
+    if (globalThis.vueSnapshots.formatter === 'diffable') {
+      markup = diffableFormatter(markup);
+    }
+    if (typeof(globalThis.vueSnapshots.postProcessor) === 'function') {
+      markup = globalThis.vueSnapshots.postProcessor(markup);
+      if (typeof(markup) !== 'string') {
+        logger('Your custom markup post processor must return a string.');
+        return '';
       }
-    } else if (globalThis.vueSnapshots.formatter === 'diffable') {
-      return diffableFormatter(markup, globalThis.vueSnapshots.formatting);
     }
   }
   return markup;

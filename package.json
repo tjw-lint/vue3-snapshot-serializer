@@ -1,13 +1,14 @@
 {
   "name": "vue3-snapshot-serializer",
   "type": "module",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
     "lint": "eslint *.js src tests",
     "fix": "npm run lint -- --fix",
     "test": "vitest --coverage",
+    "unit": "vitest --run",
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Stringify attributes\" \"cheerio\""
   },
   "dependencies": {
