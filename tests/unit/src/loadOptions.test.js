@@ -140,7 +140,7 @@ describe('Load options', () => {
         .toEqual('diffable');
 
       expect(console.info)
-        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Allowed values for global.vueSnapshots.formatter are \'none\', \'diffable\', or a custom function');
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Allowed values for global.vueSnapshots.formatter are \'none\' and \'diffable\'.');
     });
 
     test('None', () => {
@@ -169,21 +169,6 @@ describe('Load options', () => {
         .not.toHaveBeenCalled();
     });
 
-    test('Custom function', () => {
-      function formatter (markup) {
-        return markup.toUpperCase();
-      }
-      global.vueSnapshots = { formatter };
-
-      loadOptions();
-
-      expect(globalThis.vueSnapshots.formatter)
-        .toEqual(formatter);
-
-      expect(console.info)
-        .not.toHaveBeenCalled();
-    });
-
     test('Warns and deletes formatting options if not using diffable formatter', () => {
       global.vueSnapshots.formatter = 'none';
       global.vueSnapshots.formatting = { emptyAttributes: true };
@@ -194,7 +179,38 @@ describe('Load options', () => {
         .toEqual(undefined);
 
       expect(console.info)
-        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: When setting the formatter to "none" or a custom function, all formatting options will be removed.');
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: When setting the formatter to anything other than \'diffable\', all formatting options are ignored.');
+    });
+  });
+
+  describe('Post processing markup', () => {
+    test('Warns if postProcessor is not a function', () => {
+      global.vueSnapshots = {
+        postProcessor: 'invalid'
+      };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.postProcessor)
+        .toEqual(undefined);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: The postProcessor option must be a function that returns a string, or undefined.');
+    });
+
+    test('Applies custom formatting after Diffable', () => {
+      function postProcessor (markup) {
+        return markup.toUpperCase();
+      }
+      global.vueSnapshots = { postProcessor };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.postProcessor)
+        .toEqual(postProcessor);
+
+      expect(console.info)
+        .not.toHaveBeenCalled();
     });
   });
 

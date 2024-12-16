@@ -85,12 +85,9 @@ export const loadOptions = function () {
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
   // Formatter
-  if (
-    typeof(globalThis.vueSnapshots.formatter) !== 'function' &&
-    !['none', 'diffable'].includes(globalThis.vueSnapshots.formatter)
-  ) {
+  if (!['none', 'diffable'].includes(globalThis.vueSnapshots.formatter)) {
     if (globalThis.vueSnapshots.formatter) {
-      logger('Allowed values for global.vueSnapshots.formatter are \'none\', \'diffable\', or a custom function');
+      logger('Allowed values for global.vueSnapshots.formatter are \'none\' and \'diffable\'.');
     }
     globalThis.vueSnapshots.formatter = undefined;
   }
@@ -103,7 +100,7 @@ export const loadOptions = function () {
     typeof(globalThis.vueSnapshots.formatting) === 'object' &&
     Object.keys(globalThis.vueSnapshots.formatting).length
   ) {
-    logger('When setting the formatter to "none" or a custom function, all formatting options will be removed.');
+    logger('When setting the formatter to anything other than \'diffable\', all formatting options are ignored.');
   }
 
   // Formatting
@@ -177,6 +174,13 @@ export const loadOptions = function () {
     delete globalThis.vueSnapshots.formatting;
   }
 
+  if (typeof(globalThis.vueSnapshots.postProcessor) !== 'function') {
+    if (globalThis.vueSnapshots.postProcessor) {
+      logger('The postProcessor option must be a function that returns a string, or undefined.');
+    }
+    delete globalThis.vueSnapshots.postProcessor;
+  }
+
   /**
    * Clean up settings
    */
@@ -185,7 +189,8 @@ export const loadOptions = function () {
     ...Object.keys(booleanDefaults),
     'attributesToClear',
     'formatter',
-    'formatting'
+    'formatting',
+    'postProcessor'
   ];
   const permittedFormattingKeys = [
     ...Object.keys(formattingBooleanDefaults),
