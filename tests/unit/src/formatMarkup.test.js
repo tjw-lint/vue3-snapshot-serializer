@@ -101,7 +101,7 @@ describe('Format markup', () => {
       .toMatchInlineSnapshot('');
 
     expect(console.info)
-      .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup formatter must return a string.');
+      .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Your custom markup post processor must return a string.');
   });
 
   describe('diffableFormatter', () => {

@@ -296,7 +296,7 @@ export const formatMarkup = function (markup) {
     if (typeof(globalThis.vueSnapshots.postProcessor) === 'function') {
       markup = globalThis.vueSnapshots.postProcessor(markup);
       if (typeof(markup) !== 'string') {
-        logger('Your custom markup formatter must return a string.');
+        logger('Your custom markup post processor must return a string.');
         return '';
       }
     }
