@@ -12,3 +12,4 @@ Related to issue #0
 
 * [ ] Update dependencies
 * [ ] Bump
+* [ ] If API changed, update `types.js`
