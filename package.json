@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0",
-    "htmlparser2": "^9.1.0",
+    "htmlparser2": "^10.0.0",
     "parse5": "^7.2.1"
   },
   "devDependencies": {
