@@ -9,8 +9,8 @@
     "fix": "npm run lint -- --fix",
     "test": "vitest --coverage",
     "unit": "vitest --run",
-    "bug": "vitest --run -t \"Fake TR in\" \"formatMarkup\"",
-    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Fake TR in\" \"formatMarkup\""
+    "bug": "vitest --run -t \"Fake TR in TBODY\" \"formatMarkup\"",
+    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Fake TR in TBODY\" \"formatMarkup\""
   },
   "dependencies": {
     "cheerio": "^1.0.0",
