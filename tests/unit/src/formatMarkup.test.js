@@ -631,7 +631,7 @@ describe('Format markup', () => {
   });
 
   describe('Stubbed components', () => {
-    test('Fake TR In TBODY fragment', () => {
+    test('Fake TR in TBODY fragment', () => {
       const markup = `
         <tbody>
           <tr><td>Text</td></tr>

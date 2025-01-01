@@ -9,7 +9,8 @@
     "fix": "npm run lint -- --fix",
     "test": "vitest --coverage",
     "unit": "vitest --run",
-    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Stringify attributes\" \"cheerio\""
+    "bug": "vitest --run -t \"Fake TR in\" \"formatMarkup\"",
+    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Fake TR in\" \"formatMarkup\""
   },
   "dependencies": {
     "cheerio": "^1.0.0",
