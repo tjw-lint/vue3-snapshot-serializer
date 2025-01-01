@@ -218,6 +218,9 @@ const clearInlineFunctions = function ($) {
      * @return {boolean}      true = matches function pattern
      */
     const isFunctionDeclaration = function (str) {
+      // as of Happy-DOM 16+ > becomes &gt;
+      str = str.replaceAll('=&gt;', '=>');
+
       /* eslint-disable-next-line jsdoc/check-line-alignment */
       /**
        * Matches strings that look like functions
