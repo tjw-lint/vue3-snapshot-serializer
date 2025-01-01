@@ -10,7 +10,7 @@
 
 import { parseFragment } from 'parse5';
 
-import { correctASTHeirachy  } from './correctASTHeirachy.js';
+import { correctASTHierarchy } from './correctASTHierarchy.js';
 import {
   escapeHtml,
   logger
@@ -94,7 +94,7 @@ export const diffableFormatter = function (markup) {
   const astOptions = {
     sourceCodeLocationInfo: true
   };
-  const ast = correctASTHeirachy(parseFragment(markup, astOptions));
+  const ast = correctASTHierarchy(parseFragment(markup, astOptions));
 
 
   const domPath = [];
