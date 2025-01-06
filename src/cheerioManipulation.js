@@ -2,7 +2,6 @@
  * @file Uses the Cheerio library to mutate the markup based on the global vueSnapshots settings.
  */
 
-
 import {
   cheerioize,
   stringify,

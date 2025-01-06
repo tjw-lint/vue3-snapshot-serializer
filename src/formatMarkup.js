@@ -6,13 +6,10 @@
  * we apply custom formatting based on the global vueSnapshots.formatting settings.
  */
 
-/** @import { DefaultTreeAdapterMap } from "parse5" */
-
-import { parseFragment } from 'parse5';
-
 import {
   escapeHtml,
-  logger
+  logger,
+  parseMarkup
 } from './helpers.js';
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
@@ -81,7 +78,8 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
 ]);
 
 /**
- * Uses Parse5 to create an AST from the markup. Loops over the AST to create a formatted HTML string.
+ * Uses htmlparser2 to create an AST from the markup.
+ * Loops over the AST to create a formatted HTML string.
  *
  * @param  {string} markup  Any valid HTML
  * @return {string}         HTML formatted to be more easily diffable
@@ -90,25 +88,23 @@ export const diffableFormatter = function (markup) {
   markup = markup || '';
   const options = globalThis.vueSnapshots.formatting;
 
-  const astOptions = {
-    sourceCodeLocationInfo: true
-  };
-  const ast = parseFragment(markup, astOptions);
+  const ast = parseMarkup(markup);
 
   const domPath = [];
 
   /**
    * Applies formatting to each DOM Node in the AST.
    *
-   * @param  {DefaultTreeAdapterMap["childNode"]} node    Parse5 AST of a DOM node
-   * @param  {number}                             indent  The current indentation level for this DOM node in the AST loop
-   * @return {string}                                     Formatted markup
+   * @param  {object} node    htmlparser2 AST of a DOM node
+   * @param  {number} indent  The current indentation level for this DOM node in the AST loop
+   * @return {string}         Formatted markup
    */
   const formatNode = (node, indent) => {
     indent = indent || 0;
-    const isTag = !!node.tagName;
+    const isTag = !!(node.type === 'tag' && node.name);
     if (isTag) {
-      domPath.push(node.tagName);
+      // ['table', 'tbody', 'tr', 'td']
+      domPath.push(node.name);
     }
 
     const lastSeenTag = domPath[domPath.length - 1];
@@ -119,11 +115,11 @@ export const diffableFormatter = function (markup) {
     const tagIsVoidElement = isTag && VOID_ELEMENTS.includes(lastSeenTag);
     const tagIsSvgElement = isTag && SELF_CLOSING_SVG_ELEMENTS.includes(lastSeenTag);
     const tagIsEscapabelRawTextElement = isTag && ESCAPABLE_RAW_TEXT_ELEMENTS.includes(lastSeenTag);
-    const hasChildren = node.childNodes && node.childNodes.length;
+    const hasChildren = node.children && node.children.length;
 
     // InnerText
-    if (node.nodeName === '#text') {
-      let nodeValue = node.value;
+    if (node.type === 'text') {
+      let nodeValue = node.data;
       if (options.escapeInnerText) {
         nodeValue = escapeHtml(nodeValue);
       }
@@ -137,7 +133,7 @@ export const diffableFormatter = function (markup) {
     }
 
     // <!-- Comments -->
-    if (node.nodeName === '#comment') {
+    if (node.type === 'comment') {
       /* eslint-disable-next-line jsdoc/check-line-alignment */
       /**
        * The " Some Text " part in <!-- Some Text -->
@@ -179,9 +175,9 @@ export const diffableFormatter = function (markup) {
     let result = '';
 
     if (ancestorTagIsWhitespaceDependent && !tagIsWhitespaceDependent) {
-      result = result + '<' + node.nodeName;
+      result = result + '<' + node.name;
     } else {
-      result = result + '\n' + '  '.repeat(indent) + '<' + node.nodeName;
+      result = result + '\n' + '  '.repeat(indent) + '<' + node.name;
     }
 
     const shouldSelfClose = (
@@ -206,35 +202,40 @@ export const diffableFormatter = function (markup) {
     }
 
     // Add attributes
-    if (!node.attrs.length) {
+    if (!Object.keys(node.attribs).length) {
       result += endingAngleBracket;
     } else {
-      const isNewLine = node.attrs.length > options.attributesPerLine;
-      const formattedAttr = node.attrs.map((attr) => {
-        const hasValue = attr.value || options.emptyAttributes;
-        let attrVal;
+      const attributes = Object
+        .entries(node.attribs)
+        .map(([name, value]) => {
+          return { name, value };
+        });
+      const isNewLine = attributes.length > options.attributesPerLine;
+      const formattedAttribute = attributes.map((attribute) => {
+        const hasValue = attribute.value || options.emptyAttributes;
+        let fullAttribute;
         if (hasValue) {
-          attrVal = attr.name + '="' + (attr.value || '') + '"';
+          fullAttribute = attribute.name + '="' + (attribute.value || '') + '"';
         } else {
-          attrVal = attr.name;
+          fullAttribute = attribute.name;
         }
         if (isNewLine) {
-          return '\n' + '  '.repeat(indent + 1) + attrVal;
+          return '\n' + '  '.repeat(indent + 1) + fullAttribute;
         } else {
-          return ' ' + attrVal;
+          return ' ' + fullAttribute;
         }
       }).join('');
 
-      if (node.attrs.length <= options.attributesPerLine) {
-        result += formattedAttr + endingAngleBracket;
+      if (attributes.length <= options.attributesPerLine) {
+        result += formattedAttribute + endingAngleBracket;
       } else {
-        result += formattedAttr + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
+        result += formattedAttribute + '\n' + '  '.repeat(indent) + endingAngleBracket.trim();
       }
     }
 
     // Process child nodes
     if (hasChildren) {
-      node.childNodes.forEach((child) => {
+      node.children.forEach((child) => {
         if (ancestorTagIsWhitespaceDependent) {
           result = result + formatNode(child, indent);
         } else {
@@ -264,9 +265,9 @@ export const diffableFormatter = function (markup) {
         )
       )
     ) {
-      result = result + '</' + node.nodeName + '>';
+      result = result + '</' + node.name + '>';
     } else if (!tagIsVoidElement) {
-      result = result + '\n' + '  '.repeat(indent) + '</' + node.nodeName + '>';
+      result = result + '\n' + '  '.repeat(indent) + '</' + node.name + '>';
     }
 
     domPath.pop();
@@ -274,7 +275,7 @@ export const diffableFormatter = function (markup) {
   };
 
   let formattedOutput = '';
-  ast.childNodes.forEach((node) => {
+  ast.forEach((node) => {
     formattedOutput = formattedOutput + formatNode(node, 0);
   });
 
