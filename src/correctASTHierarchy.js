@@ -1,7 +1,33 @@
+import _cloneDeep from 'lodash.clonedeep';
+
 /**
  * @file Logic related to mutating the Abstract Syntax Tree used by the Diffable Formatter
  *       to correct the DOM hierarchy.
  */
+
+const createPositionMap = function (ast, positionMap) {
+  console.log(ast);
+  if (ast && typeof(ast) === 'object') {
+    if (ast?.sourceCodeLocation) {
+      const {
+        startOffset,
+        endOffset
+      } = ast.sourceCodeLocation;
+      const distance = endOffset - startOffset;
+
+      positionMap[distance] = positionMap[distance] || [];
+      positionMap[distance].push({
+        ...ast,
+        childNodes: undefined
+      });
+    }
+    if (ast?.childNodes?.length) {
+      for (const node of ast.childNodes) {
+        createPositionMap(node, positionMap);
+      }
+    }
+  }
+};
 
 /**
  * CONTEXT:
@@ -20,5 +46,18 @@
  * @return {object}      A mutated AST with corrected DOM heirarchy.
  */
 export const correctASTHierarchy = function (ast) {
-  return ast;
+  console.log(ast);
+  debugger;
+  const positionMap = {};
+  createPositionMap(ast, positionMap);
+  console.log(positionMap);
+  const newAst = {
+    childNodes: []
+  };
+  for (const distaance of positionMap) {
+    newAst.childNodes.push(positionMap[distance]);
+  }
+  // console.log(newAst);
+
+  return newAst;
 };
