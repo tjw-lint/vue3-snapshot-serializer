@@ -2,10 +2,9 @@
  * @file Uses the Cheerio library to mutate the markup based on the global vueSnapshots settings.
  */
 
-import * as cheerio from 'cheerio';
-import * as htmlparser2 from 'htmlparser2';
 
 import {
+  cheerioize,
   stringify,
   swapQuotes
 } from './helpers.js';
@@ -69,27 +68,6 @@ const removeSerializerKeys = function ($, vueWrapper) {
       alreadyRemovedKey = true;
     });
   }
-};
-
-/**
- * Creates a cheerio ($) object from the html for DOM manipulation.
- *
- * @param  {string} html  The markup to use for the cheerio object
- * @return {object}       The cheerio object
- */
-const cheerioize = function (html) {
-  // https://github.com/fb55/DomHandler
-  // https://github.com/fb55/htmlparser2/wiki/Parser-options
-  const xmlOptions = {
-    decodeEntities: false,
-    lowerCaseAttributeNames: false,
-    normalizeWhitespace: false,
-    recognizeSelfClosing: false,
-    xmlMode: false
-  };
-  const dom = htmlparser2.parseDOM(html, xmlOptions);
-  const $ = cheerio.load(dom, { xml: xmlOptions });
-  return $;
 };
 
 /**

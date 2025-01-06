@@ -2,6 +2,9 @@
  * @file Utility functions imported by other files.
  */
 
+import * as cheerio from 'cheerio';
+import * as htmlparser2 from 'htmlparser2';
+
 /**
  * Determines if the passed in value is markup.
  *
@@ -139,4 +142,45 @@ export const escapeHtml = function (value) {
   };
 
   return value.replace(regexp, encode);
+};
+
+/**
+ * https://github.com/fb55/DomHandler
+ * https://github.com/fb55/htmlparser2/wiki/Parser-options
+ *
+ * @type {object}
+ */
+const xmlOptions = {
+  decodeEntities: false,
+  lowerCaseAttributeNames: false,
+  normalizeWhitespace: false,
+  recognizeSelfClosing: false,
+  xmlMode: false
+};
+
+/**
+ * Takes in a string of HTML markup and returns an
+ * Abstract Syntax Tree.
+ *
+ * @param  {string} markup  Any arbitrary XML/HTML
+ * @return {object}         An htmlparser2 AST
+ */
+export const parseMarkup = function (markup) {
+  const ast = htmlparser2.parseDOM(markup, xmlOptions);
+  return ast;
+};
+
+/**
+ * Creates a cheerio ($) object from the html for DOM manipulation.
+ *
+ * @param  {string} markup  The html markup to use for the cheerio object
+ * @return {object}         The cheerio object
+ */
+export const cheerioize = function (markup) {
+  const ast = parseMarkup(markup);
+  const cheerioOptions = {
+    xml: xmlOptions
+  };
+  const $ = cheerio.load(ast, cheerioOptions);
+  return $;
 };
