@@ -229,7 +229,13 @@ export const diffableFormatter = function (markup) {
         const hasValue = attribute.value || options.emptyAttributes;
         let fullAttribute;
         if (hasValue) {
-          fullAttribute = attribute.name + '="' + (attribute.value || '') + '"';
+          let attributeValue = (attribute.value || '');
+          if (options.escapeInnerText) {
+            attributeValue = escapeHtml(attributeValue);
+          } else {
+            attributeValue = unescapeHtml(attributeValue);
+          }
+          fullAttribute = attribute.name + '="' + attributeValue + '"';
         } else {
           fullAttribute = attribute.name;
         }

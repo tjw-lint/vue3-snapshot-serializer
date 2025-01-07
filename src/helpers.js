@@ -146,6 +146,7 @@ export const escapeHtml = function (value) {
  */
 export const unescapeHtml = function (value) {
   return value
+    .replaceAll('&#xA;', '\n')
     .replaceAll('&nbsp;', '\xa0')
     .replaceAll('&amp;', '&')
     .replaceAll('&lt;', '<')

@@ -113,9 +113,9 @@ describe('Cheerio Manipulation', () => {
 
   describe('InlineFunctions.vue', () => {
     test('Functions kept', async () => {
-      globalThis.vueSnapshots = {
-        clearInlineFunctions: false
-      };
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
+      globalThis.vueSnapshots.clearInlineFunctions = false;
+
       const wrapper = await mount(InlineFunctions);
       const markup = wrapper.html();
 
@@ -231,6 +231,7 @@ describe('Cheerio Manipulation', () => {
     });
 
     test('Does not stringify attributes', async () => {
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
       globalThis.vueSnapshots.stringifyAttributes = false;
 
       const wrapper = await mount(StringifyAttributes);
