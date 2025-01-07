@@ -53,6 +53,8 @@ export const diffableFormatter = function (markup) {
       tagName = node.name;
       const matchingSvgName = lowerToUppercaseSvgTagNames[tagName.toLowerCase()];
       if (matchingSvgName) {
+        // AST lowercases all tag names, but some SVG filter tags are multi-word,
+        // like "<feColorMatrix>" rather than "<fecolormatrix>".
         tagName = matchingSvgName;
       }
       // ['table', 'tbody', 'tr', 'td']

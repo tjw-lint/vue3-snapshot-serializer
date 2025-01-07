@@ -1,3 +1,7 @@
+/**
+ * @file Constants and large object generation/storage.
+ */
+
 const SVG_FILTER_TAGS = Object.freeze([
   'feBlend',
   'feColorMatrix',
