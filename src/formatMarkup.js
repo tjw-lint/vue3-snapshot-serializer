@@ -92,6 +92,9 @@ const ESCAPABLE_RAW_TEXT_ELEMENTS = Object.freeze([
  */
 export const diffableFormatter = function (markup) {
   markup = markup || '';
+  /**
+   * @type {FORMATTING}
+   */
   const options = globalThis.vueSnapshots.formatting;
 
   const ast = parseMarkup(markup);
