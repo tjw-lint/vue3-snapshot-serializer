@@ -49,7 +49,7 @@
  * @property {FORMATTING}    [formatting]                  An object containing settings specific to the "diffable" formatter.
  */
 
-/** @typedef {'tag'|'comment'|'text'} ASTNODETYPE */
+/** @typedef {'root'|'tag'|'text'|'comment'|'doctype'|'cdata'|'script'|'style'|'directive'} ASTNODETYPE */
 
 /**
  * @typedef  {object}      ASTNODE
