@@ -9,7 +9,8 @@
 import {
   escapeHtml,
   logger,
-  parseMarkup
+  parseMarkup,
+  unescapeHtml
 } from './helpers.js';
 
 /** @typedef {import('../types.js').FORMATTING} FORMATTING */
@@ -133,6 +134,8 @@ export const diffableFormatter = function (markup) {
       let nodeValue = node.data;
       if (options.escapeInnerText) {
         nodeValue = escapeHtml(nodeValue);
+      } else {
+        nodeValue = unescapeHtml(nodeValue);
       }
       if (ancestorTagIsWhitespaceDependent) {
         return nodeValue;
