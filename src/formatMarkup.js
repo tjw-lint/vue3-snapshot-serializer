@@ -42,6 +42,11 @@ const SVG_FILTER_TAGS = Object.freeze([
   'feTurbulence'
 ]);
 
+const lowerToUppercaseSvgTagNames = {};
+for (const svgTagName of SVG_FILTER_TAGS) {
+  lowerToUppercaseSvgTagNames[svgTagName.toLowerCase()] = svgTagName;
+}
+
 const SELF_CLOSING_SVG_ELEMENTS = Object.freeze([
   'circle',
   'ellipse',
@@ -102,9 +107,15 @@ export const diffableFormatter = function (markup) {
   const formatNode = (node, indent) => {
     indent = indent || 0;
     const isTag = !!(node.type === 'tag' && node.name);
+    let tagName;
     if (isTag) {
+      tagName = node.name;
+      const matchingSvgName = lowerToUppercaseSvgTagNames[tagName.toLowerCase()];
+      if (matchingSvgName) {
+        tagName = matchingSvgName;
+      }
       // ['table', 'tbody', 'tr', 'td']
-      domPath.push(node.name);
+      domPath.push(tagName);
     }
 
     const lastSeenTag = domPath[domPath.length - 1];
@@ -175,9 +186,9 @@ export const diffableFormatter = function (markup) {
     let result = '';
 
     if (ancestorTagIsWhitespaceDependent && !tagIsWhitespaceDependent) {
-      result = result + '<' + node.name;
+      result = result + '<' + tagName;
     } else {
-      result = result + '\n' + '  '.repeat(indent) + '<' + node.name;
+      result = result + '\n' + '  '.repeat(indent) + '<' + tagName;
     }
 
     const shouldSelfClose = (
@@ -265,9 +276,9 @@ export const diffableFormatter = function (markup) {
         )
       )
     ) {
-      result = result + '</' + node.name + '>';
+      result = result + '</' + tagName + '>';
     } else if (!tagIsVoidElement) {
-      result = result + '\n' + '  '.repeat(indent) + '</' + node.name + '>';
+      result = result + '\n' + '  '.repeat(indent) + '</' + tagName + '>';
     }
 
     domPath.pop();
