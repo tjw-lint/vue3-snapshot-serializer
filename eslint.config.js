@@ -25,6 +25,11 @@ export default [
       }
     },
     rules: {
+    },
+    settings: {
+      jsdoc: {
+        mode: 'jsdoc'
+      }
     }
   },
 
