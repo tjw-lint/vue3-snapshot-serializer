@@ -49,4 +49,15 @@
  * @property {FORMATTING}    [formatting]                  An object containing settings specific to the "diffable" formatter.
  */
 
+/** @typedef {'tag'|'comment'|'text'} ASTNODETYPE */
+
+/**
+ * @typedef  {object}      ASTNODE
+ * @property {ASTNODETYPE} type       The node type
+ * @property {string}      [name]     Any tag name ('h1', 'div', 'svg', 'my-component-stub')
+ * @property {ASTNODE[]}   children   Array of nested AST nodes
+ * @property {string}      data       The value of the node, if it is a comment or text
+ * @property {object}      [attribs]  The attributes if the node is a tag. ex: { class: 'a b', title: 'c' }
+ */
+
 export const types = {};
