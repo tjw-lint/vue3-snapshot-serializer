@@ -52,22 +52,12 @@
 /** @typedef {'root'|'tag'|'text'|'comment'|'doctype'|'cdata'|'script'|'style'|'directive'} ASTNODETYPE */
 
 /**
- * @typedef {[key: string]: string} ASTATTRIBUTES
- *
- * @example
- * {
- *   class: 'a b',
- *   href: 'https://site.com'
- * }
- */
-
-/**
- * @typedef  {object}        ASTNODE
- * @property {ASTNODETYPE}   type       The node type
- * @property {string}        [name]     Any tag name ('h1', 'div', 'svg', 'my-component-stub')
- * @property {ASTNODE[]}     children   Array of nested AST nodes
- * @property {string}        data       The value of the node, if it is a comment or text
- * @property {ASTATTRIBUTES} [attribs]  The attributes if the node is a tag
+ * @typedef  {object}       ASTNODE
+ * @property {ASTNODETYPE}  type       The node type
+ * @property {string}       [name]     Any tag name ('h1', 'div', 'svg', 'my-component-stub')
+ * @property {ASTNODE[]}    children   Array of nested AST nodes
+ * @property {string}       data       The value of the node, if it is a comment or text
+ * @property {object}       [attribs]  The attributes if the node is a tag, ex: { class: 'a b', title: 'c' }
  */
 
 export const types = {};
