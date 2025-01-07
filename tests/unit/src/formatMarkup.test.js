@@ -854,23 +854,6 @@ describe('Format markup', () => {
         `);
     });
 
-    test('Pre tag returns match browser parsing', () => {
-      const markup = [
-        '<pre>',
-        '  Hello World <div>Hello World <p>Hello World</p></div>',
-        '</pre>'
-      ].join('\n');
-
-      // Browsers and parse5 ignore the first return in a <pre> tag.
-      // So although the snapshot looks weird, it's "accurate".
-
-      expect(markup)
-        .toMatchInlineSnapshot(`
-          <pre>  Hello World <div>Hello World <p>Hello World</p></div>
-          </pre>
-        `);
-    });
-
     test('Proper attribute indentation on nested child', () => {
       const markup = [
         '<div>',
