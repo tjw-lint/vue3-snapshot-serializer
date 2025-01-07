@@ -52,7 +52,7 @@
 /** @typedef {'root'|'tag'|'text'|'comment'|'doctype'|'cdata'|'script'|'style'|'directive'} ASTNODETYPE */
 
 /**
- * @typedef {Object<string, string>} ASTATTRIBUTES
+ * @typedef {[key: string]: string} ASTATTRIBUTES
  *
  * @example
  * {
