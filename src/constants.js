@@ -31,7 +31,7 @@ const SVG_FILTER_TAGS = Object.freeze([
 ]);
 
 export const lowerToUppercaseSvgTagNames = {
-  'clippath': 'clipPath'
+  clippath: 'clipPath'
 };
 for (const svgTagName of SVG_FILTER_TAGS) {
   lowerToUppercaseSvgTagNames[svgTagName.toLowerCase()] = svgTagName;
