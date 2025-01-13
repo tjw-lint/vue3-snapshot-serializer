@@ -179,7 +179,7 @@ export const diffableFormatter = function (markup) {
         let fullAttribute;
         if (hasValue) {
           let attributeValue = (attribute.value || '');
-          if (options.escapeInnerText) {
+          if (options.escapeAttributes) {
             attributeValue = escapeHtml(attributeValue);
           } else {
             attributeValue = unescapeHtml(attributeValue);

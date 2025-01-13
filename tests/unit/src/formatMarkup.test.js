@@ -112,29 +112,78 @@ describe('Format markup', () => {
   });
 
   describe('HTML entity encoding', () => {
+    /* eslint-disable no-irregular-whitespace */
     // non-breaking-space character code
     const nbsp = '\xa0';
     const input = [
+      '<a href="http://site.com/?a=1&amp;b=2">link</a>\n',
       '<pre><code>',
       '&lt;div title=&quot;text&quot;&gt;1 &amp; 2&nbsp;+' + nbsp + '3&lt;/div&gt;',
       '</code></pre>'
     ].join('');
 
-    test('Retain', () => {
+    test('Retain just inner text', () => {
+      globalThis.vueSnapshots.formatting.escapeAttributes = false;
       globalThis.vueSnapshots.formatting.escapeInnerText = true;
 
       expect(input)
         .toMatchInlineSnapshot(`
+          <a href="http://site.com/?a=1&b=2">link</a>
           <pre><code>&lt;div title=&quot;text&quot;&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
         `);
     });
 
-    /* eslint-disable no-irregular-whitespace */
-    test('Discard', () => {
+    test('Discard just inner text', () => {
+      globalThis.vueSnapshots.formatting.escapeAttributes = true;
       globalThis.vueSnapshots.formatting.escapeInnerText = false;
 
       expect(input)
         .toMatchInlineSnapshot(`
+          <a href="http://site.com/?a=1&amp;b=2">link</a>
+          <pre><code><div title="text">1 & 2 + 3</div></code></pre>
+        `);
+    });
+
+    test('Retain just attributes', () => {
+      globalThis.vueSnapshots.formatting.escapeAttributes = true;
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <a href="http://site.com/?a=1&amp;b=2">link</a>
+          <pre><code><div title="text">1 & 2 + 3</div></code></pre>
+        `);
+    });
+
+    test('Discard just attributes', () => {
+      globalThis.vueSnapshots.formatting.escapeAttributes = false;
+      globalThis.vueSnapshots.formatting.escapeInnerText = true;
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <a href="http://site.com/?a=1&b=2">link</a>
+          <pre><code>&lt;div title=&quot;text&quot;&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
+        `);
+    });
+
+    test('Retain both', () => {
+      globalThis.vueSnapshots.formatting.escapeAttributes = true;
+      globalThis.vueSnapshots.formatting.escapeInnerText = true;
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <a href="http://site.com/?a=1&amp;b=2">link</a>
+          <pre><code>&lt;div title=&quot;text&quot;&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
+        `);
+    });
+
+    test('Discard both', () => {
+      globalThis.vueSnapshots.formatting.escapeAttributes = false;
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <a href="http://site.com/?a=1&b=2">link</a>
           <pre><code><div title="text">1 & 2 + 3</div></code></pre>
         `);
     });

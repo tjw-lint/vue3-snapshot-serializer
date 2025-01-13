@@ -26,6 +26,7 @@ export const booleanDefaults = {
 };
 export const formattingBooleanDefaults = {
   emptyAttributes: true,
+  escapeAttributes: false,
   escapeInnerText: true,
   selfClosingTag: false
 };
