@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { cheerioManipulation } from '@/cheerioManipulation.js';
 
 import DataVId from '@@/mockComponents/DataVId.vue';
+import EmbeddedStyles from '@@/mockComponents/EmbeddedStyles.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
 import SortAttributes from '@@/mockComponents/SortAttributes.vue';
@@ -113,9 +114,9 @@ describe('Cheerio Manipulation', () => {
 
   describe('InlineFunctions.vue', () => {
     test('Functions kept', async () => {
-      globalThis.vueSnapshots = {
-        clearInlineFunctions: false
-      };
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
+      globalThis.vueSnapshots.clearInlineFunctions = false;
+
       const wrapper = await mount(InlineFunctions);
       const markup = wrapper.html();
 
@@ -152,7 +153,7 @@ describe('Cheerio Manipulation', () => {
 
   describe('SortAttributes.vue', () => {
     test('Sorted', async () => {
-      globalThis.vueSnapshots = { sortAttributes: true };
+      globalThis.vueSnapshots.sortAttributes = true;
 
       const wrapper = await mount(SortAttributes);
       const markup = wrapper.html();
@@ -162,13 +163,30 @@ describe('Cheerio Manipulation', () => {
     });
 
     test('Unsorted', async () => {
-      globalThis.vueSnapshots = { sortAttributes: false };
+      globalThis.vueSnapshots.sortAttributes = false;
 
       const wrapper = await mount(SortAttributes);
       const markup = wrapper.html();
 
       expect(cheerioManipulation(markup))
         .toMatchSnapshot();
+    });
+  });
+
+  describe('EmbeddedStyles.vue', () => {
+    test('Embedded style tag', async () => {
+      const wrapper = await mount(EmbeddedStyles);
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            <style>
+              .example {
+                border: 1px solid #F00;
+              }
+            </style>
+          </div>
+        `);
     });
   });
 
@@ -231,6 +249,7 @@ describe('Cheerio Manipulation', () => {
     });
 
     test('Does not stringify attributes', async () => {
+      globalThis.vueSnapshots.formatting.escapeInnerText = false;
       globalThis.vueSnapshots.stringifyAttributes = false;
 
       const wrapper = await mount(StringifyAttributes);

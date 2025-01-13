@@ -2,6 +2,9 @@
  * @file Utility functions imported by other files.
  */
 
+import * as cheerio from 'cheerio';
+import * as htmlparser2 from 'htmlparser2';
+
 /**
  * Determines if the passed in value is markup.
  *
@@ -126,17 +129,68 @@ export const stringify = function (obj) {
  */
 export const escapeHtml = function (value) {
   // https://html.spec.whatwg.org/multipage/named-characters.html
-  const namedHtmlEntityMap = {
-    '\xa0': '&nbsp;',
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;'
-  };
-  const charactersToEncode = Object.keys(namedHtmlEntityMap);
-  const regexp = new RegExp('[' + charactersToEncode.join('') + ']', 'g');
-  const encode = function (character) {
-    return namedHtmlEntityMap[character];
-  };
+  return value
+    .replaceAll('\xa0', '&nbsp;');
+};
 
-  return value.replace(regexp, encode);
+/**
+ * Unescapes special HTML characters.
+ *
+ * @example
+ * '&lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;'
+ * becomes
+ * '<div title="text">1 & 2</div>'
+ *
+ * @param  {string} value  Any input string.
+ * @return {string}        The same string, but with decoded HTML entities.
+ */
+export const unescapeHtml = function (value) {
+  return value
+    .replaceAll('&#xA;', '\n')
+    .replaceAll('&nbsp;', '\xa0')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&amp;', '&')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>');
+};
+
+/**
+ * https://github.com/fb55/DomHandler
+ * https://github.com/fb55/htmlparser2/wiki/Parser-options
+ *
+ * @type {object}
+ */
+const xmlOptions = {
+  decodeEntities: false,
+  lowerCaseAttributeNames: false,
+  normalizeWhitespace: false,
+  recognizeSelfClosing: false,
+  xmlMode: false
+};
+
+/**
+ * Takes in a string of HTML markup and returns an
+ * Abstract Syntax Tree.
+ *
+ * @param  {string} markup  Any arbitrary XML/HTML
+ * @return {object}         An htmlparser2 AST
+ */
+export const parseMarkup = function (markup) {
+  const ast = htmlparser2.parseDOM(markup, xmlOptions);
+  return ast;
+};
+
+/**
+ * Creates a cheerio ($) object from the html for DOM manipulation.
+ *
+ * @param  {string} markup  The html markup to use for the cheerio object
+ * @return {object}         The cheerio object
+ */
+export const cheerioize = function (markup) {
+  const ast = parseMarkup(markup);
+  const cheerioOptions = {
+    xml: xmlOptions
+  };
+  const $ = cheerio.load(ast, cheerioOptions);
+  return $;
 };

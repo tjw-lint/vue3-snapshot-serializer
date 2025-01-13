@@ -19,7 +19,8 @@
  * @typedef  {object}       FORMATTING
  * @property {number}       [attributesPerLine=1]                      How many attributes are allowed on the same line as the starting tag.
  * @property {boolean}      [emptyAttributes=true]                     Determines whether empty attributes will include `=""`. If false then `<span class="" id=""></span>`` becomes `<span class id></span>`.
- * @property {boolean}      [escapeInnerText=true]                     Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<`.
+ * @property {boolean}      [escapeAttributes=false]                   Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<` in HTML attributes.
+ * @property {boolean}      [escapeInnerText=true]                     Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<` in HTML text nodes.
  * @property {boolean}      [selfClosingTag=false]                     Converts `<div></div>` to `<div />` or `<p class="x"></p>` to `<p class="x" />`. Does not affect void elements (like `<input>`), use the `voidElements` setting for them.
  * @property {string[]}     [tagsWithWhitespacePreserved=['a','pre']]  Does not add returns and indentation to the inner content of these tags when formatting. Accepts an array of tags name strings.
  * @property {VOIDELEMENTS} [voidElements='xhtml']                     Determines how void elements are closed. Accepts 'html' for `<input>`, 'xhtml' for `<input />`, and 'xml' for `<input></input>`.
@@ -47,6 +48,17 @@
  * @property {POSTPROCESSOR} [postProcessor]               This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
  * @property {FORMATTER}     [formatter='diffable']        Function to use for formatting the markup output. Accepts 'none', 'diffable', or a function. If using a custom function it will be handed a string of markup and must return a string (not a promise).
  * @property {FORMATTING}    [formatting]                  An object containing settings specific to the "diffable" formatter.
+ */
+
+/** @typedef {'root'|'tag'|'text'|'comment'|'doctype'|'cdata'|'script'|'style'|'directive'} ASTNODETYPE */
+
+/**
+ * @typedef  {object}      ASTNODE
+ * @property {ASTNODETYPE} type       The node type
+ * @property {string}      [name]     Any tag name ('h1', 'div', 'svg', 'my-component-stub')
+ * @property {ASTNODE[]}   children   Array of nested AST nodes
+ * @property {string}      data       The value of the node, if it is a comment or text
+ * @property {object}      [attribs]  The attributes if the node is a tag, ex: { class: 'a b', title: 'c' }
  */
 
 export const types = {};
