@@ -10,6 +10,7 @@ export const booleanDefaults = {
   verbose: true,
   addInputValues: true,
   sortAttributes: true,
+  sortClasses: true,
   stringifyAttributes: true,
   removeServerRendered: true,
   removeDataVId: true,

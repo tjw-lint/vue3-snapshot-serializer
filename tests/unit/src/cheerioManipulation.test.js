@@ -7,6 +7,7 @@ import EmbeddedStyles from '@@/mockComponents/EmbeddedStyles.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
 import SortAttributes from '@@/mockComponents/SortAttributes.vue';
+import SortClasses from '@@/mockComponents/SortClasses.vue';
 import StringifyAttributes from '@@/mockComponents/StringifyAttributes.vue';
 
 describe('Cheerio Manipulation', () => {
@@ -166,6 +167,28 @@ describe('Cheerio Manipulation', () => {
       globalThis.vueSnapshots.sortAttributes = false;
 
       const wrapper = await mount(SortAttributes);
+      const markup = wrapper.html();
+
+      expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
+    });
+  });
+
+  describe('SortClasses.vue', () => {
+    test('Sorted', async () => {
+      globalThis.vueSnapshots.sortClasses = true;
+
+      const wrapper = await mount(SortClasses);
+      const markup = wrapper.html();
+
+      expect(cheerioManipulation(markup))
+        .toMatchSnapshot();
+    });
+
+    test('Unsorted', async () => {
+      globalThis.vueSnapshots.sortClasses = false;
+
+      const wrapper = await mount(SortClasses);
       const markup = wrapper.html();
 
       expect(cheerioManipulation(markup))
