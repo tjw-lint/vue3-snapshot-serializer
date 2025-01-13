@@ -116,7 +116,7 @@ describe('Format markup', () => {
     const nbsp = '\xa0';
     const input = [
       '<pre><code>',
-      '&lt;div title="text"&gt;1 &amp; 2&nbsp;+' + nbsp + '3&lt;/div&gt;',
+      '&lt;div title=&quot;text&quot;&gt;1 &amp; 2&nbsp;+' + nbsp + '3&lt;/div&gt;',
       '</code></pre>'
     ].join('');
 
@@ -125,7 +125,7 @@ describe('Format markup', () => {
 
       expect(input)
         .toMatchInlineSnapshot(`
-          <pre><code>&lt;div title="text"&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
+          <pre><code>&lt;div title=&quot;text&quot;&gt;1 &amp; 2&nbsp;+&nbsp;3&lt;/div&gt;</code></pre>
         `);
     });
 

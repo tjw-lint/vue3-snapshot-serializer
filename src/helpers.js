@@ -148,6 +148,7 @@ export const unescapeHtml = function (value) {
   return value
     .replaceAll('&#xA;', '\n')
     .replaceAll('&nbsp;', '\xa0')
+    .replaceAll('&quot;', '"')
     .replaceAll('&amp;', '&')
     .replaceAll('&lt;', '<')
     .replaceAll('&gt;', '>');
