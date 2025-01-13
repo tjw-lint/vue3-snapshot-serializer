@@ -47,13 +47,20 @@ export const diffableFormatter = function (markup) {
    */
   const formatNode = (node, indent) => {
     indent = indent || 0;
-    const isTag = !!(node.type === 'tag' && node.name);
+    const tagTypes = [
+      'cdata',
+      'doctype',
+      'script',
+      'style',
+      'tag'
+    ];
+    const isTag = !!(tagTypes.includes(node.type) && node.name);
     let tagName;
     if (isTag) {
       tagName = node.name;
       const matchingSvgName = lowerToUppercaseSvgTagNames[tagName.toLowerCase()];
       if (matchingSvgName) {
-        // AST lowercases all tag names, but some SVG filter tags are multi-word,
+        // AST lowercases all tag names, but some SVG tags are multi-word,
         // like "<feColorMatrix>" rather than "<fecolormatrix>".
         tagName = matchingSvgName;
       }
