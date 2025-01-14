@@ -281,6 +281,7 @@ describe('Format markup', () => {
     test('Enabled', async () => {
       const wrapper = mount(MyComponent);
 
+      globalThis.vueSnapshots.formatting.classesPerLine = 50;
       globalThis.vueSnapshots.formatting.emptyAttributes = true;
 
       expect(wrapper)
@@ -299,6 +300,7 @@ describe('Format markup', () => {
     test('Disabled', async () => {
       const wrapper = mount(MyComponent);
 
+      globalThis.vueSnapshots.formatting.classesPerLine = 50;
       globalThis.vueSnapshots.formatting.emptyAttributes = false;
 
       expect(wrapper)
@@ -742,6 +744,7 @@ describe('Format markup', () => {
 
     test('Attributes Per Line set to 0', async () => {
       const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 50;
       globalThis.vueSnapshots.formatting.attributesPerLine = 0;
 
       expect(wrapper)
@@ -764,6 +767,7 @@ describe('Format markup', () => {
 
     test('Attributes Per Line set to Default', async () => {
       const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 50;
       globalThis.vueSnapshots.formatting.attributesPerLine = 1;
 
       expect(wrapper)
@@ -784,6 +788,7 @@ describe('Format markup', () => {
 
     test('Attributes Per Line set to 2', async () => {
       const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 50;
       globalThis.vueSnapshots.formatting.attributesPerLine = 2;
 
       expect(wrapper)
@@ -801,6 +806,7 @@ describe('Format markup', () => {
 
     test('Attributes Per Line set to 3', async () => {
       const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 50;
       globalThis.vueSnapshots.formatting.attributesPerLine = 3;
 
       expect(wrapper)
@@ -809,6 +815,154 @@ describe('Format markup', () => {
           <span class="cow dog"></span>
           <span class="cow dog" id="animals"></span>
           <span class="cow dog" id="animals" title="Moo"></span>
+        `);
+    });
+  });
+
+  describe('Classes Per Line', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: `<span></span>
+        <span class="cow"></span>
+        <span class="cow dog"></span>
+        <span class="cow dog pig"></span>`
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Classes Per Line set to 0', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="
+            cow
+          "></span>
+          <span class="
+            cow
+            dog
+          "></span>
+          <span class="
+            cow
+            dog
+            pig
+          "></span>
+        `);
+    });
+
+    test('Classes Per Line set to Default', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="cow"></span>
+          <span class="
+            cow
+            dog
+          "></span>
+          <span class="
+            cow
+            dog
+            pig
+          "></span>
+        `);
+    });
+
+    test('Classes Per Line set to 2', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 2;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="cow"></span>
+          <span class="cow dog"></span>
+          <span class="
+            cow
+            dog
+            pig
+          "></span>
+        `);
+    });
+
+    test('Classes Per Line set to 3', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.classesPerLine = 3;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span class="cow"></span>
+          <span class="cow dog"></span>
+          <span class="cow dog pig"></span>
+        `);
+    });
+  });
+
+  describe('Classes and attributes per line', () => {
+    let MyComponent;
+
+    beforeEach(() => {
+      MyComponent = {
+        template: '<span class="cow dog pig" title="a"></span>'
+      };
+      globalThis.vueSnapshots.formatter = 'diffable';
+    });
+
+    test('Defaults', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 1;
+      globalThis.vueSnapshots.formatting.classesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span
+            class="
+              cow
+              dog
+              pig
+            "
+            title="a"
+          ></span>
+        `);
+    });
+
+    test('Weird, but accurate', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 2;
+      globalThis.vueSnapshots.formatting.classesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span class="
+            cow
+            dog
+            pig
+          " title="a"></span>
+        `);
+    });
+
+    test('Double zero', async () => {
+      MyComponent = {
+        template: '<span class="cow"></span>'
+      };
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 0;
+      globalThis.vueSnapshots.formatting.classesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span
+            class="
+              cow
+            "
+          ></span>
         `);
     });
   });

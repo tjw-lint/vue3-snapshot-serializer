@@ -184,6 +184,25 @@ export const diffableFormatter = function (markup) {
           } else {
             attributeValue = unescapeHtml(attributeValue);
           }
+          if (attribute.name === 'class') {
+            const classes = attributeValue.split(' ');
+            const classesOnNewLine = classes.length > options.classesPerLine;
+            if (classesOnNewLine) {
+              const multiLineClasses = classes
+                .map((className) => {
+                  if (isNewLine) {
+                    return '\n' + '  '.repeat(indent + 2) + className;
+                  }
+                  return '\n' + '  '.repeat(indent + 1) + className;
+                })
+                .join('');
+              if (isNewLine) {
+                attributeValue = multiLineClasses + '\n' + '  '.repeat(indent + 1);
+              } else {
+                attributeValue = multiLineClasses + '\n' + '  '.repeat(indent);
+              }
+            }
+          }
           fullAttribute = attribute.name + '="' + attributeValue + '"';
         } else {
           fullAttribute = attribute.name;

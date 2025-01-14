@@ -25,6 +25,7 @@ describe('Load options', () => {
     formatting: {
       ...formattingBooleanDefaults,
       attributesPerLine: 1,
+      classesPerLine: 1,
       tagsWithWhitespacePreserved: ['a', 'pre'],
       voidElements: 'xhtml'
     }
@@ -319,6 +320,46 @@ describe('Load options', () => {
         .toHaveBeenCalledWith([
           'Vue 3 Snapshot Serializer:',
           'global.vueSnapshots.formatting.attributesPerLine',
+          'must be a whole number.'
+        ].join(' '));
+    });
+  });
+
+  describe('Diffable Formatter classesPerLine Options', () => {
+    beforeEach(() => {
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.formatting = {};
+    });
+
+    const testCases = [
+      [-1, 1],
+      [0, 0],
+      ['', 1],
+      [true, 1],
+      [100, 100],
+      [7.5, 1],
+      [null, 1]
+    ];
+
+    test.each(testCases)('Classes per line when value is "%s"', (value, expected) => {
+      globalThis.vueSnapshots.formatting.classesPerLine = value;
+      loadOptions();
+
+      expect(global.vueSnapshots.formatting.classesPerLine)
+        .toEqual(expected);
+    });
+
+    test('Logger message', () => {
+      globalThis.vueSnapshots.formatting.classesPerLine = 3.5;
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting.classesPerLine)
+        .toEqual(1);
+
+      expect(console.info)
+        .toHaveBeenCalledWith([
+          'Vue 3 Snapshot Serializer:',
+          'global.vueSnapshots.formatting.classesPerLine',
           'must be a whole number.'
         ].join(' '));
     });
