@@ -162,6 +162,21 @@ export const loadOptions = function () {
       globalThis.vueSnapshots.formatting.attributesPerLine = 1;
     }
 
+    // Formatting - Classes Per Line
+    if (
+      typeof(globalThis.vueSnapshots.formatting.classesPerLine) !== 'number' ||
+      globalThis.vueSnapshots.formatting.classesPerLine < 0 ||
+      globalThis.vueSnapshots.formatting.classesPerLine % 1 !== 0
+    ) {
+      if (globalThis.vueSnapshots.formatting.classesPerLine !== undefined) {
+        logger([
+          'global.vueSnapshots.formatting.classesPerLine',
+          'must be a whole number.'
+        ].join(' '));
+      }
+      globalThis.vueSnapshots.formatting.classesPerLine = 1;
+    }
+
     // Formatting - Void Elements
     if (!ALLOWED_VOID_ELEMENTS.includes(globalThis.vueSnapshots.formatting.voidElements)) {
       if (globalThis.vueSnapshots.formatting.voidElements !== undefined) {
@@ -197,6 +212,7 @@ export const loadOptions = function () {
   const permittedFormattingKeys = [
     ...Object.keys(formattingBooleanDefaults),
     'attributesPerLine',
+    'classesPerLine',
     'tagsWithWhitespacePreserved',
     'voidElements',
     'whiteSpacePreservedOption'

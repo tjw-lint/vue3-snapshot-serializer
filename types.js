@@ -18,6 +18,7 @@
 /**
  * @typedef  {object}       FORMATTING
  * @property {number}       [attributesPerLine=1]                      How many attributes are allowed on the same line as the starting tag.
+ * @property {number}       [classesPerLine=1]                         How many classes are allowed on the same line as the class attribute.
  * @property {boolean}      [emptyAttributes=true]                     Determines whether empty attributes will include `=""`. If false then `<span class="" id=""></span>`` becomes `<span class id></span>`.
  * @property {boolean}      [escapeAttributes=false]                   Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<` in HTML attributes.
  * @property {boolean}      [escapeInnerText=true]                     Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<` in HTML text nodes.
