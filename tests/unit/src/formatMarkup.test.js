@@ -928,8 +928,6 @@ describe('Format markup', () => {
           </p>
         `);
     });
-
-
   });
 
   describe('Classes and attributes per line', () => {
