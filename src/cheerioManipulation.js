@@ -265,6 +265,29 @@ const sortAttributes = function ($) {
 };
 
 /**
+ * Sorts the classes in the class attribute of every HTML element to make diffs easier to read.
+ *
+ * @example
+ * <div class="cat bat"><h1 class="frog zebra dog cow">Text</h1></div>
+ * <div class="bat cat"><h1 class="cow dog frog zebra">Text</h1></div>
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+const sortClasses = function ($) {
+  if (globalThis.vueSnapshots?.sortClasses) {
+    $('*').each(function (index, element) {
+      const classes = element?.attribs?.class?.trim();
+      if (classes) {
+        element.attribs.class = classes
+          .split(' ')
+          .sort()
+          .join(' ');
+      }
+    });
+  }
+};
+
+/**
  * Applies desired DOM manipulations based on
  * global.vueSnapshots settings for improved snapshots.
  *
@@ -300,6 +323,7 @@ export const cheerioManipulation = function (vueWrapper) {
   clearAttributes($);
   clearInlineFunctions($);
   sortAttributes($);
+  sortClasses($);
 
   removeSerializerKeys($, vueWrapper);
   return $.html();
