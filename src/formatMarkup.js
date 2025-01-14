@@ -185,7 +185,7 @@ export const diffableFormatter = function (markup) {
             attributeValue = unescapeHtml(attributeValue);
           }
           if (attribute.name === 'class') {
-            const classes = attributeValue.split(' ');
+            const classes = attributeValue.trim().split(' ').filter(Boolean);
             const classesOnNewLine = classes.length > options.classesPerLine;
             if (classesOnNewLine) {
               const multiLineClasses = classes

@@ -903,6 +903,33 @@ describe('Format markup', () => {
           <span class="cow dog pig"></span>
         `);
     });
+
+    test('Classes Per Line set to 0 with no classes', async () => {
+      MyComponent = {
+        template: '<p class="">Empty attribute example</p>'
+      };
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.emptyAttributes = true;
+      globalThis.vueSnapshots.formatting.classesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <p class="">
+            Empty attribute example
+          </p>
+        `);
+
+      globalThis.vueSnapshots.formatting.emptyAttributes = false;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <p class>
+            Empty attribute example
+          </p>
+        `);
+    });
+
+
   });
 
   describe('Classes and attributes per line', () => {
