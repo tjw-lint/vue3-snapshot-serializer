@@ -15,12 +15,12 @@ import {
   lowerToUppercaseSvgTagNames,
   SELF_CLOSING_SVG_ELEMENTS,
   VOID_ELEMENTS
-} from './constants.js';
+} from '../constants.js';
 import {
   escapeHtml,
   parseMarkup,
   unescapeHtml
-} from './helpers.js';
+} from '../helpers.js';
 
 /**
  * Uses htmlparser2 to create an AST from the markup.
