@@ -35,14 +35,6 @@ export default defineConfig({
     },
     environment: 'happy-dom',
     globals: true,
-    reporters: [
-      [
-        'default',
-        {
-          summary: false
-        }
-      ]
-    ],
     root: '.',
     setupFiles: [
       './tests/unit/setup.js'
