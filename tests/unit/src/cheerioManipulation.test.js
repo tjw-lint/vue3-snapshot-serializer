@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { cheerioManipulation } from '@/cheerioManipulation.js';
 
 import DataVId from '@@/mockComponents/DataVId.vue';
+import CheckboxesAndRadios from '@@/mockComponents/CheckboxesAndRadios.vue';
 import EmbeddedStyles from '@@/mockComponents/EmbeddedStyles.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
@@ -232,6 +233,47 @@ describe('Cheerio Manipulation', () => {
 
       expect(wrapper)
         .toMatchSnapshot();
+    });
+
+    test('Checkboxes and radios', async () => {
+      const wrapper = await mount(CheckboxesAndRadios);
+      globalThis.vueSnapshots.addInputValues = true;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div>
+            <input
+              checked="true"
+              type="checkbox"
+              value="'on'"
+            />
+            <input
+              checked="false"
+              type="checkbox"
+              value="'on'"
+            />
+            <fieldset>
+              <input
+                checked="false"
+                name="animal"
+                type="radio"
+                value="'cat'"
+              />
+              <input
+                checked="true"
+                name="animal"
+                type="radio"
+                value="'cow'"
+              />
+              <input
+                checked="false"
+                name="animal"
+                type="radio"
+                value="'dog'"
+              />
+            </fieldset>
+          </div>
+        `);
     });
   });
 
