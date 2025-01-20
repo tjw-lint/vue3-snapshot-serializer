@@ -31,6 +31,11 @@ export const formattingBooleanDefaults = {
   escapeInnerText: true,
   selfClosingTag: false
 };
+const ALLOWED_FORMATTERS = [
+  'classic',
+  'diffable',
+  'none'
+];
 const TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS = ['a', 'pre'];
 const VOID_ELEMENTS_DEFAULT = 'xhtml';
 const ALLOWED_VOID_ELEMENTS = Object.freeze([
@@ -38,6 +43,13 @@ const ALLOWED_VOID_ELEMENTS = Object.freeze([
   'xhtml',
   'xml'
 ]);
+const CLASSIC_FORMATTING_INDENT_CHAR_DEFAULT = ' ';
+const CLASSIC_FORMATTING_INDENT_INNER_HTML_DEFAULT = true;
+const CLASSIC_FORMATTING_INDENT_SIZE_DEFAULT = 2;
+const CLASSIC_FORMATTING_INLINE_DEFAULT = [];
+const CLASSIC_FORMATTING_SEP_DEFAULT = '\n';
+const CLASSIC_FORMATTING_UNFORMATTED_DEFAULT = ['code', 'pre'];
+
 
 /**
  * Loads the default settings if valid settings are not supplied.
@@ -87,7 +99,7 @@ export const loadOptions = function () {
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
   // Formatter
-  if (!['none', 'diffable'].includes(globalThis.vueSnapshots.formatter)) {
+  if (!ALLOWED_FORMATTERS.includes(globalThis.vueSnapshots.formatter)) {
     if (globalThis.vueSnapshots.formatter) {
       logger('Allowed values for global.vueSnapshots.formatter are \'none\' and \'diffable\'.');
     }
@@ -103,6 +115,14 @@ export const loadOptions = function () {
     Object.keys(globalThis.vueSnapshots.formatting).length
   ) {
     logger('When setting the formatter to anything other than \'diffable\', all formatting options are ignored.');
+  }
+
+  if (
+    globalThis.vueSnapshots.formatter !== 'classic' &&
+    typeof(globalThis.vueSnapshots.classicFormatting) === 'object' &&
+    Object.keys(globalThis.vueSnapshots.classicFormatting).length
+  ) {
+    logger('When setting the formatter to anything other than \'classic\', all classicFormatting options are ignored.');
   }
 
   // Formatting
@@ -191,12 +211,40 @@ export const loadOptions = function () {
     delete globalThis.vueSnapshots.formatting;
   }
 
+  // Classic Formatting
+  if (globalThis.vueSnapshots.formatter === 'classic') {
+    if (!globalThis.vueSnapshots.classicFormatting) {
+      globalThis.vueSnapshots.classicFormatting = {};
+    }
+    if (!globalThis.vueSnapshots.classicFormatting.indent_char) {
+      globalThis.vueSnapshots.classicFormatting.indent_char = CLASSIC_FORMATTING_INDENT_CHAR_DEFAULT;
+    }
+    if (typeof(globalThis.vueSnapshots.classicFormatting.indent_inner_html) !== 'boolean') {
+      globalThis.vueSnapshots.classicFormatting.indent_inner_html = CLASSIC_FORMATTING_INDENT_INNER_HTML_DEFAULT;
+    }
+    if (typeof(globalThis.vueSnapshots.classicFormatting.indent_size) !== 'number') {
+      globalThis.vueSnapshots.classicFormatting.indent_size = CLASSIC_FORMATTING_INDENT_SIZE_DEFAULT;
+    }
+    if (!Array.isArray(globalThis.vueSnapshots.classicFormatting.inline)) {
+      globalThis.vueSnapshots.classicFormatting.inline = CLASSIC_FORMATTING_INLINE_DEFAULT;
+    }
+    if (typeof(globalThis.vueSnapshots.classicFormatting.sep) !== 'string') {
+      globalThis.vueSnapshots.classicFormatting.sep = CLASSIC_FORMATTING_SEP_DEFAULT;
+    }
+    if (!Array.isArray(globalThis.vueSnapshots.classicFormatting.unformatted)) {
+      globalThis.vueSnapshots.classicFormatting.unformatted = CLASSIC_FORMATTING_UNFORMATTED_DEFAULT;
+    }
+  } else {
+    delete globalThis.vueSnapshots.classicFormatting;
+  }
+
   if (typeof(globalThis.vueSnapshots.postProcessor) !== 'function') {
     if (globalThis.vueSnapshots.postProcessor) {
       logger('The postProcessor option must be a function that returns a string, or undefined.');
     }
     delete globalThis.vueSnapshots.postProcessor;
   }
+
 
   /**
    * Clean up settings
@@ -205,6 +253,7 @@ export const loadOptions = function () {
   const permittedRootKeys = [
     ...Object.keys(booleanDefaults),
     'attributesToClear',
+    'classicFormatting',
     'formatter',
     'formatting',
     'postProcessor'

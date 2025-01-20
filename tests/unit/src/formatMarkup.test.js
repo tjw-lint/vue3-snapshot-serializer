@@ -58,6 +58,25 @@ describe('Format markup', () => {
       .not.toHaveBeenCalled();
   });
 
+  test('Uses classing formatting', () => {
+    globalThis.vueSnapshots.formatter = 'classic';
+
+    expect(unformattedMarkup)
+      .toMatchInlineSnapshot(`
+        <div id="header">
+          <h1>Hello World!</h1>
+          <ul class="list" id="main-list">
+            <li>
+              <a class="link" href="#">My HTML</a>
+            </li>
+          </ul>
+        </div>
+      `);
+
+    expect(console.info)
+      .not.toHaveBeenCalled();
+  });
+
   test('Applies custom formatting', () => {
     globalThis.vueSnapshots.postProcessor = function (input) {
       return input.toUpperCase();
