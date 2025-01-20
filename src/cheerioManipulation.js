@@ -90,6 +90,9 @@ const addInputValues = function ($, vueWrapper) {
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
       const value = vnode.element.value;
       element.attribs.value = swapQuotes(stringify(value));
+      if (['checkbox', 'radio'].includes(element.attribs.type)) {
+        element.attribs.checked = String(vnode.element.checked);
+      }
     });
   }
 };
