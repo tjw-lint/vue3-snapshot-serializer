@@ -74,7 +74,8 @@ describe('Format markup', () => {
       `);
 
     expect(console.info)
-      .not.toHaveBeenCalled();});
+      .not.toHaveBeenCalled();
+  });
 
   test('Applies custom formatting', () => {
     globalThis.vueSnapshots.postProcessor = function (input) {

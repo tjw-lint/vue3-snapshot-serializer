@@ -10,7 +10,8 @@ describe('Load options', () => {
   beforeEach(() => {
     console.info = vi.fn();
     globalThis.vueSnapshots = {
-      formatting: {}
+      formatting: {},
+      classicFormatting: {}
     };
   });
 
@@ -362,6 +363,36 @@ describe('Load options', () => {
           'global.vueSnapshots.formatting.classesPerLine',
           'must be a whole number.'
         ].join(' '));
+    });
+  });
+
+  describe('Classic formatter', () => {
+    test('Logs that classic formatting is ignored', () => {
+      globalThis.vueSnapshots.formatter = 'none';
+      globalThis.vueSnapshots.classicFormatting.sep = '/r/n';
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: When setting the formatter to anything other than \'classic\', all classicFormatting options are ignored.');
+
+      expect(globalThis.vueSnapshots.classicFormatting)
+        .toEqual(undefined);
+    });
+
+    test('Loads default settings for classic formatter', () => {
+      globalThis.vueSnapshots.classicFormatting = {};
+      globalThis.vueSnapshots.formatter = 'classic';
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.classicFormatting)
+        .toEqual({
+          indent_char: ' ',
+          indent_inner_html: true,
+          indent_size: 2,
+          inline: [],
+          sep: '\n',
+          unformatted: ['code', 'pre']
+        });
     });
   });
 
