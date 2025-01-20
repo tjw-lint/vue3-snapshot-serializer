@@ -31,6 +31,11 @@ export const formattingBooleanDefaults = {
   escapeInnerText: true,
   selfClosingTag: false
 };
+const ALLOWED_FORMATTERS = [
+  'classic',
+  'diffable',
+  'none'
+];
 const TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS = ['a', 'pre'];
 const VOID_ELEMENTS_DEFAULT = 'xhtml';
 const ALLOWED_VOID_ELEMENTS = Object.freeze([
@@ -94,7 +99,7 @@ export const loadOptions = function () {
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
   // Formatter
-  if (!['none', 'diffable'].includes(globalThis.vueSnapshots.formatter)) {
+  if (!ALLOWED_FORMATTERS.includes(globalThis.vueSnapshots.formatter)) {
     if (globalThis.vueSnapshots.formatter) {
       logger('Allowed values for global.vueSnapshots.formatter are \'none\' and \'diffable\'.');
     }
@@ -110,6 +115,14 @@ export const loadOptions = function () {
     Object.keys(globalThis.vueSnapshots.formatting).length
   ) {
     logger('When setting the formatter to anything other than \'diffable\', all formatting options are ignored.');
+  }
+
+  if (
+    globalThis.vueSnapshots.formatter !== 'classic' &&
+    typeof(globalThis.vueSnapshots.classicFormatting) === 'object' &&
+    Object.keys(globalThis.vueSnapshots.classicFormatting).length
+  ) {
+    logger('When setting the formatter to anything other than \'classic\', all classicFormatting options are ignored.');
   }
 
   // Formatting
