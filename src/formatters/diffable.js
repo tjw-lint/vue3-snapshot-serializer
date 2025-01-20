@@ -7,8 +7,8 @@
  * the global vueSnapshots.formatting settings.
  */
 
-/** @typedef {import('../types.js').ASTNODE} ASTNODE */
-/** @typedef {import('../types.js').FORMATTING} FORMATTING */
+/** @typedef {import('../../types.js').ASTNODE} ASTNODE */
+/** @typedef {import('../../types.js').FORMATTING} FORMATTING */
 
 import {
   ESCAPABLE_RAW_TEXT_ELEMENTS,

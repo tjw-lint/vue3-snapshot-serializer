@@ -6,8 +6,9 @@
  * we apply custom formatting based on the global vueSnapshots.formatting settings.
  */
 
-import { logger } from './helpers.js';
+import { classicFormatter } from './formatters/classic.js';
 import { diffableFormatter } from './formatters/diffable.js';
+import { logger } from './helpers.js';
 
 /**
  * Applies the usere's supplied formatting function, or uses the built-in
@@ -20,6 +21,9 @@ export const formatMarkup = function (markup) {
   if (globalThis.vueSnapshots) {
     if (globalThis.vueSnapshots.formatter === 'diffable') {
       markup = diffableFormatter(markup);
+    }
+    if (globalThis.vueSnapshots.formatter === 'classic') {
+      markup = classicFormatter(markup);
     }
     if (typeof(globalThis.vueSnapshots.postProcessor) === 'function') {
       markup = globalThis.vueSnapshots.postProcessor(markup);
