@@ -16,26 +16,26 @@
 /** @typedef {'auto'|'force'|'force-aligned'|'force-expand-multiline'|'aligned-multiple'|'preserve'|'preserve-aligned'} WRAPATTRIBUTES */
 
 /**
- * @typedef  {object}          CLASSICFORMATTING
- * @property {string[]}        [content_unformatted=['pre','textarea']]  Tags where their inner content should skip formatting.
- * @property {string[]}        [extra_liners=['head','body','/html']]    Array of tags that get extra lines.
- * @property {string}          [indent_char=' ']                         The character to use for indentation, like a space or tab.
- * @property {boolean}         [indent_body_inner_html=true]             Breaks up inner HTML to multiple lines with indentation for the body tag.
- * @property {boolean}         [indent_handlebars=true]                  Applies indentation to handlebars syntax.
- * @property {boolean}         [indent_head_inner_html=true]             Breaks up inner HTML to multiple lines with indentation for the head tag.
- * @property {boolean}         [indent_inner_html=true]                  Breaks up inner HTML to multiple lines with indentation.
- * @property {INDENTSCRIPTS}   [indent_scripts='normal']                 How to handle script indentation.
- * @property {number}          [indent_size=2]                           How many indentation characters to use.
- * @property {string[]}        [inline=[]]                               Array of string tag names to represent inline (vs block) elements.
- * @property {boolean}         [inline_custom_elements=true]             Whether custom elements should be counted as inline.
- * @property {string}          [sep='\n']                                The characters to use for new line separtors.
- * @property {string[]}        [templating=['auto']]                     What templating languages to support ('django', 'erb', 'handlebars', 'php') defaults to all.
- * @property {string[]}        [unformatted=['code','pre']]              Array of string tag names to skip formatting for.
- * @property {stirng}          [unformatted_content_delimiter]           String for delimiting unformated content.
- * @property {string[]}        [void_elements]                           Defaults to ['area','base','br','col','embed','hr','img','input','keygen','link','menuitem','meta','param','source','track','wbr','!doctype','?xml','basefont','isindex'].
- * @property {WRAPATTRIBUTES}  [wrap_attributes='auto']                  Settings for attribute alignment.
- * @property {number}          [wrap_attributes_min_attrs=2]             When to wrap attributes.
- * @property {number}          [wrap_attributes_indent_size]             Uses the indent_size if not specified.
+ * @typedef  {object}         CLASSICFORMATTING
+ * @property {string[]}       [content_unformatted=['pre','textarea']]  Tags where their inner content should skip formatting.
+ * @property {string[]}       [extra_liners=['head','body','/html']]    Array of tags that get extra lines.
+ * @property {string}         [indent_char=' ']                         The character to use for indentation, like a space or tab.
+ * @property {boolean}        [indent_body_inner_html=true]             Breaks up inner HTML to multiple lines with indentation for the body tag.
+ * @property {boolean}        [indent_handlebars=true]                  Applies indentation to handlebars syntax.
+ * @property {boolean}        [indent_head_inner_html=true]             Breaks up inner HTML to multiple lines with indentation for the head tag.
+ * @property {boolean}        [indent_inner_html=true]                  Breaks up inner HTML to multiple lines with indentation.
+ * @property {INDENTSCRIPTS}  [indent_scripts='normal']                 How to handle script indentation.
+ * @property {number}         [indent_size=2]                           How many indentation characters to use.
+ * @property {string[]}       [inline=[]]                               Array of string tag names to represent inline (vs block) elements.
+ * @property {boolean}        [inline_custom_elements=true]             Whether custom elements should be counted as inline.
+ * @property {string}         [sep='\n']                                The characters to use for new line separtors.
+ * @property {string[]}       [templating=['auto']]                     What templating languages to support ('django', 'erb', 'handlebars', 'php') defaults to all.
+ * @property {string[]}       [unformatted=['code','pre']]              Array of string tag names to skip formatting for.
+ * @property {string}         [unformatted_content_delimiter]           String for delimiting unformated content.
+ * @property {string[]}       [void_elements]                           Defaults to ['area','base','br','col','embed','hr','img','input','keygen','link','menuitem','meta','param','source','track','wbr','!doctype','?xml','basefont','isindex'].
+ * @property {WRAPATTRIBUTES} [wrap_attributes='auto']                  Settings for attribute alignment.
+ * @property {number}         [wrap_attributes_min_attrs=2]             When to wrap attributes.
+ * @property {number}         [wrap_attributes_indent_size]             Uses the indent_size if not specified.
  */
 
 /** @typedef {'diffable'|'classic'|'none'} FORMATTER */
