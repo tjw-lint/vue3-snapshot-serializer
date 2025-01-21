@@ -118,17 +118,24 @@ export const loadOptions = function () {
               if (capitals.split('').includes(character)) {
                 return '-' + character.toLowerCase();
               }
-              const cssSyntaxTokens = '.#*{}:';
+              const cssSyntaxTokens = '.#*{}';
               if (cssSyntaxTokens.includes(character)) {
                 return;
               }
               const attributeSelectorTokens = '[]';
-              if (attributeSelectorTokens.includes(character)) {
+              const space = ' ';
+              if (
+                character === space ||
+                attributeSelectorTokens.includes(character)
+              ) {
                 return '_';
               }
               return '-';
             })
             .join('')
+            .split('-')
+            .filter(Boolean)
+            .join('-')
         };
       } else {
         logger('If using "stubs" as an array, all values must be a string of a CSS selector.');

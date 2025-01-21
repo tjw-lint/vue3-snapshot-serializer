@@ -325,11 +325,15 @@ describe('Cheerio Manipulation', () => {
   });
 
   describe('Stubs', () => {
-    const input = [
-      '<div class="artichoke" title="value">',
-      '  <span class="food">Vegetables</span>',
-      '</div>'
-    ].join('\n');
+    let input;
+
+    beforeEach(() => {
+      input = [
+        '<div class="artichoke" title="value">',
+        '  <span class="food">Vegetables</span>',
+        '</div>'
+      ].join('\n');
+    });
 
     test('Remove inner HTML', () => {
       globalThis.vueSnapshots.stubs = {
@@ -347,7 +351,7 @@ describe('Cheerio Manipulation', () => {
         `);
     });
 
-    test('Remove attributes', () => {
+    test('Remove all attributes', () => {
       globalThis.vueSnapshots.stubs = {
         '.artichoke': {
           removeAttributes: true
@@ -357,6 +361,23 @@ describe('Cheerio Manipulation', () => {
       expect(input)
         .toMatchInlineSnapshot(`
           <div>
+            <span class="food">
+              Vegetables
+            </span>
+          </div>
+        `);
+    });
+
+    test('Remove specific attributes', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeAttributes: ['class']
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div title="value">
             <span class="food">
               Vegetables
             </span>
@@ -418,6 +439,54 @@ describe('Cheerio Manipulation', () => {
       expect(input)
         .toMatchInlineSnapshot(`
           <artichoke-stub></artichoke-stub>
+        `);
+    });
+
+    test('Stubs multiple DOM nodes', () => {
+      input = [
+        '<ul>',
+        '  <li title="a">A</li>',
+        '  <li title="b">B</li>',
+        '  <li title="c">C</li>',
+        '</ul>'
+      ].join('\n');
+
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['li'];
+      globalThis.vueSnapshots.stubs = {
+        'li:nth-of-type(odd)': {
+          removeAttributes: true
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <ul>
+            <li>A</li>
+            <li title="b">B</li>
+            <li>C</li>
+          </ul>
+        `);
+    });
+
+    test('Complex tag name', () => {
+      input = [
+        '<ul id="a">',
+        '  <li title="a">A</li>',
+        '  <li title="b">B</li>',
+        '  <li title="c">C</li>',
+        '</ul>'
+      ].join('\n');
+
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['li'];
+      globalThis.vueSnapshots.stubs = ['#a li:nth-of-type(odd)'];
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <ul id="a">
+            <a_li-nth-of-type-odd-stub></a_li-nth-of-type-odd-stub>
+            <li title="b">B</li>
+            <a_li-nth-of-type-odd-stub></a_li-nth-of-type-odd-stub>
+          </ul>
         `);
     });
   });
