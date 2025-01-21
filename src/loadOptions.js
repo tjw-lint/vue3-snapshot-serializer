@@ -98,6 +98,104 @@ export const loadOptions = function () {
   }
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
 
+  // Normalize Stubs
+  const stubs = globalThis.vueSnapshots.stubs;
+  const stubsToProcess = {};
+  if (Array.isArray(stubs)) {
+    for (const stub of stubs) {
+      if (typeof(stub) === 'string') {
+        stubsToProcess[stub] = {
+          removeInnerHtml: true,
+          removeAttributes: true,
+          tagName: (stub + '-stub')
+            .split('')
+            .map((character) => {
+              const allowed = 'abcdefghijklmnopqrstuvwxyz-_';
+              if (allowed.split('').includes(character)) {
+                return character;
+              }
+              const capitals = allowed.toUpperCase();
+              if (capitals.split('').includes(character)) {
+                return '-' + character.toLowerCase();
+              }
+              const cssSyntaxTokens = '.#*{}:';
+              if (cssSyntaxTokens.includes(character)) {
+                return;
+              }
+              const attributeSelectorTokens = '[]';
+              if (attributeSelectorTokens.includes(character)) {
+                return '_';
+              }
+              return '-';
+            })
+            .join('')
+        };
+      } else {
+        logger('If using "stubs" as an array, all values must be a string of a CSS selector.');
+      }
+    }
+  } else if (typeof(stubs) === 'object') {
+    for (const selector in stubs) {
+      stubsToProcess[selector] = {};
+      if (typeof(stubs[selector]) === 'string') {
+        stubsToProcess[selector].removeInnerHtml = true;
+        stubsToProcess[selector].removeAttributes = true;
+        stubsToProcess[selector].tagName = stubs[selector];
+      } else if (typeof(stubs[selector]) === 'object') {
+        if (
+          typeof(stubs[selector].removeInnerHtml) === 'boolean' ||
+          stubs[selector].removeInnerHtml === undefined
+        ) {
+          stubsToProcess[selector].removeInnerHtml = !!stubs[selector].removeInnerHtml;
+        } else if (stubs[selector].removeInnerHtml !== undefined) {
+          logger('The \'removeInnerHtml\' property for a stub must be a boolean or undefined.');
+        }
+        if (Array.isArray(stubs[selector].removeAttributes)) {
+          const attributesToRemove = stubs[selector].removeAttributes;
+          const onlyStringAttributes = attributesToRemove.filter((attribute) => {
+            return typeof(attribute) === 'string';
+          });
+          if (attributesToRemove.length !== onlyStringAttributes.length) {
+            logger('If specifying HTML attributes to remove from a stub, they must be strings.');
+          }
+          stubsToProcess[selector].removeAttributes = onlyStringAttributes;
+        } else if (typeof(stubs[selector].removeAttributes) === 'boolean') {
+          stubsToProcess[selector].removeAttributes = stubs[selector].removeAttributes;
+        } else {
+          if (stubs[selector].removeAttributes !== undefined) {
+            logger('The \'removeAttributes\' property for a stub must be an array of string HTML attribute names, a boolean, or undefined.');
+          }
+          stubsToProcess[selector].removeAttributes = false;
+        }
+        if (typeof(stubs[selector].tagName) === 'string') {
+          stubsToProcess[selector].tagName = stubs[selector].tagName;
+        } else if (stubs[selector].tagName !== undefined) {
+          logger('The \'tagName\' property for a stub must be a string or undefined.');
+          stubsToProcess[selector].tagName = undefined;
+        }
+      } else {
+        logger('The value of the selector to stub must either be a string of the stubbed tag name, or an object.');
+      }
+    }
+  } else if (stubs !== undefined) {
+    logger('The stubs setting must be either an array, an object, or undefined.');
+  }
+  for (const stubToProcess in stubsToProcess) {
+    if (!Object.keys(stubsToProcess[stubToProcess]).length) {
+      logger('Stubs must have at least one setting applied. Skipping stub: ' + stubToProcess);
+      delete stubsToProcess[stubToProcess];
+    }
+    if (
+      !stubsToProcess[stubToProcess].removeAttributes &&
+      !stubsToProcess[stubToProcess].removeInnerHtml &&
+      !stubsToProcess[stubToProcess].tagName
+    ) {
+      logger('Stubs must either replace a tag name or remove either attributes or innerHTML. Skipping stub: ' + stubToProcess);
+      delete stubsToProcess[stubToProcess];
+    }
+  }
+  globalThis.vueSnapshots.stubs = stubsToProcess;
+
   // Formatter
   if (!ALLOWED_FORMATTERS.includes(globalThis.vueSnapshots.formatter)) {
     if (globalThis.vueSnapshots.formatter) {
@@ -256,7 +354,8 @@ export const loadOptions = function () {
     'classicFormatting',
     'formatter',
     'formatting',
-    'postProcessor'
+    'postProcessor',
+    'stubs'
   ];
   const permittedFormattingKeys = [
     ...Object.keys(formattingBooleanDefaults),

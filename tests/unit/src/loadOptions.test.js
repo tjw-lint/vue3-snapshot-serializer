@@ -22,6 +22,7 @@ describe('Load options', () => {
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
     attributesToClear: [],
+    stubs: {},
     formatter: 'diffable',
     formatting: {
       ...formattingBooleanDefaults,

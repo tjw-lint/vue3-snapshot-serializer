@@ -329,7 +329,7 @@ describe('Cheerio Manipulation', () => {
       '<div class="artichoke" title="value">',
       '  <span class="food">Vegetables</span>',
       '</div>'
-    ].join('\n')
+    ].join('\n');
 
     test('Remove inner HTML', () => {
       globalThis.vueSnapshots.stubs = {
@@ -340,7 +340,10 @@ describe('Cheerio Manipulation', () => {
 
       expect(input)
         .toMatchInlineSnapshot(`
-          <div class="artichoke" title="value"></div>
+          <div
+            class="artichoke"
+            title="value"
+          ></div>
         `);
     });
 
@@ -354,7 +357,9 @@ describe('Cheerio Manipulation', () => {
       expect(input)
         .toMatchInlineSnapshot(`
           <div>
-            <span class="food">Vegetables</span>
+            <span class="food">
+              Vegetables
+            </span>
           </div>
         `);
     });
@@ -368,8 +373,13 @@ describe('Cheerio Manipulation', () => {
 
       expect(input)
         .toMatchInlineSnapshot(`
-          <artichoke-stub class="artichoke" title="value">
-            <span class="food">Vegetables</span>
+          <artichoke-stub
+            class="artichoke"
+            title="value"
+          >
+            <span class="food">
+              Vegetables
+            </span>
           </artichoke-stub>
         `);
     });

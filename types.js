@@ -55,6 +55,18 @@
  */
 
 /**
+ * @typedef  {object}           STUBDEFINITION
+ * @property {boolean}          [removeInnerHtml]   True to remove the innerHTML of the targeted DOM node being stubbed.
+ * @property {string[]|boolean} [removeAttributes]  True to remove all, false to remove none, or an array of HTML attribute names to remove from the stub root.
+ * @property {string}           [tagName]           Used to replace the tag name on the targeted DOM node being stubbed.
+ */
+/** @typedef {string} SELECTOR  Any valid CSS Selector. */
+/* eslint-disable-next-line jsdoc/check-types */
+/** @typedef {Object<SELECTOR, STUBDEFINITION>} STUBOBJECT */
+/** @typedef {SELECTOR[]} STUBARRAY */
+/** @typedef {STUBOBJECT|STUBARRAY} STUBS */
+
+/**
  * @typedef  {object}            SETTINGS
  * @property {boolean}           [verbose=true]                Logs to the console errors or other messages if true.
  * @property {string[]}          [attributesToClear=[]]        Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
@@ -74,6 +86,7 @@
  * @property {boolean}           [removeClassTest=false]       Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
  * @property {boolean}           [removeComments=false]        Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
  * @property {boolean}           [clearInlineFunctions=false]  Replaces `<div title="function () { return true; }"></div>` or `<div title="(x) => !x"></div>` with this placeholder `<div title="[function]"></div>`.
+ * @property {STUBS}             [stubs]                       Allows targetting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
  * @property {POSTPROCESSOR}     [postProcessor]               This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
  * @property {FORMATTER}         [formatter='diffable']        Function to use for formatting the markup output. Accepts 'none', 'diffable', or 'classic'.
  * @property {FORMATTING}        [formatting]                  An object containing settings specific to the "diffable" formatter.
