@@ -131,6 +131,141 @@ describe('Load options', () => {
     });
   });
 
+  describe('Stubs', () => {
+    test('Array must be strings', () => {
+      globalThis.vueSnapshots.stubs = ['a', 2, 'b'];
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: If using "stubs" as an array, all values must be a string of a CSS selector.');
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({
+          a: {
+            removeAttributes: true,
+            removeInnerHtml: true,
+            tagName: 'a-stub'
+          },
+          b: {
+            removeAttributes: true,
+            removeInnerHtml: true,
+            tagName: 'b-stub'
+          }
+        });
+    });
+
+    test('Invalid type for removeInnerHtml', () => {
+      globalThis.vueSnapshots.stubs = {
+        a: {
+          removeInnerHtml: 2
+        }
+      };
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: The \'removeInnerHtml\' property for a stub must be a boolean or undefined.');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Stubs must either replace a tag name or remove either attributes or innerHTML. Skipping stub: a');
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({});
+    });
+
+    test('Attribute type check for removeAttributes', () => {
+      globalThis.vueSnapshots.stubs = {
+        a: {
+          removeAttributes: ['a', 2]
+        }
+      };
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: If specifying HTML attributes to remove from a stub, they must be strings.');
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({
+          a: {
+            removeAttributes: ['a'],
+            removeInnerHtml: false
+          }
+        });
+    });
+
+    test('Invalid type for removeAttributes', () => {
+      globalThis.vueSnapshots.stubs = {
+        a: {
+          removeAttributes: 2
+        }
+      };
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith(
+          'Vue 3 Snapshot Serializer: The \'removeAttributes\' property for a stub must ' +
+          'be an array of string HTML attribute names, a boolean, or undefined.'
+        );
+
+      expect(console.info)
+        .toHaveBeenCalledWith(
+          'Vue 3 Snapshot Serializer: Stubs must either replace a tag ' +
+          'name or remove either attributes or innerHTML. Skipping stub: a'
+        );
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({});
+    });
+
+    test('Invalid type for tagName', () => {
+      globalThis.vueSnapshots.stubs = {
+        a: {
+          tagName: 2
+        }
+      };
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: The \'tagName\' property for a stub must be a string or undefined.');
+
+      expect(console.info)
+        .toHaveBeenCalledWith(
+          'Vue 3 Snapshot Serializer: Stubs must either replace a tag ' +
+          'name or remove either attributes or innerHTML. Skipping stub: a'
+        );
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({});
+    });
+
+    test('Invalid type for selector value', () => {
+      globalThis.vueSnapshots.stubs = { a: 2 };
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith(
+          'Vue 3 Snapshot Serializer: The value of the selector to ' +
+          'stub must either be a string of the stubbed tag name, or an object.'
+        );
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Stubs must have at least one setting applied. Skipping stub: a');
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({});
+    });
+
+    test('Invalid type for stubs', () => {
+      globalThis.vueSnapshots.stubs = 2;
+      loadOptions();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: The stubs setting must be either an array, an object, or undefined.');
+
+      expect(globalThis.vueSnapshots.stubs)
+        .toEqual({});
+    });
+  });
+
   describe('Formatting', () => {
     test('Warns about bad input', () => {
       global.vueSnapshots = {

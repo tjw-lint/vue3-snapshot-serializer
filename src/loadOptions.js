@@ -104,38 +104,41 @@ export const loadOptions = function () {
   if (Array.isArray(stubs)) {
     for (const stub of stubs) {
       if (typeof(stub) === 'string') {
+        let tagName = stub + '-stub';
+        tagName = tagName
+          .split('')
+          .map((character) => {
+            const allowed = 'abcdefghijklmnopqrstuvwxyz-_';
+            if (allowed.split('').includes(character)) {
+              return character;
+            }
+            const capitals = allowed.toUpperCase();
+            if (capitals.split('').includes(character)) {
+              return '-' + character.toLowerCase();
+            }
+            const cssSyntaxTokens = '.#*{}';
+            if (cssSyntaxTokens.includes(character)) {
+              return;
+            }
+            const attributeSelectorTokens = '[]';
+            const space = ' ';
+            if (
+              character === space ||
+              attributeSelectorTokens.includes(character)
+            ) {
+              return '_';
+            }
+            return '-';
+          })
+          .join('')
+          .split('-')
+          .filter(Boolean)
+          .join('-');
+        tagName = tagName[0].toLowerCase() + tagName.slice(1);
         stubsToProcess[stub] = {
           removeInnerHtml: true,
           removeAttributes: true,
-          tagName: (stub + '-stub')
-            .split('')
-            .map((character) => {
-              const allowed = 'abcdefghijklmnopqrstuvwxyz-_';
-              if (allowed.split('').includes(character)) {
-                return character;
-              }
-              const capitals = allowed.toUpperCase();
-              if (capitals.split('').includes(character)) {
-                return '-' + character.toLowerCase();
-              }
-              const cssSyntaxTokens = '.#*{}';
-              if (cssSyntaxTokens.includes(character)) {
-                return;
-              }
-              const attributeSelectorTokens = '[]';
-              const space = ' ';
-              if (
-                character === space ||
-                attributeSelectorTokens.includes(character)
-              ) {
-                return '_';
-              }
-              return '-';
-            })
-            .join('')
-            .split('-')
-            .filter(Boolean)
-            .join('-')
+          tagName
         };
       } else {
         logger('If using "stubs" as an array, all values must be a string of a CSS selector.');
@@ -182,6 +185,7 @@ export const loadOptions = function () {
         }
       } else {
         logger('The value of the selector to stub must either be a string of the stubbed tag name, or an object.');
+        stubs[selector] = {};
       }
     }
   } else if (stubs !== undefined) {
@@ -191,8 +195,7 @@ export const loadOptions = function () {
     if (!Object.keys(stubsToProcess[stubToProcess]).length) {
       logger('Stubs must have at least one setting applied. Skipping stub: ' + stubToProcess);
       delete stubsToProcess[stubToProcess];
-    }
-    if (
+    } else if (
       !stubsToProcess[stubToProcess].removeAttributes &&
       !stubsToProcess[stubToProcess].removeInnerHtml &&
       !stubsToProcess[stubToProcess].tagName

@@ -470,7 +470,7 @@ describe('Cheerio Manipulation', () => {
 
     test('Complex tag name', () => {
       input = [
-        '<ul id="a">',
+        '<ul id="A">',
         '  <li title="a">A</li>',
         '  <li title="b">B</li>',
         '  <li title="c">C</li>',
@@ -478,11 +478,11 @@ describe('Cheerio Manipulation', () => {
       ].join('\n');
 
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['li'];
-      globalThis.vueSnapshots.stubs = ['#a li:nth-of-type(odd)'];
+      globalThis.vueSnapshots.stubs = ['#A li:nth-of-type(odd)'];
 
       expect(input)
         .toMatchInlineSnapshot(`
-          <ul id="a">
+          <ul id="A">
             <a_li-nth-of-type-odd-stub></a_li-nth-of-type-odd-stub>
             <li title="b">B</li>
             <a_li-nth-of-type-odd-stub></a_li-nth-of-type-odd-stub>
