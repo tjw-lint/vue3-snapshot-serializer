@@ -323,4 +323,92 @@ describe('Cheerio Manipulation', () => {
         .toMatchSnapshot();
     });
   });
+
+  describe('Stubs', () => {
+    const input = [
+      '<div class="artichoke" title="value">',
+      '  <span class="food">Vegetables</span>',
+      '</div>'
+    ].join('\n')
+
+    test('Remove inner HTML', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeInnerHtml: true
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div class="artichoke" title="value"></div>
+        `);
+    });
+
+    test('Remove attributes', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeAttributes: true
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div>
+            <span class="food">Vegetables</span>
+          </div>
+        `);
+    });
+
+    test('Set tag name', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          tagName: 'artichoke-stub'
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub class="artichoke" title="value">
+            <span class="food">Vegetables</span>
+          </artichoke-stub>
+        `);
+    });
+
+    test('Long form', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeInnerHtml: true,
+          removeAttributes: true,
+          tagName: 'artichoke-stub'
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub></artichoke-stub>
+        `);
+    });
+
+    test('Short form', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': 'artichoke-stub'
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub></artichoke-stub>
+        `);
+    });
+
+    test('Very short form', () => {
+      globalThis.vueSnapshots.stubs = [
+        '.artichoke'
+      ];
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub></artichoke-stub>
+        `);
+    });
+  });
 });
