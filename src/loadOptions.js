@@ -134,7 +134,6 @@ export const loadOptions = function () {
           .split('-')
           .filter(Boolean)
           .join('-');
-        tagName = tagName[0].toLowerCase() + tagName.slice(1);
         stubsToProcess[stub] = {
           removeInnerHtml: true,
           removeAttributes: true,
