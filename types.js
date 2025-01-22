@@ -86,7 +86,7 @@
  * @property {boolean}           [removeClassTest=false]       Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
  * @property {boolean}           [removeComments=false]        Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
  * @property {boolean}           [clearInlineFunctions=false]  Replaces `<div title="function () { return true; }"></div>` or `<div title="(x) => !x"></div>` with this placeholder `<div title="[function]"></div>`.
- * @property {STUBS}             [stubs]                       Allows targetting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
+ * @property {STUBS}             [stubs={}]                    Allows targetting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
  * @property {POSTPROCESSOR}     [postProcessor]               This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
  * @property {FORMATTER}         [formatter='diffable']        Function to use for formatting the markup output. Accepts 'none', 'diffable', or 'classic'.
  * @property {FORMATTING}        [formatting]                  An object containing settings specific to the "diffable" formatter.
