@@ -5,11 +5,15 @@
 import js from '@eslint/js';
 import tjwBase from 'eslint-config-tjw-base';
 import tjwJsdoc from 'eslint-config-tjw-jsdoc';
+import pluginJest from 'eslint-plugin-jest';
+import pluginTjwJest from 'eslint-config-tjw-jest';
 
 export default [
   js.configs.recommended,
   tjwBase,
   ...tjwJsdoc,
+  pluginJest.configs['flat/recommended'],
+  pluginTjwJest.configs.recommended,
 
   // Project specific rules
   {
@@ -25,6 +29,8 @@ export default [
       }
     },
     rules: {
+      // If this is not turned off, linting throws because it can't find 'jest' install
+      'jest/no-deprecated-functions': 'off'
     }
   },
 
