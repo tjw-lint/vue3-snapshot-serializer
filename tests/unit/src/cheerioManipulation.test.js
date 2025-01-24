@@ -489,5 +489,18 @@ describe('Cheerio Manipulation', () => {
           </ul>
         `);
     });
+
+    test('Stub using test token', () => {
+      input = '<div data-test="b"><div data-test="a"><span>b</span></div></div>';
+
+      globalThis.vueSnapshots.stubs = ['[data-test="a"]'];
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div>
+            <data-test-a-stub></data-test-a-stub>
+          </div>
+        `);
+    });
   });
 });

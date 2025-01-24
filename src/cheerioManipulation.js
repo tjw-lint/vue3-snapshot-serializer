@@ -353,14 +353,15 @@ export const cheerioManipulation = function (vueWrapper) {
   const $ = cheerioize(html);
 
   addInputValues($, vueWrapper);
-  // Removes data-key, so has be last of vueWrapper calls
+  // Removes data-key, so has to be last of vueWrapper calls
   stringifyAttributes($, vueWrapper);
+  // Uses CSS Selectors, so must run before test tokens are removed
+  stubOutDom($);
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
   clearAttributes($);
   clearInlineFunctions($);
-  stubOutDom($);
   sortAttributes($);
   sortClasses($);
 

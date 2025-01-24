@@ -116,16 +116,11 @@ export const loadOptions = function () {
             if (capitals.split('').includes(character)) {
               return '-' + character.toLowerCase();
             }
-            const cssSyntaxTokens = '.#*{}';
+            const cssSyntaxTokens = '.#*{}[]';
             if (cssSyntaxTokens.includes(character)) {
               return;
             }
-            const attributeSelectorTokens = '[]';
-            const space = ' ';
-            if (
-              character === space ||
-              attributeSelectorTokens.includes(character)
-            ) {
+            if (character === ' ') {
               return '_';
             }
             return '-';
