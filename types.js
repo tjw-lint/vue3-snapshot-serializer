@@ -54,13 +54,14 @@
  * @property {VOIDELEMENTS} [voidElements='xhtml']                     Determines how void elements are closed. Accepts 'html' for `<input>`, 'xhtml' for `<input />`, and 'xml' for `<input></input>`.
  */
 
-/**
- * @typedef  {object}           STUBDEFINITION
- * @property {boolean}          [removeInnerHtml]   True to remove the innerHTML of the targeted DOM node being stubbed.
- * @property {string[]|boolean} [removeAttributes]  True to remove all, false to remove none, or an array of HTML attribute names to remove from the stub root.
- * @property {string}           [tagName]           Used to replace the tag name on the targeted DOM node being stubbed.
- */
 /** @typedef {string} SELECTOR  Any valid CSS Selector. */
+/** @typedef {string} ATTRIBUTE  Any HTML attribute. */
+/**
+ * @typedef  {object}              STUBDEFINITION
+ * @property {boolean}             [removeInnerHtml]   True to remove the innerHTML of the targeted DOM node being stubbed.
+ * @property {ATTRIBUTE[]|boolean} [removeAttributes]  True to remove all, false to remove none, or an array of HTML attribute names to remove from the stub root.
+ * @property {string}              [tagName]           Used to replace the tag name on the targeted DOM node being stubbed.
+ */
 /* eslint-disable-next-line jsdoc/check-types */
 /** @typedef {Object<SELECTOR, STUBDEFINITION>} STUBOBJECT */
 /** @typedef {SELECTOR[]} STUBARRAY */
