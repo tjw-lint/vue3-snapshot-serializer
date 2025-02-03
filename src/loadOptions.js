@@ -2,11 +2,15 @@
  * @file Loads in the user's settings, validates them, and sets defaults.
  */
 
-import { logger } from './helpers.js';
+import {
+  debugLogger,
+  logger
+} from './helpers.js';
 
 /** @typedef {import('../types.js').SETTINGS} SETTINGS */
 
 export const booleanDefaults = {
+  debugger: false,
   verbose: true,
   addInputValues: true,
   sortAttributes: true,
@@ -56,6 +60,14 @@ const CLASSIC_FORMATTING_UNFORMATTED_DEFAULT = ['code', 'pre'];
  * Warns the user if passing in invalid settings (if verbose = true).
  */
 export const loadOptions = function () {
+  debugLogger({
+    function: 'loadOptions.js:loadOptions',
+    details: 'Validating and defaulting options on the globalThis.vueSnapshots object.',
+    data: {
+      settings: globalThis.vueSnapshots
+    }
+  });
+
   /** @type {SETTINGS} globalThis.vueSnapshots */
   globalThis.vueSnapshots = globalThis.vueSnapshots || {};
 
@@ -284,4 +296,12 @@ export const loadOptions = function () {
       }
     }
   }
+
+  debugLogger({
+    function: 'loadOptions.js:loadOptions',
+    details: 'globalThis.vueSnapshots options validated/defaulted.',
+    data: {
+      settings: globalThis.vueSnapshots
+    }
+  });
 };

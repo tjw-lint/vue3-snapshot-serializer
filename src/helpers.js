@@ -40,8 +40,25 @@ export const isVueWrapper = function (received) {
  * @param {string} message  Any information to log to the console
  */
 export const logger = function (message) {
-  if (globalThis.vueSnapshots?.verbose) {
+  if (
+    globalThis.vueSnapshots?.debug ||
+    globalThis.vueSnapshots?.verbose
+  ) {
     console.info('Vue 3 Snapshot Serializer: ' + message);
+  }
+};
+
+/**
+ * Logs out information to help in debugging why snapshots aren't working.
+ *
+ * @param {object} data            Object of relevant data to the current debug statment
+ * @param {string} data.function   Name of the function being called
+ * @param {string} [data.details]  Human readble message explaining the debugger
+ * @param {object} [data.data]     An object of all data pertinent to this debug call
+ */
+export const debugLogger = function (data) {
+  if (globalThis.vueSnapshots?.debug) {
+    console.info('V3SS Debug:', data);
   }
 };
 
@@ -176,6 +193,7 @@ const xmlOptions = {
  * @return {object}         An htmlparser2 AST
  */
 export const parseMarkup = function (markup) {
+  debugLogger({ function: 'helpers.js:parseMarkup' });
   const ast = htmlparser2.parseDOM(markup, xmlOptions);
   return ast;
 };
@@ -187,6 +205,7 @@ export const parseMarkup = function (markup) {
  * @return {object}         The cheerio object
  */
 export const cheerioize = function (markup) {
+  debugLogger({ function: 'helpers.js:cheerioize' });
   const ast = parseMarkup(markup);
   const cheerioOptions = {
     xml: xmlOptions

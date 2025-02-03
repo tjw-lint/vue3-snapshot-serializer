@@ -4,6 +4,7 @@
 
 import {
   cheerioize,
+  debugLogger,
   stringify,
   swapQuotes
 } from './helpers.js';
@@ -21,7 +22,7 @@ let alreadyRemovedKey = true;
  * @return {boolean}             If criteria is met
  */
 const attributesCanBeStringified = function (vueWrapper) {
-  return (
+  const canBeStringified = (
     (
       globalThis.vueSnapshots?.addInputValues ||
       globalThis.vueSnapshots?.stringifyAttributes
@@ -29,6 +30,11 @@ const attributesCanBeStringified = function (vueWrapper) {
     typeof(vueWrapper?.find) === 'function' &&
     typeof(vueWrapper?.findAll) === 'function'
   );
+  debugLogger({
+    function: 'cheerioManipulation.js:attributesCanBeStringified',
+    data: { canBeStringified }
+  });
+  return canBeStringified;
 };
 
 /**
@@ -38,6 +44,7 @@ const attributesCanBeStringified = function (vueWrapper) {
  */
 const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
+    debugLogger({ function: 'cheerioManipulation.js:addSerializerKeys' });
     const vnodes = vueWrapper.findAll('*');
     for (let vnode of vnodes) {
       vnode.element.setAttribute(KEY_NAME, 'v-' + key);
@@ -59,6 +66,8 @@ const addSerializerKeys = function (vueWrapper) {
  */
 const removeSerializerKeys = function ($, vueWrapper) {
   if (!alreadyRemovedKey) {
+    debugLogger({ function: 'cheerioManipulation.js:removeSerializerKeys' });
+
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
@@ -85,6 +94,7 @@ const addInputValues = function ($, vueWrapper) {
     globalThis.vueSnapshots?.addInputValues &&
     attributesCanBeStringified(vueWrapper)
   ) {
+    debugLogger({ function: 'cheerioManipulation.js:addInputValues' });
     $('input, textarea, select').each(function (index, element) {
       const currentKey = $(element).attr(KEY_NAME);
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
@@ -112,6 +122,7 @@ const stringifyAttributes = function ($, vueWrapper) {
     globalThis.vueSnapshots?.stringifyAttributes &&
     attributesCanBeStringified(vueWrapper)
   ) {
+    debugLogger({ function: 'cheerioManipulation.js:stringifyAttributes' });
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
@@ -141,6 +152,8 @@ const stringifyAttributes = function ($, vueWrapper) {
  */
 const removeScopedStylesDataVIDAttributes = function ($) {
   if (globalThis.vueSnapshots?.removeDataVId) {
+    debugLogger({ function: 'cheerioManipulation.js:removeScopedStylesDataVIDAttributes' });
+
     // [-\w]+ will catch 1 or more instaces of a-z, A-Z, 0-9, hyphen (-), or underscore (_)
     const regex = / data-v-[-\w]+/g;
 
@@ -166,6 +179,7 @@ const removeScopedStylesDataVIDAttributes = function ($) {
  */
 const removeServerRenderedText = function ($) {
   if (globalThis.vueSnapshots?.removeServerRendered) {
+    debugLogger({ function: 'cheerioManipulation.js:removeServerRenderedText' });
     $('[data-server-rendered]').removeAttr('data-server-rendered');
   }
 };
@@ -178,6 +192,7 @@ const removeServerRenderedText = function ($) {
  */
 const clearAttributes = function ($) {
   if (globalThis.vueSnapshots?.attributesToClear?.length) {
+    debugLogger({ function: 'cheerioManipulation.js:clearAttributes' });
     globalThis.vueSnapshots.attributesToClear.forEach(function (attribute) {
       $('[' + attribute + ']').attr(attribute, '');
     });
@@ -191,6 +206,8 @@ const clearAttributes = function ($) {
  */
 const clearInlineFunctions = function ($) {
   if (globalThis.vueSnapshots?.clearInlineFunctions) {
+    debugLogger({ function: 'cheerioManipulation.js:clearInlineFunctions' });
+
     /**
      * Takes a string and tells you if it is a function.
      *
@@ -257,6 +274,7 @@ const clearInlineFunctions = function ($) {
  */
 const sortAttributes = function ($) {
   if (globalThis.vueSnapshots?.sortAttributes) {
+    debugLogger({ function: 'cheerioManipulation.js:sortAttributes' });
     $('*').each(function (index, element) {
       Object.keys(element.attribs).sort().forEach(function (key) {
         let value = element.attribs[key];
@@ -278,6 +296,7 @@ const sortAttributes = function ($) {
  */
 const sortClasses = function ($) {
   if (globalThis.vueSnapshots?.sortClasses) {
+    debugLogger({ function: 'cheerioManipulation.js:sortClasses' });
     $('*').each(function (index, element) {
       const classes = element?.attribs?.class?.trim();
       if (classes) {
@@ -298,6 +317,12 @@ const sortClasses = function ($) {
  * @return {string}                      String of manipulated HTML, ready for formatting.
  */
 export const cheerioManipulation = function (vueWrapper) {
+  debugLogger({
+    function: 'cheerioManipulation.js:cheerioManipulation',
+    details: 'Uses the Cheerio library to mutate the markup based on the global vueSnapshots settings.',
+    data: { vueWrapper }
+  });
+
   addSerializerKeys(vueWrapper);
   let html = vueWrapper;
   if (typeof(vueWrapper?.html) === 'function') {

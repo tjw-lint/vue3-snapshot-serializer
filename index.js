@@ -3,10 +3,17 @@
  * Also exports `vueMarkupFormatter` function for any other uses.
  */
 
-import { isHtmlString, isVueWrapper } from './src/helpers.js';
+import {
+  debugLogger,
+  isHtmlString,
+  isVueWrapper
+} from './src/helpers.js';
 import { loadOptions } from './src/loadOptions.js';
 import { stringManipulation } from './src/stringManipulation.js';
 import { formatMarkup } from './src/formatMarkup.js';
+
+globalThis.vueSnapshots = globalThis.vueSnapshots || {};
+globalThis.vueSnapshots.debugger = true;
 
 /**
  * Test function for Vitest's serializer API.
@@ -16,7 +23,26 @@ import { formatMarkup } from './src/formatMarkup.js';
  * @return {boolean}                 true = Tells Vitest to run the print function
  */
 export const test = function (received) {
-  return isHtmlString(received) || isVueWrapper(received);
+  const isHtml = isHtmlString(received);
+
+  // Because test is called so much, we want to skip instantiating
+  // the debug object unless debugging is enabled.
+  if (globalThis.vueSnapshots?.debug) {
+    debugLogger({
+      function: 'index.js:test',
+      details: [
+        'Vue 3 Snapshot Serializer will only run on a string of',
+        'HTML (first character is \'<\') or a Vue-Test-Utils wrapper.'
+      ].join(' '),
+      data: {
+        isHtml,
+        // skipping caching this for presumed happy path performance
+        isVue: isVueWrapper(received),
+        received
+      }
+    });
+  }
+  return isHtml || isVueWrapper(received);
 };
 
 /**
@@ -27,6 +53,10 @@ export const test = function (received) {
  * @return {string}                  The formatted markup
  */
 export const print = function (received) {
+  debugLogger({
+    function: 'index.js:print',
+    data: { received }
+  });
   loadOptions();
   let html = received || '';
   html = stringManipulation(html);
@@ -43,6 +73,10 @@ export const print = function (received) {
  * @return {string}       The formatted markup.
  */
 export const vueMarkupFormatter = function (html) {
+  debugLogger({
+    function: 'index.js:vueMarkupFormatter',
+    data: { html }
+  });
   loadOptions();
   if (!isHtmlString(html)) {
     return html;

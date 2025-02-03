@@ -17,6 +17,7 @@ import { cheerioManipulation } from './cheerioManipulation.js';
  */
 function removeAllComments (html) {
   if (globalThis.vueSnapshots?.removeComments) {
+    debugLogger({ function: 'stringManipulation.js:removeAllComments' });
     // The best Stackoverflow has to offer.
     // Also removes a trailing newline if it exists.
     return html.replace(/(?=<!--)([\s\S]*?)-->(\n)?/g, '');
@@ -31,6 +32,7 @@ function removeAllComments (html) {
  * @return {string}                A manipulated string of markup, ready for formatting
  */
 export const stringManipulation = function (html) {
+  debugLogger({ function: 'stringManipulation.js:stringManipulation' });
   html = cheerioManipulation(html);
   html = removeAllComments(html);
   return html;
