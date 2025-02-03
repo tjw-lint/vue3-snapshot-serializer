@@ -49,12 +49,16 @@ export const logger = function (message) {
 };
 
 /**
+ * @typedef  {object} DEBUGSTATEMENT
+ * @property {string} function        Name of the function being called
+ * @property {string} [details]       Human readble message explaining the debugger
+ * @property {object} [data]          An object of all data pertinent to this debug call
+ */
+
+/**
  * Logs out information to help in debugging why snapshots aren't working.
  *
- * @param {object} data            Object of relevant data to the current debug statment
- * @param {string} data.function   Name of the function being called
- * @param {string} [data.details]  Human readble message explaining the debugger
- * @param {object} [data.data]     An object of all data pertinent to this debug call
+ * @param {DEBUGSTATEMENT} data  Object of relevant data to the current debug statment
  */
 export const debugLogger = function (data) {
   if (globalThis.vueSnapshots?.debug) {

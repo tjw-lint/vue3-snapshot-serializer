@@ -4,6 +4,8 @@
 
 import { cheerioManipulation } from './cheerioManipulation.js';
 
+import { debugLogger } from './helpers.js';
+
 /**
  * This removes all HTML comments from your snapshots.
  *
