@@ -12,9 +12,6 @@ import { loadOptions } from './src/loadOptions.js';
 import { stringManipulation } from './src/stringManipulation.js';
 import { formatMarkup } from './src/formatMarkup.js';
 
-globalThis.vueSnapshots = globalThis.vueSnapshots || {};
-globalThis.vueSnapshots.debugger = true;
-
 /**
  * Test function for Vitest's serializer API.
  * Determines whether to pass the markup through the print function.
