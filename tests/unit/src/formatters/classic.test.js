@@ -18,6 +18,22 @@ describe('classicFormatter', () => {
       .toEqual('');
   });
 
+  test('Debug mode', () => {
+    globalThis.vueSnapshots.debug = true;
+
+    const markup = '<div></div><span></span>';
+    const formatted = '<div></div>\n<span></span>';
+
+    expect(markup)
+      .toMatchInlineSnapshot(formatted);
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'classic.js:classicFormatter',
+        data: { markup, formatted }
+      });
+  });
+
   test('Empty attributes', () => {
     MyComponent.template = '<div class="x y" id title="">Text</div><p class></p>';
 

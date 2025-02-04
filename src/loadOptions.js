@@ -10,7 +10,7 @@ import {
 /** @typedef {import('../types.js').SETTINGS} SETTINGS */
 
 export const booleanDefaults = {
-  debugger: false,
+  debug: false,
   verbose: true,
   addInputValues: true,
   sortAttributes: true,

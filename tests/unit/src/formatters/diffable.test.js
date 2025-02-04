@@ -18,6 +18,28 @@ describe('diffableFormatter', () => {
       .toEqual('');
   });
 
+  test('Debug mode', () => {
+    globalThis.vueSnapshots.debug = true;
+
+    const markup = '<div>text</div>';
+    const formatted = '<div>\n  text\n</div>';
+
+    expect(markup)
+      .toMatchInlineSnapshot(formatted);
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'diffable.js:diffableFormatter',
+        data: { markup }
+      });
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'diffable.js:diffableFormatter',
+        data: { formatted }
+      });
+  });
+
   describe('HTML entity encoding', () => {
     /* eslint-disable no-irregular-whitespace */
     // non-breaking-space character code
