@@ -48,8 +48,7 @@ export const logger = function (message) {
 /**
  * @typedef  {object} DEBUGSTATEMENT
  * @property {string} function        Name of the function being called
- * @property {string} [details]       Human readble message explaining the debugger
- * @property {object} [data]          An object of all data pertinent to this debug call
+ * @property {any}    [any]           Any additional properties related to the function
  */
 
 /**
