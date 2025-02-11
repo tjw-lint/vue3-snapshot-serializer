@@ -8,7 +8,7 @@
 
 import { classicFormatter } from './formatters/classic.js';
 import { diffableFormatter } from './formatters/diffable.js';
-import { logger } from './helpers.js';
+import { debugLogger, logger } from './helpers.js';
 
 /**
  * Applies the usere's supplied formatting function, or uses the built-in
@@ -18,6 +18,10 @@ import { logger } from './helpers.js';
  * @return {string}         The same string, formatted based on user settings.
  */
 export const formatMarkup = function (markup) {
+  debugLogger({
+    function: 'formatMarkup.js:formatMarkup',
+    data: { markup }
+  });
   if (globalThis.vueSnapshots) {
     if (globalThis.vueSnapshots.formatter === 'diffable') {
       markup = diffableFormatter(markup);

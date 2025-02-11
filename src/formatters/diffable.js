@@ -17,6 +17,7 @@ import {
   VOID_ELEMENTS
 } from '../constants.js';
 import {
+  debugLogger,
   escapeHtml,
   parseMarkup,
   unescapeHtml
@@ -30,6 +31,11 @@ import {
  * @return {string}         HTML formatted to be more easily diffable
  */
 export const diffableFormatter = function (markup) {
+  debugLogger({
+    function: 'diffable.js:diffableFormatter',
+    data: { markup }
+  });
+
   markup = markup || '';
   /** @type {FORMATTING} */
   const options = globalThis.vueSnapshots.formatting;
@@ -265,6 +271,11 @@ export const diffableFormatter = function (markup) {
   let formattedOutput = '';
   ast.forEach((node) => {
     formattedOutput = formattedOutput + formatNode(node, 0);
+  });
+
+  debugLogger({
+    function: 'diffable.js:diffableFormatter',
+    data: { formatted: formattedOutput.trim() }
   });
 
   return formattedOutput.trim();

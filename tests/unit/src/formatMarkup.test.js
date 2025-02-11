@@ -8,17 +8,22 @@ const unformattedMarkup = `
 `.trim();
 
 describe('Format markup', () => {
-  const info = console.info;
-
   beforeEach(() => {
     globalThis.vueSnapshots = {
       formatting: {}
     };
-    console.info = vi.fn();
   });
 
-  afterEach(() => {
-    console.info = info;
+  test('Debug mode', () => {
+    globalThis.vueSnapshots.debug = true;
+    const markup = '<div></div>';
+    formatMarkup(markup);
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'formatMarkup.js:formatMarkup',
+        data: { markup }
+      });
   });
 
   test('Does no formatting', () => {

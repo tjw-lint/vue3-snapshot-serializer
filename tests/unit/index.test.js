@@ -35,12 +35,42 @@ describe('index.js', () => {
       expect(vue3SnapshotSerializer.test({}))
         .toEqual(false);
     });
+
+    test('Debug mode', () => {
+      globalThis.vueSnapshots.debug = true;
+      vue3SnapshotSerializer.test('<div>Text</div>');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'index.js:test',
+          details: [
+            'Vue 3 Snapshot Serializer will only run on a string of',
+            'HTML (first character is \'<\') or a Vue-Test-Utils wrapper.'
+          ].join(' '),
+          data: {
+            isHtml: true,
+            isVue: false,
+            received: '<div>Text</div>'
+          }
+        });
+    });
   });
 
   describe('Serialization printer', () => {
     test('Empty string', () => {
       expect(vue3SnapshotSerializer.print(''))
         .toEqual('');
+    });
+
+    test('Debug mode', () => {
+      globalThis.vueSnapshots.debug = true;
+      vue3SnapshotSerializer.print('');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'index.js:print',
+          data: { received: '' }
+        });
     });
   });
 
@@ -63,6 +93,18 @@ describe('index.js', () => {
 
       expect(vueMarkupFormatter(markup))
         .toEqual('<div>\n  Hello\n</div>');
+    });
+
+    test('Debug mode', () => {
+      globalThis.vueSnapshots.debug = true;
+      const html = '<div>Hello</div>';
+      vueMarkupFormatter(html);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'index.js:vueMarkupFormatter',
+          data: { html }
+        });
     });
   });
 });

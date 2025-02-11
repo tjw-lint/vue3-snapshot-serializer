@@ -6,7 +6,7 @@ exports[`Cheerio Manipulation > Add input values > Adds values into DOM 1`] = `
   <textarea value="'second'"></textarea>
   <input
     type="number"
-    value="3"
+    value="'3'"
   />
   <select value="'b'">
     <option value="a">

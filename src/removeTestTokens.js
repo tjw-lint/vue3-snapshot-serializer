@@ -2,6 +2,8 @@
  * @file Removes specific attributes related to testing tokens from the supplied Cheerio object.
  */
 
+import { debugLogger } from './helpers.js';
+
 /**
  * Removes any data-* attribute passed in.
  *
@@ -9,6 +11,7 @@
  * @param {string} attribute  The attribute suffix.
  */
 const removeDataAttribute = function ($, attribute) {
+  debugLogger({ function: 'removeTestTokens.js:removeDataAttribute' });
   $('[data-' + attribute + ']').removeAttr('data-' + attribute);
 };
 
@@ -18,6 +21,7 @@ const removeDataAttribute = function ($, attribute) {
  * @param {object} $  The markup as a Cheerio DOM node.
  */
 const removeIdTest = function ($) {
+  debugLogger({ function: 'removeTestTokens.js:removeIdTest' });
   $('[id]').each(function (index, element) {
     if ($(element).attr('id').toLowerCase().startsWith('test')) {
       $(element).removeAttr('id');
@@ -31,6 +35,7 @@ const removeIdTest = function ($) {
  * @param {object} $  The markup as a Cheerio DOM node.
  */
 const removeClassTest = function ($) {
+  debugLogger({ function: 'removeTestTokens.js:removeClassTest' });
   $('[class]').each(function (index, element) {
     let classesWereRemoved = false;
     $(element).removeClass(function (index, css) {
@@ -71,6 +76,7 @@ const removeClassTest = function ($) {
  * @param {object} $  The markup as a cheerio object
  */
 export const removeTestTokens = function ($) {
+  debugLogger({ function: 'removeTestTokens.js:removeTestTokens' });
   if (globalThis.vueSnapshots?.removeDataTest) {
     removeDataAttribute($, 'test');
   }

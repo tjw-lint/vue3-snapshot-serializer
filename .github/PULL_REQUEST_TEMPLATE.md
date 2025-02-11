@@ -10,6 +10,7 @@ Related to issue #0
 <!-- If you don't know what this is, ignore it -->
 **Checklist:**
 
+* [ ] Update documentation site
 * [ ] Update dependencies
 * [ ] Run `volta pin node@latest && volta pin npm@latest` 
 * [ ] Bump

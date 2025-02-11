@@ -57,6 +57,7 @@
 /**
  * @typedef  {object}            SETTINGS
  * @property {boolean}           [verbose=true]                Logs to the console errors or other messages if true.
+ * @property {boolean}           [debug=false]                 Logs to the console as internal functions are called, including relevant data to help in troubleshooting.
  * @property {string[]}          [attributesToClear=[]]        Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
  * @property {boolean}           [addInputValues=true]         Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU `wrapper`, not `wrapper.html()`.
  * @property {boolean}           [sortAttributes=true]         Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
