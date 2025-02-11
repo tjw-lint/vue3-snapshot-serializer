@@ -93,6 +93,7 @@ describe('Load options', () => {
             sortAttributes: false,
             sortClasses: false,
             stringifyAttributes: false,
+            stubs: {},
             verbose: false
           }
         }
@@ -133,6 +134,7 @@ describe('Load options', () => {
             sortAttributes: false,
             sortClasses: false,
             stringifyAttributes: false,
+            stubs: {},
             verbose: false
           }
         }
