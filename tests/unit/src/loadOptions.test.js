@@ -55,7 +55,7 @@ describe('Load options', () => {
       });
 
     expect(console.info)
-      .toHaveBeenCalledTimes(3);
+      .toHaveBeenCalledTimes(2);
 
     expect(console.info)
       .toHaveBeenCalledWith('V3SS Debug:', {
@@ -96,9 +96,6 @@ describe('Load options', () => {
           }
         }
       });
-
-    expect(console.info)
-      .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Attributes must be a type of string in global.vueSnapshots.attributesToClear. Received: false');
 
     expect(console.info)
       .toHaveBeenCalledWith('V3SS Debug:', {

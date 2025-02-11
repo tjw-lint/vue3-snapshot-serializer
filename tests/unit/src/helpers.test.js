@@ -75,13 +75,13 @@ describe('Helpers', () => {
         .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Text');
     });
 
-    test('Logs when verbose false if debug true', () => {
+    test('Does not log when verbose false even if debug true', () => {
       globalThis.vueSnapshots.verbose = false;
       globalThis.vueSnapshots.debug = true;
       logger('Text');
 
       expect(console.info)
-        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Text');
+        .not.toHaveBeenCalled();
     });
   });
 

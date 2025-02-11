@@ -40,10 +40,7 @@ export const isVueWrapper = function (received) {
  * @param {string} message  Any information to log to the console
  */
 export const logger = function (message) {
-  if (
-    globalThis.vueSnapshots?.debug ||
-    globalThis.vueSnapshots?.verbose
-  ) {
+  if (globalThis.vueSnapshots?.verbose) {
     console.info('Vue 3 Snapshot Serializer: ' + message);
   }
 };
