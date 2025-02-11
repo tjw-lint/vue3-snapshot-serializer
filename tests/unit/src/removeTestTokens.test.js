@@ -18,6 +18,7 @@ describe('Remove test tokens', () => {
 
   test('Remove all tokens', () => {
     globalThis.vueSnapshots = {
+      debug: true,
       removeDataTest: true,
       removeDataTestid: true,
       removeDataTestId: true,
@@ -57,6 +58,18 @@ describe('Remove test tokens', () => {
 
     expect(removeTestTokens(div))
       .toEqual(div);
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', { function: 'removeTestTokens.js:removeTestTokens' });
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', { function: 'removeTestTokens.js:removeDataAttribute' });
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', { function: 'removeTestTokens.js:removeIdTest' });
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', { function: 'removeTestTokens.js:removeClassTest' });
   });
 
   test('Retain test tokens', () => {

@@ -14,6 +14,7 @@ import StringifyAttributes from '@@/mockComponents/StringifyAttributes.vue';
 describe('Cheerio Manipulation', () => {
   beforeEach(() => {
     globalThis.vueSnapshots = {
+      debug: true,
       formatting: {}
     };
   });
@@ -21,6 +22,13 @@ describe('Cheerio Manipulation', () => {
   test('Empty string', () => {
     expect(cheerioManipulation(''))
       .toEqual('');
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'cheerioManipulation.js:cheerioManipulation',
+        details: 'Uses the Cheerio library to mutate the markup based on the global vueSnapshots settings.',
+        data: { vueWrapper: '' }
+      });
   });
 
   describe('Attributes to clear', () => {
@@ -43,6 +51,11 @@ describe('Cheerio Manipulation', () => {
           'Some <strong class="bold" title>text</strong>',
           '</h1>'
         ].join(''));
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:clearAttributes'
+        });
     });
   });
 
@@ -51,18 +64,19 @@ describe('Cheerio Manipulation', () => {
     const cleaned = '<div>Content</div>';
 
     test('Removes server rendered attribute if setting enabled', () => {
-      globalThis.vueSnapshots = {
-        removeServerRendered: true
-      };
+      globalThis.vueSnapshots.removeServerRendered = true;
 
       expect(cheerioManipulation(markup))
         .toEqual(cleaned);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:removeServerRenderedText'
+        });
     });
 
     test('Retains server rendered attribute if setting disabled', () => {
-      globalThis.vueSnapshots = {
-        removeServerRendered: false
-      };
+      globalThis.vueSnapshots.removeServerRendered = false;
 
       expect(cheerioManipulation(markup))
         .toEqual(markup);
@@ -74,38 +88,35 @@ describe('Cheerio Manipulation', () => {
     const cleaned = '<div class="hello"> Hello World </div>';
 
     test('Removes data-v-ids from real component', async () => {
-      globalThis.vueSnapshots = {
-        removeDataVId: true
-      };
+      globalThis.vueSnapshots.removeDataVId = true;
 
       const wrapper = await mount(DataVId);
 
       expect(cheerioManipulation(wrapper.html()))
         .toEqual(cleaned);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:removeScopedStylesDataVIDAttributes'
+        });
     });
 
     test('Removes data-v-ids from string', () => {
-      globalThis.vueSnapshots = {
-        removeDataVId: true
-      };
+      globalThis.vueSnapshots.removeDataVId = true;
 
       expect(cheerioManipulation(markup))
         .toEqual(cleaned);
     });
 
     test('Keeps data-v-ids', () => {
-      globalThis.vueSnapshots = {
-        removeDataVId: false
-      };
+      globalThis.vueSnapshots.removeDataVId = false;
 
       expect(cheerioManipulation(markup))
         .toEqual(markup);
     });
 
     test('Remove empty attributes from data-v-id, but keep the v-id', () => {
-      globalThis.vueSnapshots = {
-        removeDataVId: false
-      };
+      globalThis.vueSnapshots.removeDataVId = false;
 
       const emptyAttribute = '<div data-v-34cd6f4f="" class="hello"> Hello World </div>';
 
@@ -127,14 +138,17 @@ describe('Cheerio Manipulation', () => {
     });
 
     test('Functions removed', async () => {
-      globalThis.vueSnapshots = {
-        clearInlineFunctions: true
-      };
+      globalThis.vueSnapshots.clearInlineFunctions = true;
       const wrapper = await mount(InlineFunctions);
       const markup = wrapper.html();
 
       expect(cheerioManipulation(markup))
         .toMatchSnapshot();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:clearInlineFunctions'
+        });
     });
 
     test('Props', async () => {
@@ -162,6 +176,11 @@ describe('Cheerio Manipulation', () => {
 
       expect(cheerioManipulation(markup))
         .toMatchSnapshot();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:sortAttributes'
+        });
     });
 
     test('Unsorted', async () => {
@@ -184,6 +203,11 @@ describe('Cheerio Manipulation', () => {
 
       expect(cheerioManipulation(markup))
         .toMatchSnapshot();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:sortClasses'
+        });
     });
 
     test('Unsorted', async () => {
@@ -220,9 +244,31 @@ describe('Cheerio Manipulation', () => {
       await wrapper.find('[data-test="button"]').trigger('click');
 
       globalThis.vueSnapshots.addInputValues = true;
+      globalThis.vueSnapshots.stringifyAttributes = false;
 
       expect(wrapper)
         .toMatchSnapshot();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:attributesCanBeStringified',
+          data: { canBeStringified: true }
+        });
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:addSerializerKeys'
+        });
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:addInputValues'
+        });
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:removeSerializerKeys'
+        });
     });
 
     test('Does not add values into DOM', async () => {
@@ -285,6 +331,11 @@ describe('Cheerio Manipulation', () => {
 
       expect(wrapper)
         .toMatchSnapshot();
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'cheerioManipulation.js:stringifyAttributes'
+        });
     });
 
     test('Replaces attribute values with stubbed child component', async () => {

@@ -1,9 +1,11 @@
 import { mount } from '@vue/test-utils';
 
 import {
+  cheerioize,
   isHtmlString,
   isVueWrapper,
   logger,
+  parseMarkup,
   stringify,
   swapQuotes
 } from '@/helpers.js';
@@ -71,6 +73,15 @@ describe('Helpers', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Text');
+    });
+
+    test('Does not log when verbose false even if debug true', () => {
+      globalThis.vueSnapshots.verbose = false;
+      globalThis.vueSnapshots.debug = true;
+      logger('Text');
+
+      expect(console.info)
+        .not.toHaveBeenCalled();
     });
   });
 
@@ -173,6 +184,26 @@ describe('Helpers', () => {
 
       expect(swapQuotes('{ "key": "value" }'))
         .toEqual('{ \'key\': \'value\' }');
+    });
+  });
+
+  describe('ParseMarkup', () => {
+    test('Debug mode', () => {
+      globalThis.vueSnapshots.debug = true;
+      parseMarkup('');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', { function: 'helpers.js:parseMarkup' });
+    });
+  });
+
+  describe('Cheerioize', () => {
+    test('Debug mode', () => {
+      globalThis.vueSnapshots.debug = true;
+      cheerioize('');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', { function: 'helpers.js:cheerioize' });
     });
   });
 });

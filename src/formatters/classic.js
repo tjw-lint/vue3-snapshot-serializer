@@ -7,6 +7,8 @@
 
 import beautify from 'js-beautify';
 
+import { debugLogger } from '../helpers.js';
+
 /** @typedef {import('../../types.js').CLASSICFORMATTING} CLASSICFORMATTING */
 
 /**
@@ -19,6 +21,12 @@ import beautify from 'js-beautify';
 export const classicFormatter = function (markup) {
   /** @type {CLASSICFORMATTING} */
   const formatting = globalThis.vueSnapshots.classicFormatting;
+  const formatted = beautify.html(markup, formatting);
 
-  return beautify.html(markup, formatting);
+  debugLogger({
+    function: 'classic.js:classicFormatter',
+    data: { markup, formatted }
+  });
+
+  return formatted;
 };

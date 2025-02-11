@@ -5,18 +5,11 @@ import {
 } from '@/loadOptions.js';
 
 describe('Load options', () => {
-  const info = console.info;
-
   beforeEach(() => {
-    console.info = vi.fn();
     globalThis.vueSnapshots = {
       formatting: {},
       classicFormatting: {}
     };
-  });
-
-  afterEach(() => {
-    console.info = info;
   });
 
   const defaultSettings = Object.freeze({
@@ -63,7 +56,87 @@ describe('Load options', () => {
       });
 
     expect(console.info)
-      .not.toHaveBeenCalled();
+      .toHaveBeenCalledTimes(2);
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'loadOptions.js:loadOptions',
+        details: 'Validating and defaulting options on the globalThis.vueSnapshots object.',
+        data: {
+          settings: {
+            addInputValues: false,
+            attributesToClear: [],
+            clearInlineFunctions: true,
+            debug: true,
+            formatter: 'diffable',
+            formatting: {
+              attributesPerLine: 1,
+              classesPerLine: 1,
+              emptyAttributes: true,
+              escapeAttributes: false,
+              escapeInnerText: true,
+              selfClosingTag: false,
+              tagsWithWhitespacePreserved: ['a', 'pre'],
+              voidElements: 'xhtml'
+            },
+            removeClassTest: true,
+            removeComments: true,
+            removeDataCy: true,
+            removeDataPw: true,
+            removeDataQa: true,
+            removeDataTest: false,
+            removeDataTestId: false,
+            removeDataTestid: false,
+            removeDataVId: false,
+            removeIdTest: true,
+            removeServerRendered: false,
+            sortAttributes: false,
+            sortClasses: false,
+            stringifyAttributes: false,
+            verbose: false
+          }
+        }
+      });
+
+    expect(console.info)
+      .toHaveBeenCalledWith('V3SS Debug:', {
+        function: 'loadOptions.js:loadOptions',
+        details: 'globalThis.vueSnapshots options validated/defaulted.',
+        data: {
+          settings: {
+            addInputValues: false,
+            attributesToClear: [],
+            clearInlineFunctions: true,
+            debug: true,
+            formatter: 'diffable',
+            formatting: {
+              attributesPerLine: 1,
+              classesPerLine: 1,
+              emptyAttributes: true,
+              escapeAttributes: false,
+              escapeInnerText: true,
+              selfClosingTag: false,
+              tagsWithWhitespacePreserved: ['a', 'pre'],
+              voidElements: 'xhtml'
+            },
+            removeClassTest: true,
+            removeComments: true,
+            removeDataCy: true,
+            removeDataPw: true,
+            removeDataQa: true,
+            removeDataTest: false,
+            removeDataTestId: false,
+            removeDataTestid: false,
+            removeDataVId: false,
+            removeIdTest: true,
+            removeServerRendered: false,
+            sortAttributes: false,
+            sortClasses: false,
+            stringifyAttributes: false,
+            verbose: false
+          }
+        }
+      });
   });
 
   test('Removes non-settings', () => {

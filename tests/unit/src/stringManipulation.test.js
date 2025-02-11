@@ -1,15 +1,17 @@
 import { stringManipulation } from '@/stringManipulation.js';
 
 describe('String Manipulation', () => {
+  beforeEach(() => {
+    globalThis.vueSnapshots = {};
+  });
+
   test('Empty string', () => {
     expect(stringManipulation(''))
       .toEqual('');
   });
 
   test('Remove comments', () => {
-    globalThis.vueSnapshots = {
-      removeComments: true
-    };
+    globalThis.vueSnapshots.removeComments = true;
 
     const markup = [
       '<div>',
@@ -31,5 +33,28 @@ describe('String Manipulation', () => {
 
     expect(stringManipulation(markup))
       .toEqual('<div>\n          </div>');
+  });
+
+  describe('Debug mode', () => {
+    test('Main function', () => {
+      globalThis.vueSnapshots.debug = true;
+      stringManipulation('');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'stringManipulation.js:stringManipulation'
+        });
+    });
+
+    test('Remove comments', () => {
+      globalThis.vueSnapshots.removeComments = true;
+      globalThis.vueSnapshots.debug = true;
+      stringManipulation('<!-- -->');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', {
+          function: 'stringManipulation.js:removeAllComments'
+        });
+    });
   });
 });

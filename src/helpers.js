@@ -46,6 +46,23 @@ export const logger = function (message) {
 };
 
 /**
+ * @typedef  {object} DEBUGSTATEMENT
+ * @property {string} function        Name of the function being called
+ * @property {any}    [any]           Any additional properties related to the function
+ */
+
+/**
+ * Logs out information to help in debugging why snapshots aren't working.
+ *
+ * @param {DEBUGSTATEMENT} data  Object of relevant data to the current debug statment
+ */
+export const debugLogger = function (data) {
+  if (globalThis.vueSnapshots?.debug) {
+    console.info('V3SS Debug:', data);
+  }
+};
+
+/**
  * Swaps single and double quotes.
  *
  * @example
@@ -176,6 +193,7 @@ const xmlOptions = {
  * @return {object}         An htmlparser2 AST
  */
 export const parseMarkup = function (markup) {
+  debugLogger({ function: 'helpers.js:parseMarkup' });
   const ast = htmlparser2.parseDOM(markup, xmlOptions);
   return ast;
 };
@@ -187,6 +205,7 @@ export const parseMarkup = function (markup) {
  * @return {object}         The cheerio object
  */
 export const cheerioize = function (markup) {
+  debugLogger({ function: 'helpers.js:cheerioize' });
   const ast = parseMarkup(markup);
   const cheerioOptions = {
     xml: xmlOptions
