@@ -1,7 +1,7 @@
 {
   "name": "vue3-snapshot-serializer",
   "type": "module",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "eslint-config-tjw-jsdoc": "^2.0.1",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.3",
-    "happy-dom": "^17.0.4",
+    "happy-dom": "^17.1.0",
     "vitest": "^3.0.5"
   },
   "repository": {
