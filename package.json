@@ -54,7 +54,7 @@
   },
   "homepage": "https://github.com/tjw-lint/vue3-snapshot-serializer#readme",
   "volta": {
-    "node": "23.7.0",
+    "node": "23.8.0",
     "npm": "11.1.0"
   }
 }
