@@ -1,5 +1,5 @@
 /**
- * @file Reusable, flattend, JSDoc comment blocks and types that can be imported by other files.
+ * @file Reusable, flattened, JSDoc comment blocks and types that can be imported by other files.
  */
 
 /**
@@ -28,10 +28,10 @@
  * @property {number}         [indent_size=2]                           How many indentation characters to use.
  * @property {string[]}       [inline=[]]                               Array of string tag names to represent inline (vs block) elements.
  * @property {boolean}        [inline_custom_elements=true]             Whether custom elements should be counted as inline.
- * @property {string}         [sep='\n']                                The characters to use for new line separtors.
+ * @property {string}         [sep='\n']                                The characters to use for new line separators.
  * @property {string[]}       [templating=['auto']]                     What templating languages to support ('django', 'erb', 'handlebars', 'php') defaults to all.
  * @property {string[]}       [unformatted=['code','pre']]              Array of string tag names to skip formatting for.
- * @property {string}         [unformatted_content_delimiter]           String for delimiting unformated content.
+ * @property {string}         [unformatted_content_delimiter]           String for delimiting unformatted content.
  * @property {string[]}       [void_elements]                           Defaults to ['area','base','br','col','embed','hr','img','input','keygen','link','menuitem','meta','param','source','track','wbr','!doctype','?xml','basefont','isindex'].
  * @property {WRAPATTRIBUTES} [wrap_attributes='auto']                  Settings for attribute alignment.
  * @property {number}         [wrap_attributes_min_attrs=2]             When to wrap attributes.
@@ -54,6 +54,19 @@
  * @property {VOIDELEMENTS} [voidElements='xhtml']                     Determines how void elements are closed. Accepts 'html' for `<input>`, 'xhtml' for `<input />`, and 'xml' for `<input></input>`.
  */
 
+/** @typedef {string} SELECTOR  Any valid CSS Selector. */
+/** @typedef {string} ATTRIBUTE  Any HTML attribute. */
+/**
+ * @typedef  {object}              STUBDEFINITION
+ * @property {boolean}             [removeInnerHtml]   True to remove the innerHTML of the targeted DOM node being stubbed.
+ * @property {ATTRIBUTE[]|boolean} [removeAttributes]  True to remove all, false to remove none, or an array of HTML attribute names to remove from the stub root.
+ * @property {string}              [tagName]           Used to replace the tag name on the targeted DOM node being stubbed.
+ */
+/* eslint-disable-next-line jsdoc/check-types */
+/** @typedef {Object<SELECTOR, STUBDEFINITION>} STUBOBJECT */
+/** @typedef {SELECTOR[]} STUBARRAY */
+/** @typedef {STUBOBJECT|STUBARRAY} STUBS */
+
 /**
  * @typedef  {object}            SETTINGS
  * @property {boolean}           [verbose=true]                Logs to the console errors or other messages if true.
@@ -75,6 +88,7 @@
  * @property {boolean}           [removeClassTest=false]       Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
  * @property {boolean}           [removeComments=false]        Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
  * @property {boolean}           [clearInlineFunctions=false]  Replaces `<div title="function () { return true; }"></div>` or `<div title="(x) => !x"></div>` with this placeholder `<div title="[function]"></div>`.
+ * @property {STUBS}             [stubs={}]                    Allows targeting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
  * @property {POSTPROCESSOR}     [postProcessor]               This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
  * @property {FORMATTER}         [formatter='diffable']        Function to use for formatting the markup output. Accepts 'none', 'diffable', or 'classic'.
  * @property {FORMATTING}        [formatting]                  An object containing settings specific to the "diffable" formatter.

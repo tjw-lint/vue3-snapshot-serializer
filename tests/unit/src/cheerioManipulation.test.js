@@ -374,4 +374,184 @@ describe('Cheerio Manipulation', () => {
         .toMatchSnapshot();
     });
   });
+
+  describe('Stubs', () => {
+    let input;
+
+    beforeEach(() => {
+      input = [
+        '<div class="artichoke" title="value">',
+        '  <span class="food">Vegetables</span>',
+        '</div>'
+      ].join('\n');
+    });
+
+    test('Remove inner HTML', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeInnerHtml: true
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div
+            class="artichoke"
+            title="value"
+          ></div>
+        `);
+    });
+
+    test('Remove all attributes', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeAttributes: true
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div>
+            <span class="food">
+              Vegetables
+            </span>
+          </div>
+        `);
+    });
+
+    test('Remove specific attributes', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeAttributes: ['class']
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div title="value">
+            <span class="food">
+              Vegetables
+            </span>
+          </div>
+        `);
+    });
+
+    test('Set tag name', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          tagName: 'artichoke-stub'
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub
+            class="artichoke"
+            title="value"
+          >
+            <span class="food">
+              Vegetables
+            </span>
+          </artichoke-stub>
+        `);
+    });
+
+    test('Long form', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': {
+          removeInnerHtml: true,
+          removeAttributes: true,
+          tagName: 'artichoke-stub'
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub></artichoke-stub>
+        `);
+    });
+
+    test('Short form', () => {
+      globalThis.vueSnapshots.stubs = {
+        '.artichoke': 'artichoke-stub'
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub></artichoke-stub>
+        `);
+    });
+
+    test('Very short form', () => {
+      globalThis.vueSnapshots.stubs = [
+        '.artichoke'
+      ];
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <artichoke-stub></artichoke-stub>
+        `);
+    });
+
+    test('Stubs multiple DOM nodes', () => {
+      input = [
+        '<ul>',
+        '  <li title="a">A</li>',
+        '  <li title="b">B</li>',
+        '  <li title="c">C</li>',
+        '</ul>'
+      ].join('\n');
+
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['li'];
+      globalThis.vueSnapshots.stubs = {
+        'li:nth-of-type(odd)': {
+          removeAttributes: true
+        }
+      };
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <ul>
+            <li>A</li>
+            <li title="b">B</li>
+            <li>C</li>
+          </ul>
+        `);
+    });
+
+    test('Complex tag name', () => {
+      input = [
+        '<ul id="A">',
+        '  <li title="a">A</li>',
+        '  <li title="b">B</li>',
+        '  <li title="c">C</li>',
+        '</ul>'
+      ].join('\n');
+
+      globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = ['li'];
+      globalThis.vueSnapshots.stubs = ['#A li:nth-of-type(odd)'];
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <ul id="A">
+            <a_li-nth-of-type-odd-stub></a_li-nth-of-type-odd-stub>
+            <li title="b">B</li>
+            <a_li-nth-of-type-odd-stub></a_li-nth-of-type-odd-stub>
+          </ul>
+        `);
+    });
+
+    test('Stub using test token', () => {
+      input = '<div data-test="b"><div data-test="a"><span>b</span></div></div>';
+
+      globalThis.vueSnapshots.stubs = ['[data-test="a"]'];
+
+      expect(input)
+        .toMatchInlineSnapshot(`
+          <div>
+            <data-test-a-stub></data-test-a-stub>
+          </div>
+        `);
+    });
+  });
 });

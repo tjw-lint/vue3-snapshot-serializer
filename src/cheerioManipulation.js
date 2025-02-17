@@ -264,6 +264,41 @@ const clearInlineFunctions = function ($) {
 };
 
 /**
+ * Finds DOM nodes based on provided selectors and optionally
+ * replaces the tag name, removes attributes, and/or removes
+ * innerHTML.
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+const stubOutDom = function ($) {
+  for (const selector in globalThis.vueSnapshots?.stubs) {
+    const stub = globalThis.vueSnapshots.stubs[selector];
+    $(selector).each(function (index, element) {
+      if (stub.removeAttributes === true) {
+        element.attribs = {};
+      }
+      if (Array.isArray(stub.removeAttributes)) {
+        Object.keys(element.attribs).forEach(function (key) {
+          if (stub.removeAttributes.includes(key)) {
+            delete element.attribs[key];
+          }
+        });
+      }
+      if (stub.removeInnerHtml) {
+        element.children = [];
+      }
+      if (
+        stub.tagName &&
+        element.type === 'tag' &&
+        element.name
+      ) {
+        element.name = stub.tagName;
+      }
+    });
+  }
+};
+
+/**
  * Sorts the attributes of all HTML elements to make diffs easier to read.
  *
  * @example
@@ -343,8 +378,10 @@ export const cheerioManipulation = function (vueWrapper) {
   const $ = cheerioize(html);
 
   addInputValues($, vueWrapper);
-  // Removes data-key, so has be last of vueWrapper calls
+  // Removes data-key, so has to be last of vueWrapper calls
   stringifyAttributes($, vueWrapper);
+  // Uses CSS Selectors, so must run before test tokens are removed
+  stubOutDom($);
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);
