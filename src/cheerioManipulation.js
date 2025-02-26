@@ -45,9 +45,10 @@ const attributesCanBeStringified = function (vueWrapper) {
 const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
     debugLogger({ function: 'cheerioManipulation.js:addSerializerKeys' });
-    const vnodes = vueWrapper.findAll('*');
+    const vnodes = typeof(vueWrapper.findAll) === 'function' ? vueWrapper.findAll('*') :
+      vueWrapper.container?.querySelectorAll('*');
     for (let vnode of vnodes) {
-      vnode.element.setAttribute(KEY_NAME, 'v-' + key);
+      vnode.element ? vnode.element.setAttribute(KEY_NAME, 'v-' + key) : vnode.setAttribute(KEY_NAME, 'v-' + key);
       key++;
     }
     alreadyRemovedKey = false;
