@@ -27,8 +27,12 @@ const attributesCanBeStringified = function (vueWrapper) {
       globalThis.vueSnapshots?.addInputValues ||
       globalThis.vueSnapshots?.stringifyAttributes
     ) &&
-    typeof(vueWrapper?.find) === 'function' &&
-    typeof(vueWrapper?.findAll) === 'function'
+    (
+      // Check for Vue Test Utils wrapper methods
+      (typeof(vueWrapper?.find) === 'function' && typeof(vueWrapper?.findAll) === 'function') ||
+      // Check for Testing Library Vue wrapper property
+      typeof(vueWrapper?.container) === 'object'
+    )
   );
   debugLogger({
     function: 'cheerioManipulation.js:attributesCanBeStringified',
