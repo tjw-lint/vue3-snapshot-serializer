@@ -18,7 +18,7 @@ let alreadyRemovedKey = true;
  * Safety check to ensure the vueWrapper contains the needed
  * methods for attribute stringification.
  *
- * @param  {object}  vueWrapper  The VTU Wrapper object
+ * @param  {object}  vueWrapper  The VTU Wrapper object or Testing Library Vue rendered wrapper
  * @return {boolean}             If criteria is met
  */
 const attributesCanBeStringified = function (vueWrapper) {
@@ -44,7 +44,7 @@ const attributesCanBeStringified = function (vueWrapper) {
 /**
  * Adds a unique key to every DOM element as a data- attribute.
  *
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
@@ -71,7 +71,7 @@ const addSerializerKeys = function (vueWrapper) {
  * <h1>Hello World</h1>
  *
  * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const removeSerializerKeys = function ($, vueWrapper) {
   if (!alreadyRemovedKey) {
@@ -102,7 +102,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
  * <input value="Hello World">
  *
  * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const addInputValues = function ($, vueWrapper) {
   if (
@@ -127,7 +127,7 @@ const addInputValues = function ($, vueWrapper) {
         const vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
         element.setAttribute('value', swapQuotes(stringify(vnode.value)));
         if (['checkbox', 'radio'].includes(element.type)) {
-          element.checked = vnode.checked;
+          element.setAttribute('checked', vnode.checked);
         }
       });
     }
@@ -142,7 +142,7 @@ const addInputValues = function ($, vueWrapper) {
  * <h1 title="{x:'asdf'}"></h1>
  *
  * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const stringifyAttributes = function ($, vueWrapper) {
   if (
@@ -400,7 +400,7 @@ const sortClasses = function ($) {
  * Applies desired DOM manipulations based on
  * global.vueSnapshots settings for improved snapshots.
  *
- * @param  {object | string} vueWrapper  Either the Vue-Test-Utils mounted component object, or a string of html.
+ * @param  {object | string} vueWrapper  Either the Vue-Test-Utils mounted component object, Testing Library Vue rendered wrapper, or a string of html.
  * @return {string}                      String of manipulated HTML, ready for formatting.
  */
 export const cheerioManipulation = function (vueWrapper) {
