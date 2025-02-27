@@ -6,7 +6,8 @@ import {
   cheerioize,
   debugLogger,
   stringify,
-  swapQuotes
+  swapQuotes,
+  isVueTestUtilsWrapper
 } from './helpers.js';
 import { removeTestTokens } from './removeTestTokens.js';
 
@@ -50,7 +51,7 @@ const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
     debugLogger({ function: 'cheerioManipulation.js:addSerializerKeys' });
     let vnodes;
-    if (typeof(vueWrapper.find) === 'function') {
+    if (isVueTestUtilsWrapper(vueWrapper)) {
       vnodes = vueWrapper.findAll('*');
     } else {
       vnodes = Array.from(vueWrapper.container.querySelectorAll('*'));
@@ -80,7 +81,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       let vnode;
-      if (typeof(vueWrapper.find) === 'function') {
+      if (isVueTestUtilsWrapper(vueWrapper)) {
         vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
         vnode.element.removeAttribute(KEY_NAME);
       } else {
@@ -110,7 +111,7 @@ const addInputValues = function ($, vueWrapper) {
     attributesCanBeStringified(vueWrapper)
   ) {
     debugLogger({ function: 'cheerioManipulation.js:addInputValues' });
-    if (typeof(vueWrapper.find) === 'function') {
+    if (isVueTestUtilsWrapper(vueWrapper)) {
       $('input, textarea, select').each(function (index, element) {
         const currentKey = $(element).attr(KEY_NAME);
         const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
@@ -153,7 +154,7 @@ const stringifyAttributes = function ($, vueWrapper) {
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       let vnode;
-      if (typeof(vueWrapper.find) === 'function') {
+      if (isVueTestUtilsWrapper(vueWrapper)) {
         vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
         if (vnode) {
           const attributes = vnode.attributes();
