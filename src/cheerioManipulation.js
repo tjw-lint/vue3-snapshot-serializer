@@ -79,7 +79,14 @@ const removeSerializerKeys = function ($, vueWrapper) {
 
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
-      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+      let vnode;
+      if (typeof(vueWrapper.find) === 'function') {
+        vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+        vnode.element.removeAttribute(KEY_NAME);
+      } else {
+        vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+        vnode.removeAttribute(KEY_NAME);
+      }
       $(element).removeAttr(KEY_NAME);
       alreadyRemovedKey = true;
     });
@@ -103,15 +110,27 @@ const addInputValues = function ($, vueWrapper) {
     attributesCanBeStringified(vueWrapper)
   ) {
     debugLogger({ function: 'cheerioManipulation.js:addInputValues' });
-    $('input, textarea, select').each(function (index, element) {
-      const currentKey = $(element).attr(KEY_NAME);
-      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-      const value = vnode.element.value;
-      element.attribs.value = swapQuotes(stringify(value));
-      if (['checkbox', 'radio'].includes(element.attribs.type)) {
-        element.attribs.checked = String(vnode.element.checked);
-      }
-    });
+    if (typeof(vueWrapper.find) === 'function') {
+      $('input, textarea, select').each(function (index, element) {
+        const currentKey = $(element).attr(KEY_NAME);
+        const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+        const value = vnode.element.value;
+        element.attribs.value = swapQuotes(stringify(value));
+        if (['checkbox', 'radio'].includes(element.attribs.type)) {
+          element.attribs.checked = String(vnode.element.checked);
+        }
+      });
+    } else {
+      const inputs = Array.from(vueWrapper.container.querySelectorAll('input, textarea, select'));
+      inputs.forEach(function (element) {
+        const currentKey = element.getAttribute(KEY_NAME);
+        const vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+        element.setAttribute('value', swapQuotes(stringify(vnode.value)));
+        if (['checkbox', 'radio'].includes(element.type)) {
+          element.checked = vnode.checked;
+        }
+      });
+    }
   }
 };
 
@@ -133,21 +152,42 @@ const stringifyAttributes = function ($, vueWrapper) {
     debugLogger({ function: 'cheerioManipulation.js:stringifyAttributes' });
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
-      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-      const attributes = vnode.attributes();
-      delete attributes[KEY_NAME];
-      const attributeNames = Object.keys(attributes);
-      for (let attributeName of attributeNames) {
-        let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
-        if (value !== undefined && typeof(value) !== 'string') {
-          value = swapQuotes(stringify(value));
-          $(element).attr(attributeName, value);
+      let vnode;
+      if (typeof(vueWrapper.find) === 'function') {
+        vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+        if (vnode) {
+          const attributes = vnode.attributes();
+          delete attributes[KEY_NAME];
+          const attributeNames = Object.keys(attributes);
+          for (let attributeName of attributeNames) {
+            let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
+            debugger;
+            if (value !== undefined && typeof(value) !== 'string') {
+              value = swapQuotes(stringify(value));
+              $(element).attr(attributeName, value);
+            }
+          }
+          vnode.element.removeAttribute(KEY_NAME);
+        }
+      } else {
+        vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+        if (vnode) {
+          const attributes = Array.from(vnode.attributes);
+          for (let attribute of attributes) {
+            const attributeName = attribute.name;
+            let value = vnode.__vueParentComponent?.ctx?.$data;
+            if (value !== undefined && typeof(value) !== 'string') {
+              value = swapQuotes(stringify(value));
+            }
+            $(element).attr(attributeName, value);
+          }
+          // Add serializer cleanup
+          vnode.removeAttribute(KEY_NAME);
         }
       }
 
       // Clean up, remove the serializer data-key
       $(element).removeAttr(KEY_NAME);
-      vnode.element.removeAttribute(KEY_NAME);
       alreadyRemovedKey = true;
     });
   }
