@@ -161,7 +161,6 @@ const stringifyAttributes = function ($, vueWrapper) {
           const attributeNames = Object.keys(attributes);
           for (let attributeName of attributeNames) {
             let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
-            debugger;
             if (value !== undefined && typeof(value) !== 'string') {
               value = swapQuotes(stringify(value));
               $(element).attr(attributeName, value);
