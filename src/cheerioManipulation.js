@@ -49,8 +49,12 @@ const attributesCanBeStringified = function (vueWrapper) {
 const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
     debugLogger({ function: 'cheerioManipulation.js:addSerializerKeys' });
-    const vnodes = typeof(vueWrapper.findAll) === 'function' ? vueWrapper.findAll('*') :
-      vueWrapper.container?.querySelectorAll('*');
+    let vnodes;
+    if (typeof(vueWrapper.find) === 'function') {
+      vnodes = vueWrapper.findAll('*');
+    } else {
+      vnodes = Array.from(vueWrapper.container.querySelectorAll('*'));
+    }
     for (let vnode of vnodes) {
       vnode.element ? vnode.element.setAttribute(KEY_NAME, 'v-' + key) : vnode.setAttribute(KEY_NAME, 'v-' + key);
       key++;
@@ -77,7 +81,6 @@ const removeSerializerKeys = function ($, vueWrapper) {
       const currentKey = $(element).attr(KEY_NAME);
       const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
       $(element).removeAttr(KEY_NAME);
-      vnode.element.removeAttribute(KEY_NAME);
       alreadyRemovedKey = true;
     });
   }
