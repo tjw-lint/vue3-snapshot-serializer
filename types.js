@@ -72,10 +72,10 @@
  * @property {boolean}           [verbose=true]                Logs to the console errors or other messages if true.
  * @property {boolean}           [debug=false]                 Logs to the console as internal functions are called, including relevant data to help in troubleshooting.
  * @property {string[]}          [attributesToClear=[]]        Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
- * @property {boolean}           [addInputValues=true]         Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU `wrapper`, not `wrapper.html()`.
+ * @property {boolean}           [addInputValues=true]         Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
  * @property {boolean}           [sortAttributes=true]         Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
  * @property {boolean}           [sortClasses=true]            Sorts the classes inside the `class` attribute on all HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
- * @property {boolean}           [stringifyAttributes=true]    Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU `wrapper`, not `wrapper.html()`.
+ * @property {boolean}           [stringifyAttributes=true]    Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
  * @property {boolean}           [removeServerRendered=true]   Removes `data-server-rendered="true"` from your snapshots if true.
  * @property {boolean}           [removeDataVId=true]          Removes `data-v-1234abcd=""` from your snapshots if true. Useful if 3rd-party components use scoped styles to reduce snapshot noise when updating dependencies.
  * @property {boolean}           [removeDataTest=true]         Removes `data-test="whatever"` from your snapshots if true.
