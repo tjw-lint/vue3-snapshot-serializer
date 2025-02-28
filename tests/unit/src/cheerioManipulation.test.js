@@ -275,7 +275,8 @@ describe('Cheerio Manipulation', () => {
 
     test('Adds values into TLV DOM', async () => {
       const wrapper = render(SeveralInputs);
-      await userEvent.click(wrapper.container.querySelector('[data-test="button"]'));
+      const button = wrapper.container.querySelector('[data-test="button"]');
+      await userEvent.click(button);
 
       globalThis.vueSnapshots.addInputValues = true;
       globalThis.vueSnapshots.stringifyAttributes = false;
