@@ -25,7 +25,7 @@ exports[`Cheerio Manipulation > Add input values > Adds values into DOM 1`] = `
 exports[`Cheerio Manipulation > Add input values > Adds values into TLV DOM 1`] = `
 <div>
   <input value="1st" />
-  <textarea></textarea>
+  <textarea value="'second'"></textarea>
   <input
     type="number"
     value="3"
