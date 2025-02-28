@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
 import { userEvent } from '@testing-library/user-event';
 import { render } from '@testing-library/vue';
+import { mount } from '@vue/test-utils';
 
 import { cheerioManipulation } from '@/cheerioManipulation.js';
 
