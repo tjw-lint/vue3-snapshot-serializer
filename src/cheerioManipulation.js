@@ -127,7 +127,7 @@ const addInputValues = function ($, vueWrapper) {
         vnode = vueWrapper.find(keySelector);
         value = vnode.element.value;
         checked = vnode.element.checked;
-      } else {
+      } else if (vueWrapper?.container?.querySelector) {
         vnode = vueWrapper.container.querySelector(keySelector);
         value = vnode.value;
         checked = vnode.checked;
