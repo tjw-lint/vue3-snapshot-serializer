@@ -1,4 +1,6 @@
 import { mount } from '@vue/test-utils';
+import { userEvent } from '@testing-library/user-event';
+import { render } from '@testing-library/vue';
 
 import { cheerioManipulation } from '@/cheerioManipulation.js';
 
@@ -269,6 +271,17 @@ describe('Cheerio Manipulation', () => {
         .toHaveBeenCalledWith('V3SS Debug:', {
           function: 'cheerioManipulation.js:removeSerializerKeys'
         });
+    });
+
+    test('Adds values into TLV DOM', async () => {
+      const wrapper = render(SeveralInputs);
+      await userEvent.click(wrapper.container.querySelector('[data-test="button"]'));
+
+      globalThis.vueSnapshots.addInputValues = true;
+      globalThis.vueSnapshots.stringifyAttributes = false;
+
+      expect(wrapper)
+        .toMatchSnapshot();
     });
 
     test('Does not add values into DOM', async () => {
