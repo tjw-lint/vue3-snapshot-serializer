@@ -101,6 +101,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
 /**
  * Appends a value attribute to input, select, and textareas
  * to show the current value of the element in the snapshot.
+ * Also adds a checked attribute to checkboxes and radio dials.
  *
  * @example
  * <input>
@@ -115,27 +116,29 @@ const addInputValues = function ($, vueWrapper) {
     attributesCanBeStringified(vueWrapper)
   ) {
     debugLogger({ function: 'cheerioManipulation.js:addInputValues' });
-    if (isVueTestUtilsWrapper(vueWrapper)) {
-      $('input, textarea, select').each(function (index, element) {
-        const currentKey = $(element).attr(KEY_NAME);
-        const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-        const value = vnode.element.value;
-        element.attribs.value = swapQuotes(stringify(value));
-        if (['checkbox', 'radio'].includes(element.attribs.type)) {
-          element.attribs.checked = String(vnode.element.checked);
-        }
-      });
-    } else {
-      $('input, textarea, select').each(function (index, element) {
-        const currentKey = $(element).attr(KEY_NAME);
-        const vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
-        const value = vnode.value;
-        element.attribs.value = swapQuotes(stringify(value));
-        if (['checkbox', 'radio'].includes(element.attribs.type)) {
-          element.attribs.checked = String(vnode.checked);
-        }
-      });
-    }
+    $('input, textarea, select').each(function (index, element) {
+      const currentKey = $(element).attr(KEY_NAME);
+      const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
+
+      let vnode;
+      let value;
+      let checked;
+
+      if (isVueTestUtilsWrapper(vueWrapper)) {
+        vnode = vueWrapper.find(keySelector);
+        value = vnode.element.value;
+        checked = vnode.element.checked;
+      } else if (vueWrapper?.container?.querySelector) {
+        vnode = vueWrapper.container.querySelector(keySelector);
+        value = vnode.value;
+        checked = vnode.checked;
+      }
+
+      element.attribs.value = swapQuotes(stringify(value));
+      if (['checkbox', 'radio'].includes(element.attribs.type)) {
+        element.attribs.checked = String(checked);
+      }
+    });
   }
 };
 
