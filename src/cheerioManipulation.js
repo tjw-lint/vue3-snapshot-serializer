@@ -57,7 +57,11 @@ const addSerializerKeys = function (vueWrapper) {
       vnodes = Array.from(vueWrapper.container.querySelectorAll('*'));
     }
     for (let vnode of vnodes) {
-      vnode.element ? vnode.element.setAttribute(KEY_NAME, 'v-' + key) : vnode.setAttribute(KEY_NAME, 'v-' + key);
+      if (vnode.element?.setAttribute) {
+        vnode.element.setAttribute(KEY_NAME, 'v-' + key);
+      } else if (vnode.setAttribute) {
+        vnode.setAttribute(KEY_NAME, 'v-' + key);
+      }
       key++;
     }
     alreadyRemovedKey = false;
