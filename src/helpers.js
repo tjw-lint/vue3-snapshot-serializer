@@ -22,7 +22,7 @@ export const isHtmlString = function (received) {
 /**
  * Determines if the passed value is a VTU or TLV wrapper.
  *
- * @param  {object}  received  A Vue-Test-Utils wrapper or Testing Library Vue rendered wrapper.
+ * @param  {object}  received  A Vue-Test-Utils or @Testing-Library/Vue component wrapper.
  * @return {boolean}           true = VTU wrapper or TLV wrapper
  */
 export const isVueWrapper = function (received) {
