@@ -30,7 +30,7 @@ exports[`Cheerio Manipulation > Add input values > Adds values into TLV DOM 1`] 
     type="number"
     value="3"
   />
-  <select>
+  <select value="'b'">
     <option value="a">
       A
     </option>
