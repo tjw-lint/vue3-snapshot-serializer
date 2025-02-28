@@ -101,6 +101,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
 /**
  * Appends a value attribute to input, select, and textareas
  * to show the current value of the element in the snapshot.
+ * Also adds a checked attribute to checkboxes and radio dials.
  *
  * @example
  * <input>
