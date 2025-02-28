@@ -6,7 +6,8 @@ import {
   cheerioize,
   debugLogger,
   stringify,
-  swapQuotes
+  swapQuotes,
+  isVueTestUtilsWrapper
 } from './helpers.js';
 import { removeTestTokens } from './removeTestTokens.js';
 
@@ -18,7 +19,7 @@ let alreadyRemovedKey = true;
  * Safety check to ensure the vueWrapper contains the needed
  * methods for attribute stringification.
  *
- * @param  {object}  vueWrapper  The VTU Wrapper object
+ * @param  {object}  vueWrapper  The VTU Wrapper object or Testing Library Vue rendered wrapper
  * @return {boolean}             If criteria is met
  */
 const attributesCanBeStringified = function (vueWrapper) {
@@ -27,8 +28,12 @@ const attributesCanBeStringified = function (vueWrapper) {
       globalThis.vueSnapshots?.addInputValues ||
       globalThis.vueSnapshots?.stringifyAttributes
     ) &&
-    typeof(vueWrapper?.find) === 'function' &&
-    typeof(vueWrapper?.findAll) === 'function'
+    (
+      // Check for Vue Test Utils wrapper methods
+      (typeof(vueWrapper?.find) === 'function' && typeof(vueWrapper?.findAll) === 'function') ||
+      // Check for Testing Library Vue wrapper property
+      typeof(vueWrapper?.container) === 'object'
+    )
   );
   debugLogger({
     function: 'cheerioManipulation.js:attributesCanBeStringified',
@@ -40,14 +45,23 @@ const attributesCanBeStringified = function (vueWrapper) {
 /**
  * Adds a unique key to every DOM element as a data- attribute.
  *
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
     debugLogger({ function: 'cheerioManipulation.js:addSerializerKeys' });
-    const vnodes = vueWrapper.findAll('*');
+    let vnodes;
+    if (isVueTestUtilsWrapper(vueWrapper)) {
+      vnodes = vueWrapper.findAll('*');
+    } else {
+      vnodes = Array.from(vueWrapper.container.querySelectorAll('*'));
+    }
     for (let vnode of vnodes) {
-      vnode.element.setAttribute(KEY_NAME, 'v-' + key);
+      if (vnode.element?.setAttribute) {
+        vnode.element.setAttribute(KEY_NAME, 'v-' + key);
+      } else if (vnode.setAttribute) {
+        vnode.setAttribute(KEY_NAME, 'v-' + key);
+      }
       key++;
     }
     alreadyRemovedKey = false;
@@ -62,7 +76,7 @@ const addSerializerKeys = function (vueWrapper) {
  * <h1>Hello World</h1>
  *
  * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const removeSerializerKeys = function ($, vueWrapper) {
   if (!alreadyRemovedKey) {
@@ -70,9 +84,15 @@ const removeSerializerKeys = function ($, vueWrapper) {
 
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
-      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+      let vnode;
+      if (isVueTestUtilsWrapper(vueWrapper)) {
+        vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+        vnode.element.removeAttribute(KEY_NAME);
+      } else {
+        vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+        vnode.removeAttribute(KEY_NAME);
+      }
       $(element).removeAttr(KEY_NAME);
-      vnode.element.removeAttribute(KEY_NAME);
       alreadyRemovedKey = true;
     });
   }
@@ -87,7 +107,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
  * <input value="Hello World">
  *
  * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const addInputValues = function ($, vueWrapper) {
   if (
@@ -95,15 +115,27 @@ const addInputValues = function ($, vueWrapper) {
     attributesCanBeStringified(vueWrapper)
   ) {
     debugLogger({ function: 'cheerioManipulation.js:addInputValues' });
-    $('input, textarea, select').each(function (index, element) {
-      const currentKey = $(element).attr(KEY_NAME);
-      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-      const value = vnode.element.value;
-      element.attribs.value = swapQuotes(stringify(value));
-      if (['checkbox', 'radio'].includes(element.attribs.type)) {
-        element.attribs.checked = String(vnode.element.checked);
-      }
-    });
+    if (isVueTestUtilsWrapper(vueWrapper)) {
+      $('input, textarea, select').each(function (index, element) {
+        const currentKey = $(element).attr(KEY_NAME);
+        const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+        const value = vnode.element.value;
+        element.attribs.value = swapQuotes(stringify(value));
+        if (['checkbox', 'radio'].includes(element.attribs.type)) {
+          element.attribs.checked = String(vnode.element.checked);
+        }
+      });
+    } else {
+      $('input, textarea, select').each(function (index, element) {
+        const currentKey = $(element).attr(KEY_NAME);
+        const vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+        const value = vnode.value;
+        element.attribs.value = swapQuotes(stringify(value));
+        if (['checkbox', 'radio'].includes(element.attribs.type)) {
+          element.attribs.checked = String(vnode.checked);
+        }
+      });
+    }
   }
 };
 
@@ -115,7 +147,7 @@ const addInputValues = function ($, vueWrapper) {
  * <h1 title="{x:'asdf'}"></h1>
  *
  * @param {object} $           The markup as a cheerio object
- * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper
+ * @param {object} vueWrapper  The Vue-Test Utils mounted component wrapper or Testing Library Vue rendered wrapper
  */
 const stringifyAttributes = function ($, vueWrapper) {
   if (
@@ -125,21 +157,46 @@ const stringifyAttributes = function ($, vueWrapper) {
     debugLogger({ function: 'cheerioManipulation.js:stringifyAttributes' });
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
-      const vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-      const attributes = vnode.attributes();
-      delete attributes[KEY_NAME];
-      const attributeNames = Object.keys(attributes);
-      for (let attributeName of attributeNames) {
-        let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
-        if (value !== undefined && typeof(value) !== 'string') {
-          value = swapQuotes(stringify(value));
-          $(element).attr(attributeName, value);
+      let vnode;
+      if (isVueTestUtilsWrapper(vueWrapper)) {
+        vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+        if (vnode) {
+          const attributes = vnode.attributes();
+          delete attributes[KEY_NAME];
+          const attributeNames = Object.keys(attributes);
+          for (let attributeName of attributeNames) {
+            let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
+            if (value !== undefined && typeof(value) !== 'string') {
+              value = swapQuotes(stringify(value));
+              $(element).attr(attributeName, value);
+            }
+          }
+          vnode.element.removeAttribute(KEY_NAME);
+        }
+      } else {
+        vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+        if (vnode) {
+          const attributes = Array.from(vnode.attributes);
+          for (let attribute of attributes) {
+            const attributeName = attribute.name;
+            let value;
+            if (vnode.__vnode?.props?.[attributeName] !== undefined) {
+              value = vnode.__vnode.props[attributeName];
+            } else {
+              value = attribute.value;
+            }
+            if (value !== undefined && typeof(value) !== 'string') {
+              value = swapQuotes(stringify(value));
+            }
+            $(element).attr(attributeName, value);
+          }
+          // Add serializer cleanup
+          vnode.removeAttribute(KEY_NAME);
         }
       }
 
       // Clean up, remove the serializer data-key
       $(element).removeAttr(KEY_NAME);
-      vnode.element.removeAttribute(KEY_NAME);
       alreadyRemovedKey = true;
     });
   }
@@ -348,7 +405,7 @@ const sortClasses = function ($) {
  * Applies desired DOM manipulations based on
  * global.vueSnapshots settings for improved snapshots.
  *
- * @param  {object | string} vueWrapper  Either the Vue-Test-Utils mounted component object, or a string of html.
+ * @param  {object | string} vueWrapper  Either the Vue-Test-Utils mounted component object, Testing Library Vue rendered wrapper, or a string of html.
  * @return {string}                      String of manipulated HTML, ready for formatting.
  */
 export const cheerioManipulation = function (vueWrapper) {

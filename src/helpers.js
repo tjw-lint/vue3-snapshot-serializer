@@ -20,16 +20,29 @@ export const isHtmlString = function (received) {
 };
 
 /**
- * Determines if the passed value is a VTU wrapper.
+ * Determines if the passed value is a VTU or TLV wrapper.
  *
- * @param  {object}  received  A Vue-Test-Utils wrapper.
- * @return {boolean}           true = VTU wrapper
+ * @param  {object}  received  A Vue-Test-Utils or @Testing-Library/Vue component wrapper.
+ * @return {boolean}           true = VTU wrapper or TLV wrapper
  */
 export const isVueWrapper = function (received) {
   return (
     typeof(received) === 'object' &&
     received !== null &&
     typeof(received.html) === 'function'
+  );
+};
+
+/**
+ * Determines if the passed value is a VTU wrapper.
+ *
+ * @param  {object}  received  A Vue-Test-Utils wrapper.
+ * @return {boolean}           true = VTU wrapper
+ */
+export const isVueTestUtilsWrapper = function (received) {
+  return (
+    isVueWrapper(received) &&
+    typeof(received.find) === 'function'
   );
 };
 
