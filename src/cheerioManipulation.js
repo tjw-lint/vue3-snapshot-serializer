@@ -122,13 +122,13 @@ const addInputValues = function ($, vueWrapper) {
         }
       });
     } else {
-      const inputs = Array.from(vueWrapper.container.querySelectorAll('input, textarea, select'));
-      inputs.forEach(function (element) {
-        const currentKey = element.getAttribute(KEY_NAME);
+      $('input, textarea, select').each(function (index, element) {
+        const currentKey = $(element).attr(KEY_NAME);
         const vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
-        element.setAttribute('value', swapQuotes(stringify(vnode.value)));
-        if (['checkbox', 'radio'].includes(element.type)) {
-          element.setAttribute('checked', vnode.checked);
+        const value = vnode.value;
+        element.attribs.value = swapQuotes(stringify(value));
+        if (['checkbox', 'radio'].includes(element.attribs.type)) {
+          element.attribs.checked = String(vnode.checked);
         }
       });
     }

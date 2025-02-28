@@ -13,7 +13,7 @@
         Available
       </template>
       <template v-else>
-        Unvailable
+        Unavailable
       </template>
     </h1>
   </div>

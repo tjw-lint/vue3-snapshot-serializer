@@ -12,7 +12,7 @@ exports[`TestingLibrary > Contents change after toggle button clicked 1`] = `
     value="'on'"
   />
   <h1 title="{available:false}">
-    Unvailable
+    Unavailable
   </h1>
 </div>
 `;
