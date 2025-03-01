@@ -5,9 +5,10 @@
 import {
   cheerioize,
   debugLogger,
+  isTestingLibraryVueContainer,
+  isVueTestUtilsWrapper,
   stringify,
-  swapQuotes,
-  isVueTestUtilsWrapper
+  swapQuotes
 } from './helpers.js';
 import { removeTestTokens } from './removeTestTokens.js';
 
@@ -23,21 +24,32 @@ let alreadyRemovedKey = true;
  * @return {boolean}             If criteria is met
  */
 const attributesCanBeStringified = function (vueWrapper) {
+  const hasVTUfind = (
+    typeof(vueWrapper?.find) === 'function' &&
+    typeof(vueWrapper?.findAll) === 'function'
+  );
+  const hasTLVcontainer = typeof(vueWrapper?.container) === 'object';
+  const isTLVcontainer = isTestingLibraryVueContainer(vueWrapper);
+
   const canBeStringified = (
     (
       globalThis.vueSnapshots?.addInputValues ||
       globalThis.vueSnapshots?.stringifyAttributes
     ) &&
     (
-      // Check for Vue Test Utils wrapper methods
-      (typeof(vueWrapper?.find) === 'function' && typeof(vueWrapper?.findAll) === 'function') ||
-      // Check for Testing Library Vue wrapper property
-      typeof(vueWrapper?.container) === 'object'
+      hasVTUfind ||
+      hasTLVcontainer ||
+      isTLVcontainer
     )
   );
   debugLogger({
     function: 'cheerioManipulation.js:attributesCanBeStringified',
-    data: { canBeStringified }
+    data: {
+      hasVTUfind,
+      hasTLVcontainer,
+      isTLVcontainer,
+      canBeStringified
+    }
   });
   return canBeStringified;
 };
@@ -84,14 +96,20 @@ const removeSerializerKeys = function ($, vueWrapper) {
 
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
+      const selectorKey = '[' + KEY_NAME + '="' + currentKey + '"]';
+
       let vnode;
-      if (isVueTestUtilsWrapper(vueWrapper)) {
-        vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
+      if (typeof(vueWrapper?.find) === 'function') {
+        vnode = vueWrapper.find(selectorKey);
         vnode.element.removeAttribute(KEY_NAME);
-      } else {
-        vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
+      } else if (typeof(vueWrapper?.container?.querySelector) === 'function') {
+        vnode = vueWrapper.container.querySelector(selectorKey);
+        vnode.removeAttribute(KEY_NAME);
+      } else if (typeof(vueWrapper?.querySelector) === 'function') {
+        vnode = vueWrapper.querySelector(selectorKey);
         vnode.removeAttribute(KEY_NAME);
       }
+
       $(element).removeAttr(KEY_NAME);
       alreadyRemovedKey = true;
     });
@@ -120,23 +138,36 @@ const addInputValues = function ($, vueWrapper) {
       const currentKey = $(element).attr(KEY_NAME);
       const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
 
+      const tempValue = 'VUE3_SNAPSHOT_SERIALIZER_UNSET_VALUE';
+
       let vnode;
-      let value;
+      let value = tempValue;
       let checked;
 
+      // VTU Wrapper
       if (isVueTestUtilsWrapper(vueWrapper)) {
         vnode = vueWrapper.find(keySelector);
         value = vnode.element.value;
         checked = vnode.element.checked;
+      // TLV Wrapper
       } else if (vueWrapper?.container?.querySelector) {
         vnode = vueWrapper.container.querySelector(keySelector);
         value = vnode.value;
         checked = vnode.checked;
+      // TLV Container
+      } else if (vueWrapper?.querySelector) {
+        vnode = vueWrapper.querySelector(keySelector);
+        value = vnode.value;
+        checked = vnode.checked;
       }
 
-      element.attribs.value = swapQuotes(stringify(value));
-      if (['checkbox', 'radio'].includes(element.attribs.type)) {
-        element.attribs.checked = String(checked);
+      const valueWasSet = value !== tempValue;
+
+      if (valueWasSet) {
+        element.attribs.value = swapQuotes(stringify(value));
+        if (['checkbox', 'radio'].includes(element.attribs.type)) {
+          element.attribs.checked = String(checked);
+        }
       }
     });
   }
@@ -160,10 +191,25 @@ const stringifyAttributes = function ($, vueWrapper) {
     debugLogger({ function: 'cheerioManipulation.js:stringifyAttributes' });
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
+      const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
+
       let vnode;
-      if (isVueTestUtilsWrapper(vueWrapper)) {
-        vnode = vueWrapper.find('[' + KEY_NAME + '="' + currentKey + '"]');
-        if (vnode) {
+      if (vueWrapper && typeof(vueWrapper) === 'object') {
+        const isVTUwrapper = typeof(vueWrapper.find) === 'function';
+        const isTLVwrapper = typeof(vueWrapper.container?.querySelector) === 'function';
+        const isTLVcontainer = typeof(vueWrapper.querySelector) === 'function';
+
+        if (isVTUwrapper) {
+          vnode = vueWrapper.find(keySelector);
+        } else if (isTLVwrapper) {
+          vnode = vueWrapper.container.querySelector(keySelector);
+        } else if (isTLVcontainer) {
+          vnode = vueWrapper.querySelector(keySelector);
+        }
+      }
+
+      if (vnode) {
+        if (isVueTestUtilsWrapper(vueWrapper)) {
           const attributes = vnode.attributes();
           delete attributes[KEY_NAME];
           const attributeNames = Object.keys(attributes);
@@ -175,10 +221,7 @@ const stringifyAttributes = function ($, vueWrapper) {
             }
           }
           vnode.element.removeAttribute(KEY_NAME);
-        }
-      } else {
-        vnode = vueWrapper.container.querySelector('[' + KEY_NAME + '="' + currentKey + '"]');
-        if (vnode) {
+        } else {
           const attributes = Array.from(vnode.attributes);
           for (let attribute of attributes) {
             const attributeName = attribute.name;
@@ -420,8 +463,12 @@ export const cheerioManipulation = function (vueWrapper) {
 
   addSerializerKeys(vueWrapper);
   let html = vueWrapper;
+  // VTU or TLV Wrapper
   if (typeof(vueWrapper?.html) === 'function') {
     html = vueWrapper.html();
+  // TLV Container
+  } else if (typeof(vueWrapper?.toString) === 'function') {
+    html = vueWrapper.toString();
   }
 
   /**
