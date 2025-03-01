@@ -9,7 +9,7 @@
     "fix": "npm run lint -- --fix",
     "test": "vitest --coverage",
     "unit": "vitest --run",
-    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Stringify attributes\" \"cheerio\""
+    "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
   },
   "dependencies": {
     "cheerio": "^1.0.0",

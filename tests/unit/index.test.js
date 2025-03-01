@@ -26,8 +26,38 @@ describe('index.js', () => {
         .toEqual(false);
     });
 
-    test('Object resembling Vue wrapper is valid', () => {
-      expect(vue3SnapshotSerializer.test({ html: vi.fn() }))
+    test('Object resembling VTU wrapper is valid', () => {
+      const wrapper = {
+        find: vi.fn(),
+        html: vi.fn()
+      };
+
+      expect(vue3SnapshotSerializer.test(wrapper))
+        .toEqual(true);
+    });
+
+    test('Object resembling TLV wrapper is valid', () => {
+      const wrapper = {
+        container: {
+          querySelector: vi.fn(),
+          querySelectorAll: vi.fn(),
+          toString: vi.fn()
+        },
+        html: vi.fn()
+      };
+
+      expect(vue3SnapshotSerializer.test(wrapper))
+        .toEqual(true);
+    });
+
+    test('Object resembling TLV container is valid', () => {
+      const container = {
+        querySelector: vi.fn(),
+        querySelectorAll: vi.fn(),
+        toString: vi.fn()
+      };
+
+      expect(vue3SnapshotSerializer.test(container))
         .toEqual(true);
     });
 
@@ -45,11 +75,14 @@ describe('index.js', () => {
           function: 'index.js:test',
           details: [
             'Vue 3 Snapshot Serializer will only run on a string of',
-            'HTML (first character is \'<\') or a Vue-Test-Utils wrapper.'
+            'HTML (first character is \'<\'), a Vue-Test-Utils wrapper,',
+            'or a @Testing-Library/Vue render wrapper or container.'
           ].join(' '),
           data: {
             isHtml: true,
-            isVue: false,
+            isVueTestUtilsWrapper: false,
+            isTestingLibraryVueWrapper: false,
+            isTestingLibraryVueContainer: false,
             received: '<div>Text</div>'
           }
         });
