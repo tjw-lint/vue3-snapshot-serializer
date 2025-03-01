@@ -48,7 +48,7 @@ export const isTestingLibraryVueContainer = function (container) {
     typeof(container.querySelectorAll) === 'function' &&
     typeof(container.toString) === 'function'
   );
-}
+};
 
 /**
  * Determines if the passed value is a TLV wrapper.
@@ -63,7 +63,7 @@ export const isTestingLibraryVueWrapper = function (wrapper) {
     typeof(wrapper.html) === 'function' &&
     isTestingLibraryVueContainer(wrapper.container)
   );
-}
+};
 
 /**
  * Determines if the passed value is a Vue-Test-Utils
