@@ -254,7 +254,12 @@ describe('Cheerio Manipulation', () => {
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
           function: 'cheerioManipulation.js:attributesCanBeStringified',
-          data: { canBeStringified: true }
+          data: {
+            hasVTUfind: true,
+            hasTLVcontainer: false,
+            isTLVcontainer: false,
+            canBeStringified: true
+          }
         });
 
       expect(console.info)
