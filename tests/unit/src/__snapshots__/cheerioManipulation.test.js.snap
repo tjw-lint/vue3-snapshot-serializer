@@ -2,23 +2,25 @@
 
 exports[`Cheerio Manipulation > Add input values > Adds values from TLV Container into DOM 1`] = `
 <div>
-  <input value="'1st'" />
-  <textarea value="'second'"></textarea>
-  <input
-    type="number"
-    value="'3'"
-  />
-  <select value="'b'">
-    <option value="a">
-      A
-    </option>
-    <option value="b">
-      B
-    </option>
-  </select>
-  <button>
-    Set First
-  </button>
+  <div>
+    <input value="'1st'" />
+    <textarea value="'second'"></textarea>
+    <input
+      type="number"
+      value="'3'"
+    />
+    <select value="'b'">
+      <option value="a">
+        A
+      </option>
+      <option value="b">
+        B
+      </option>
+    </select>
+    <button>
+      Set First
+    </button>
+  </div>
 </div>
 `;
 

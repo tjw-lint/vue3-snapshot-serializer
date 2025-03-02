@@ -10,35 +10,39 @@ exports[`TestingLibrary > Container > Contents change after toggle button clicke
 
 exports[`TestingLibrary > Container > Contents change after toggle button clicked > container 1`] = `
 <div>
-  <button>
-    Toggle availability
-  </button>
-  <input value="'false'" />
-  <input
-    checked="false"
-    type="checkbox"
-    value="'on'"
-  />
-  <h1 title="{available:false}">
-    Unavailable
-  </h1>
+  <div>
+    <button>
+      Toggle availability
+    </button>
+    <input value="'false'" />
+    <input
+      checked="false"
+      type="checkbox"
+      value="'on'"
+    />
+    <h1 title="{available:false}">
+      Unavailable
+    </h1>
+  </div>
 </div>
 `;
 
 exports[`TestingLibrary > Container > Renders default contents 1`] = `
 <div>
-  <button>
-    Toggle availability
-  </button>
-  <input value="'true'" />
-  <input
-    checked="true"
-    type="checkbox"
-    value="'on'"
-  />
-  <h1 title="{available:true}">
-    Available
-  </h1>
+  <div>
+    <button>
+      Toggle availability
+    </button>
+    <input value="'true'" />
+    <input
+      checked="true"
+      type="checkbox"
+      value="'on'"
+    />
+    <h1 title="{available:true}">
+      Available
+    </h1>
+  </div>
 </div>
 `;
 

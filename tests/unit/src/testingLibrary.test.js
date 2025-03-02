@@ -24,6 +24,12 @@ describe('TestingLibrary', () => {
     });
   });
 
+  /**
+   * On Containers, TLV always wraps the component in an extra div. Nothing we
+   * can do about that:
+   * https://testing-library.com/docs/vue-testing-library/api#container-htmlelement
+   */
+
   describe('Container', () => {
     test('Renders default contents', () => {
       const { container } = render(TestingLibrary);
