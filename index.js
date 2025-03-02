@@ -6,6 +6,9 @@
 import {
   debugLogger,
   isHtmlString,
+  isTestingLibraryVueContainer,
+  isTestingLibraryVueWrapper,
+  isVueTestUtilsWrapper,
   isVueWrapper
 } from './src/helpers.js';
 import { loadOptions } from './src/loadOptions.js';
@@ -29,12 +32,14 @@ export const test = function (received) {
       function: 'index.js:test',
       details: [
         'Vue 3 Snapshot Serializer will only run on a string of',
-        'HTML (first character is \'<\') or a Vue-Test-Utils wrapper.'
+        'HTML (first character is \'<\'), a Vue-Test-Utils wrapper,',
+        'or a @Testing-Library/Vue render wrapper or container.'
       ].join(' '),
       data: {
         isHtml,
-        // skipping caching this for presumed happy path performance
-        isVue: isVueWrapper(received),
+        isVueTestUtilsWrapper: isVueTestUtilsWrapper(received),
+        isTestingLibraryVueWrapper: isTestingLibraryVueWrapper(received),
+        isTestingLibraryVueContainer: isTestingLibraryVueContainer(received),
         received
       }
     });

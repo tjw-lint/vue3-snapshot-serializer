@@ -7,7 +7,11 @@
       Toggle availability
     </button>
     <input v-model="available" />
-    <input v-model="available" type="checkbox" />
+    <input
+      v-model="available"
+      data-test="checkbox"
+      type="checkbox"
+    />
     <h1 :title="{ available }">
       <template v-if="available">
         Available

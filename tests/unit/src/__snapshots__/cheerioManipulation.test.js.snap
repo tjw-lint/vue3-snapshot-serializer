@@ -1,6 +1,30 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Cheerio Manipulation > Add input values > Adds values into DOM 1`] = `
+exports[`Cheerio Manipulation > Add input values > Adds values from TLV Container into DOM 1`] = `
+<div>
+  <div>
+    <input value="'1st'" />
+    <textarea value="'second'"></textarea>
+    <input
+      type="number"
+      value="'3'"
+    />
+    <select value="'b'">
+      <option value="a">
+        A
+      </option>
+      <option value="b">
+        B
+      </option>
+    </select>
+    <button>
+      Set First
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Cheerio Manipulation > Add input values > Adds values from TLV Wrapper into DOM 1`] = `
 <div>
   <input value="'1st'" />
   <textarea value="'second'"></textarea>
@@ -22,7 +46,7 @@ exports[`Cheerio Manipulation > Add input values > Adds values into DOM 1`] = `
 </div>
 `;
 
-exports[`Cheerio Manipulation > Add input values > Adds values into TLV DOM 1`] = `
+exports[`Cheerio Manipulation > Add input values > Adds values from VTU Wrapper into DOM 1`] = `
 <div>
   <input value="'1st'" />
   <textarea value="'second'"></textarea>

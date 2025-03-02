@@ -20,29 +20,63 @@ export const isHtmlString = function (received) {
 };
 
 /**
- * Determines if the passed value is a VTU or TLV wrapper.
+ * Determines if the passed value is a VTU wrapper.
  *
- * @param  {object}  received  A Vue-Test-Utils or @Testing-Library/Vue component wrapper.
- * @return {boolean}           true = VTU wrapper or TLV wrapper
+ * @param  {object}  wrapper  A Vue-Test-Utils wrapper
+ * @return {boolean}          true = VTU wrapper
  */
-export const isVueWrapper = function (received) {
-  return (
-    typeof(received) === 'object' &&
-    received !== null &&
-    typeof(received.html) === 'function'
+export const isVueTestUtilsWrapper = function (wrapper) {
+  return !!(
+    wrapper &&
+    typeof(wrapper) === 'object' &&
+    typeof(wrapper.html) === 'function' &&
+    typeof(wrapper.find) === 'function'
   );
 };
 
 /**
- * Determines if the passed value is a VTU wrapper.
+ * Determines if the passed value is a TLV render container.
  *
- * @param  {object}  received  A Vue-Test-Utils wrapper.
- * @return {boolean}           true = VTU wrapper
+ * @param  {object}  container  A @Testing-Library/Vue render container
+ * @return {boolean}            true = TLV container
  */
-export const isVueTestUtilsWrapper = function (received) {
-  return (
-    isVueWrapper(received) &&
-    typeof(received.find) === 'function'
+export const isTestingLibraryVueContainer = function (container) {
+  return !!(
+    container &&
+    typeof(container) === 'object' &&
+    typeof(container.querySelector) === 'function' &&
+    typeof(container.querySelectorAll) === 'function' &&
+    typeof(container.toString) === 'function'
+  );
+};
+
+/**
+ * Determines if the passed value is a TLV wrapper.
+ *
+ * @param  {object}  wrapper  A @Testing-Library/Vue render wrapper
+ * @return {boolean}          true = TLV wrapper
+ */
+export const isTestingLibraryVueWrapper = function (wrapper) {
+  return !!(
+    wrapper &&
+    typeof(wrapper) === 'object' &&
+    typeof(wrapper.html) === 'function' &&
+    isTestingLibraryVueContainer(wrapper.container)
+  );
+};
+
+/**
+ * Determines if the passed value is a Vue-Test-Utils
+ * or @Testing-Library/Vue wrapper.
+ *
+ * @param  {object}  received  A VTU or TLV component wrapper
+ * @return {boolean}           true = VTU wrapper or TLV wrapper
+ */
+export const isVueWrapper = function (received) {
+  return !!(
+    isVueTestUtilsWrapper(received) ||
+    isTestingLibraryVueWrapper(received) ||
+    isTestingLibraryVueContainer(received)
   );
 };
 

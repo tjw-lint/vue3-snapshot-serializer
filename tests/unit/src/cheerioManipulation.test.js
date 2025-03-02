@@ -241,7 +241,7 @@ describe('Cheerio Manipulation', () => {
   });
 
   describe('Add input values', () => {
-    test('Adds values into DOM', async () => {
+    test('Adds values from VTU Wrapper into DOM', async () => {
       const wrapper = await mount(SeveralInputs);
       await wrapper.find('[data-test="button"]').trigger('click');
 
@@ -254,7 +254,12 @@ describe('Cheerio Manipulation', () => {
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
           function: 'cheerioManipulation.js:attributesCanBeStringified',
-          data: { canBeStringified: true }
+          data: {
+            hasVTUfind: true,
+            hasTLVcontainer: false,
+            isTLVcontainer: false,
+            canBeStringified: true
+          }
         });
 
       expect(console.info)
@@ -273,7 +278,7 @@ describe('Cheerio Manipulation', () => {
         });
     });
 
-    test('Adds values into TLV DOM', async () => {
+    test('Adds values from TLV Wrapper into DOM', async () => {
       const wrapper = render(SeveralInputs);
       const button = wrapper.container.querySelector('[data-test="button"]');
       await userEvent.click(button);
@@ -282,6 +287,18 @@ describe('Cheerio Manipulation', () => {
       globalThis.vueSnapshots.stringifyAttributes = false;
 
       expect(wrapper)
+        .toMatchSnapshot();
+    });
+
+    test('Adds values from TLV Container into DOM', async () => {
+      const { container } = render(SeveralInputs);
+      const button = container.querySelector('[data-test="button"]');
+      await userEvent.click(button);
+
+      globalThis.vueSnapshots.addInputValues = true;
+      globalThis.vueSnapshots.stringifyAttributes = false;
+
+      expect(container)
         .toMatchSnapshot();
     });
 
