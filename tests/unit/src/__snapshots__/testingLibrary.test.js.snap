@@ -1,6 +1,14 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TestingLibrary > Contents change after toggle button clicked 1`] = `
+exports[`TestingLibrary > Container > Contents change after toggle button clicked > checkbox 1`] = `
+<input
+  checked="false"
+  type="checkbox"
+  value="'on'"
+/>
+`;
+
+exports[`TestingLibrary > Container > Contents change after toggle button clicked > container 1`] = `
 <div>
   <button>
     Toggle availability
@@ -17,7 +25,41 @@ exports[`TestingLibrary > Contents change after toggle button clicked 1`] = `
 </div>
 `;
 
-exports[`TestingLibrary > Renders default contents 1`] = `
+exports[`TestingLibrary > Container > Renders default contents 1`] = `
+<div>
+  <button>
+    Toggle availability
+  </button>
+  <input value="'true'" />
+  <input
+    checked="true"
+    type="checkbox"
+    value="'on'"
+  />
+  <h1 title="{available:true}">
+    Available
+  </h1>
+</div>
+`;
+
+exports[`TestingLibrary > Wrapper > Contents change after toggle button clicked 1`] = `
+<div>
+  <button>
+    Toggle availability
+  </button>
+  <input value="'false'" />
+  <input
+    checked="false"
+    type="checkbox"
+    value="'on'"
+  />
+  <h1 title="{available:false}">
+    Unavailable
+  </h1>
+</div>
+`;
+
+exports[`TestingLibrary > Wrapper > Renders default contents 1`] = `
 <div>
   <button>
     Toggle availability

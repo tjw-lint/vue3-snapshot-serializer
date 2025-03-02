@@ -65,8 +65,14 @@ const addSerializerKeys = function (vueWrapper) {
     let vnodes;
     if (isVueTestUtilsWrapper(vueWrapper)) {
       vnodes = vueWrapper.findAll('*');
-    } else {
+    } else if (vueWrapper.container?.querySelectorAll) {
       vnodes = Array.from(vueWrapper.container.querySelectorAll('*'));
+    } else if (vueWrapper.querySelectorAll) {
+      if (vueWrapper.childElementCount === 0) {
+        vnodes = [vueWrapper];
+      } else {
+        vnodes = Array.from(vueWrapper.querySelectorAll('*'));
+      }
     }
     for (let vnode of vnodes) {
       if (vnode.element?.setAttribute) {
@@ -152,6 +158,11 @@ const addInputValues = function ($, vueWrapper) {
       // TLV Wrapper
       } else if (vueWrapper?.container?.querySelector) {
         vnode = vueWrapper.container.querySelector(keySelector);
+        value = vnode.value;
+        checked = vnode.checked;
+      // TLV Single DOM Node
+      } else if (vueWrapper?.attributes?.[KEY_NAME]?.value === currentKey) {
+        vnode = vueWrapper;
         value = vnode.value;
         checked = vnode.checked;
       // TLV Container
