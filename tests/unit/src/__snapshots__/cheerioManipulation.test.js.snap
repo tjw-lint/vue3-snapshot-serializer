@@ -336,7 +336,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Does not stringify attrib
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values including child components 1`] = `
 <div>
-  <h1 title="{x:'asdf'}">
+  <h1 title="{ x: 'asdf' }">
     Te
     <s>
       xt
@@ -348,7 +348,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
     Text
   </strong>
 </p>
-<h2 title="{y:2}">
+<h2 title="{ y: 2 }">
   Words
 </h2>
 <div title="Function">
@@ -359,14 +359,14 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
     stuff.
   </span>
 </div>
-<div title="{name:'bob'}">
+<div title="{ name: 'bob' }">
   bob
 </div>
 `;
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values with stubbed child component 1`] = `
 <div>
-  <h1 title="{x:'asdf'}">
+  <h1 title="{ x: 'asdf' }">
     Te
     <s>
       xt
@@ -378,7 +378,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
     Text
   </strong>
 </p>
-<h2 title="{y:2}">
+<h2 title="{ y: 2 }">
   Words
 </h2>
 <div title="Function">
@@ -389,12 +389,12 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
     stuff.
   </span>
 </div>
-<span person="{name:'bob'}"></span>
+<span person="{ name: 'bob' }"></span>
 `;
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on children in shallow mounts 1`] = `
 <div>
-  <h1 title="{x:'asdf'}">
+  <h1 title="{ x: 'asdf' }">
     Te
     <s>
       xt
@@ -406,7 +406,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on c
     Text
   </strong>
 </p>
-<h2 title="{y:2}">
+<h2 title="{ y: 2 }">
   Words
 </h2>
 <div title="Function">
@@ -417,5 +417,5 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on c
     stuff.
   </span>
 </div>
-<stringify-props-stub person="{name:'bob'}"></stringify-props-stub>
+<stringify-props-stub person="{ name: 'bob' }"></stringify-props-stub>
 `;
