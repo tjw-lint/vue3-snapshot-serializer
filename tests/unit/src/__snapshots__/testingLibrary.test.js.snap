@@ -20,7 +20,7 @@ exports[`TestingLibrary > Container > Contents change after toggle button clicke
       type="checkbox"
       value="'on'"
     />
-    <h1 title="{available:false}">
+    <h1 title="{ available: false }">
       Unavailable
     </h1>
   </div>
@@ -39,7 +39,7 @@ exports[`TestingLibrary > Container > Renders default contents 1`] = `
       type="checkbox"
       value="'on'"
     />
-    <h1 title="{available:true}">
+    <h1 title="{ available: true }">
       Available
     </h1>
   </div>
@@ -57,7 +57,7 @@ exports[`TestingLibrary > Wrapper > Contents change after toggle button clicked 
     type="checkbox"
     value="'on'"
   />
-  <h1 title="{available:false}">
+  <h1 title="{ available: false }">
     Unavailable
   </h1>
 </div>
@@ -74,7 +74,7 @@ exports[`TestingLibrary > Wrapper > Renders default contents 1`] = `
     type="checkbox"
     value="'on'"
   />
-  <h1 title="{available:true}">
+  <h1 title="{ available: true }">
     Available
   </h1>
 </div>

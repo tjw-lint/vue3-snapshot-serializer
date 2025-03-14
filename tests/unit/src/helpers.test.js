@@ -168,12 +168,14 @@ describe('Helpers', () => {
     test('Object', () => {
       const obj = {
         subValue: {
-          key: '2'
+          a: '2',
+          b: undefined,
+          c: 3
         }
       };
 
       expect(stringify(obj))
-        .toEqual('{subValue:{key:"2"}}');
+        .toEqual('{ subValue: { a: "2", c: 3 } }');
     });
   });
 

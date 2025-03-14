@@ -173,11 +173,15 @@ export const stringify = function (obj) {
   let props = Object
     .keys(obj)
     .map((key) => {
-      return key + ':' + stringify(obj[key]);
+      if (obj[key] === undefined) {
+        return undefined;
+      }
+      return key + ': ' + stringify(obj[key]);
     })
-    .join(',');
+    .filter(Boolean)
+    .join(', ');
 
-  return '{' + props + '}';
+  return '{ ' + props + ' }';
 };
 
 /**
