@@ -1,13 +1,10 @@
-import {
-  flushPromises,
-  mount
-} from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
 import ButtonSlot from '@@/mockComponents/ButtonSlot.vue';
 
 describe('ButtonSlot', () => {
-  test('No slot value', async () => {
-    const wrapper = await mount(ButtonSlot);
+  test('No slot value', () => {
+    const wrapper = mount(ButtonSlot);
 
     expect(wrapper.html())
       .toEqual('<button></button>');
@@ -18,14 +15,12 @@ describe('ButtonSlot', () => {
       `);
   });
 
-  test('Slot with default text', async () => {
+  test('Slot with default text', () => {
     const wrapper = mount(ButtonSlot, {
       slots: {
         default: 'test'
       }
     });
-
-    await flushPromises();
 
     expect(wrapper.text())
       .toContain('test');
@@ -41,8 +36,8 @@ describe('ButtonSlot', () => {
       `);
   });
 
-  test('Slot with markup', async () => {
-    const wrapper = await mount(ButtonSlot, {
+  test('Slot with markup', () => {
+    const wrapper = mount(ButtonSlot, {
       slots: {
         default: '<p>test</p>'
       }
