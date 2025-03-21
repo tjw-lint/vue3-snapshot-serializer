@@ -40,6 +40,7 @@ const ALLOWED_FORMATTERS = [
   'diffable',
   'none'
 ];
+const ATTRIBUTES_NOT_TO_STRINGIFY_DEFAULTS = ['style'];
 const TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS = ['a', 'pre'];
 const VOID_ELEMENTS_DEFAULT = 'xhtml';
 const ALLOWED_VOID_ELEMENTS = Object.freeze([
@@ -109,6 +110,25 @@ export const loadOptions = function () {
     }
   }
   globalThis.vueSnapshots.attributesToClear = attributesToClear;
+
+  let attributesNotToStringify = [];
+  if (Array.isArray(globalThis.vueSnapshots.attributesNotToStringify)) {
+    for (const attribute of globalThis.vueSnapshots.attributesNotToStringify) {
+      if (
+        typeof(attribute) === 'string' &&
+        !attribute.trim().includes(' ')
+      ) {
+        attributesNotToStringify.push(attribute.trim());
+      } else if (typeof(attribute) === 'string' && attribute.includes(' ')) {
+        logger('Attributes should not inlcude a space in global.vueSnapshots.attributesNotToStringify. Received: ' + attribute);
+      } else {
+        logger('Attributes must be a type of string in global.vueSnapshots.attributesNotToStringify. Received: ' + attribute);
+      }
+    }
+  } else {
+    attributesNotToStringify = ATTRIBUTES_NOT_TO_STRINGIFY_DEFAULTS;
+  }
+  globalThis.vueSnapshots.attributesNotToStringify = attributesNotToStringify;
 
   // Normalize Stubs
   const stubs = globalThis.vueSnapshots.stubs;
@@ -366,6 +386,7 @@ export const loadOptions = function () {
 
   const permittedRootKeys = [
     ...Object.keys(booleanDefaults),
+    'attributesNotToStringify',
     'attributesToClear',
     'classicFormatting',
     'formatter',

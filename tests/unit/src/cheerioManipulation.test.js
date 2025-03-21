@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils';
 
 import { cheerioManipulation } from '@/cheerioManipulation.js';
 
+import AttributesNotToStringify from '@@/mockComponents/AttributesNotToStringify.vue';
 import DataVId from '@@/mockComponents/DataVId.vue';
 import CheckboxesAndRadios from '@@/mockComponents/CheckboxesAndRadios.vue';
 import EmbeddedStyles from '@@/mockComponents/EmbeddedStyles.vue';
@@ -403,6 +404,80 @@ describe('Cheerio Manipulation', () => {
 
       expect(wrapper)
         .toMatchSnapshot();
+    });
+  });
+
+  describe('Attributes not to stringify', () => {
+    test('Skips style by default', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+      globalThis.vueSnapshots.attributesNotToStringify = undefined;
+
+      const wrapper = await mount(AttributesNotToStringify);
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <h1
+            class="active"
+            style="background: #F00; width: 0px;"
+            title="{ a: 2 }"
+          >
+            Text
+          </h1>
+        `);
+    });
+
+    test('Has no effect if stringifyAttributes is disabled', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = false;
+      globalThis.vueSnapshots.attributesNotToStringify = ['style'];
+
+      const wrapper = await mount(AttributesNotToStringify);
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <h1
+            class="active"
+            style="background: #F00; width: 0px;"
+            title="[object Object]"
+          >
+            Text
+          </h1>
+        `);
+    });
+
+    test('Stringifies everything', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+      globalThis.vueSnapshots.attributesNotToStringify = [];
+
+      const wrapper = await mount(AttributesNotToStringify);
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <h1
+            class="active"
+            style="{ background: '#F00', width: 0 }"
+            title="{ a: 2 }"
+          >
+            Text
+          </h1>
+        `);
+    });
+
+    test('Inverted settings', async () => {
+      globalThis.vueSnapshots.stringifyAttributes = true;
+      globalThis.vueSnapshots.attributesNotToStringify = ['title'];
+
+      const wrapper = await mount(AttributesNotToStringify);
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <h1
+            class="active"
+            style="{ background: '#F00', width: 0 }"
+            title="[object Object]"
+          >
+            Text
+          </h1>
+        `);
     });
   });
 

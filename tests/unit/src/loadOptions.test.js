@@ -15,6 +15,7 @@ describe('Load options', () => {
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
     attributesToClear: [],
+    attributesNotToStringify: ['style'],
     stubs: {},
     formatter: 'diffable',
     formatting: {
@@ -40,7 +41,8 @@ describe('Load options', () => {
 
   test('Override defaults', () => {
     const invertedDefaults = {
-      attributesToClear: [false]
+      attributesToClear: [false],
+      attributesNotToStringify: []
     };
     for (const setting in booleanDefaults) {
       invertedDefaults[setting] = !booleanDefaults[setting];
@@ -52,7 +54,8 @@ describe('Load options', () => {
     expect(globalThis.vueSnapshots)
       .toEqual({
         ...invertedDefaults,
-        attributesToClear: []
+        attributesToClear: [],
+        attributesNotToStringify: []
       });
 
     expect(console.info)
@@ -66,6 +69,7 @@ describe('Load options', () => {
           settings: {
             addInputValues: false,
             attributesToClear: [],
+            attributesNotToStringify: [],
             clearInlineFunctions: true,
             debug: true,
             formatter: 'diffable',
@@ -107,6 +111,7 @@ describe('Load options', () => {
           settings: {
             addInputValues: false,
             attributesToClear: [],
+            attributesNotToStringify: [],
             clearInlineFunctions: true,
             debug: true,
             formatter: 'diffable',
@@ -203,6 +208,25 @@ describe('Load options', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Attributes must be a type of string in global.vueSnapshots.attributesToClear. Received: 22');
+    });
+  });
+
+  describe('Attributes not to stringify', () => {
+    test('Sets attributesNotToStringify', () => {
+      globalThis.vueSnapshots = {
+        attributesNotToStringify: ['title', 'id', 'two words', 22]
+      };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.attributesNotToStringify)
+        .toEqual(['title', 'id']);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Attributes should not inlcude a space in global.vueSnapshots.attributesNotToStringify. Received: two words');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: Attributes must be a type of string in global.vueSnapshots.attributesNotToStringify. Received: 22');
     });
   });
 

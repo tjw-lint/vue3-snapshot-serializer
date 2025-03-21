@@ -11,7 +11,7 @@ Related to issue #0
 **Checklist:**
 
 * [ ] Update documentation site
-* [ ] Update dependencies
-* [ ] Run `volta pin node@latest && volta pin npm@latest` 
-* [ ] Bump
+* [ ] Update dependencies - `npm outdated`
+* [ ] `npm run volta`
+* [ ] `npm run bump`
 * [ ] If API changed, update `types.js`
