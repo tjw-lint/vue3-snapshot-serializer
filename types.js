@@ -76,7 +76,7 @@
  * @property {boolean}           [sortAttributes=true]                 Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
  * @property {boolean}           [sortClasses=true]                    Sorts the classes inside the `class` attribute on all HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
  * @property {boolean}           [stringifyAttributes=true]            Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
- * @property {string[]}          [attributesNotToStringify=['style']]  If stringifyAttributes is enabled, the attributes defined here will be skipped, preserving the value set by Vue. Defaults to 'style', because Vue can accurately convert it to a string in the DOM without help.
+ * @property {string[]}          [attributesNotToStringify=['style']]  If stringifyAttributes is enabled, the attributes defined here will be skipped, preserving the value set by Vue. Defaults to 'style', because Vue can usually accurately convert it to a string in the DOM without help.
  * @property {boolean}           [removeServerRendered=true]           Removes `data-server-rendered="true"` from your snapshots if true.
  * @property {boolean}           [removeDataVId=true]                  Removes `data-v-1234abcd=""` from your snapshots if true. Useful if 3rd-party components use scoped styles to reduce snapshot noise when updating dependencies.
  * @property {boolean}           [removeDataTest=true]                 Removes `data-test="whatever"` from your snapshots if true.
