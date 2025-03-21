@@ -226,7 +226,11 @@ const stringifyAttributes = function ($, vueWrapper) {
           const attributeNames = Object.keys(attributes);
           for (let attributeName of attributeNames) {
             let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
-            if (value !== undefined && typeof(value) !== 'string') {
+            if (
+              value !== undefined &&
+              typeof(value) !== 'string' &&
+              !globalThis.vueSnapshots.attributesNotToStringify.includes(attributeName)
+            ) {
               value = swapQuotes(stringify(value));
               $(element).attr(attributeName, value);
             }
@@ -236,14 +240,14 @@ const stringifyAttributes = function ($, vueWrapper) {
           const attributes = Array.from(vnode.attributes);
           for (let attribute of attributes) {
             const attributeName = attribute.name;
-            let value;
-            if (vnode.__vnode?.props?.[attributeName] !== undefined) {
-              value = vnode.__vnode.props[attributeName];
-            } else {
-              value = attribute.value;
-            }
-            if (value !== undefined && typeof(value) !== 'string') {
-              value = swapQuotes(stringify(value));
+            let value = attribute.value;
+            if (!globalThis.vueSnapshots.attributesNotToStringify.includes(attributeName)) {
+              if (vnode.__vnode?.props?.[attributeName] !== undefined) {
+                value = vnode.__vnode.props[attributeName];
+              }
+              if (value !== undefined && typeof(value) !== 'string') {
+                value = swapQuotes(stringify(value));
+              }
             }
             $(element).attr(attributeName, value);
           }
