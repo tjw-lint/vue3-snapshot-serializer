@@ -10,7 +10,7 @@ import pluginTjwJest from 'eslint-config-tjw-jest';
 
 export default [
   js.configs.recommended,
-  tjwBase,
+  tjwBase.configs.recommended,
   ...tjwJsdoc,
   pluginJest.configs['flat/recommended'],
   pluginTjwJest.configs.recommended,
