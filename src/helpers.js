@@ -250,6 +250,66 @@ export const parseMarkup = function (markup) {
 };
 
 /**
+ * Takes in the value from an HTML style attribute.
+ * Splits on the semi-colon, handling edge cases.
+ *
+ * @example
+ * const input = ' color:#F00;   padding: 2px ';
+ * const output = parseInlineStyles(input);
+ * expect(output)
+ *   .toEqual(['color:#F00;', 'padding: 2px;']);
+ *
+ * @param  {string}   styles  Any string of inline styles
+ * @return {string[]}         Array of separated inline styles
+ */
+export const parseInlineStyles = function (styles) {
+  debugLogger({ function: 'helpers.js:parseInlineStyles' });
+  if (!styles) {
+    return [];
+  }
+
+  const pairs = [];
+  let current = '';
+  let insideSingleQuote = false;
+  let insideDoubleQuote = false;
+  let parenthesisCount = 0;
+
+  for (let i = 0; i < styles.length; i++) {
+    const character = styles[i];
+    const previousCharacter = styles[i - 1];
+    const isEscaped = previousCharacter === '\\';
+
+    if (character === '\'' && !insideDoubleQuote && !isEscaped) {
+      insideSingleQuote = !insideSingleQuote;
+    } else if (character === '"' && !insideSingleQuote && !isEscaped) {
+      insideDoubleQuote = !insideDoubleQuote;
+    } else if (character === '(' && !insideSingleQuote && !insideDoubleQuote) {
+      parenthesisCount = parenthesisCount + 1;
+    } else if (character === ')' && !insideSingleQuote && !insideDoubleQuote && parenthesisCount) {
+      parenthesisCount = parenthesisCount - 1;
+    }
+
+    if (character === ';' && !insideSingleQuote && !insideDoubleQuote && !parenthesisCount) {
+      pairs.push(current);
+      current = '';
+    } else {
+      current = current + character;
+    }
+  }
+
+  // Add the last pair
+  pairs.push(current);
+
+  return pairs
+    .map((pair) => {
+      return pair.trim() + ';';
+    })
+    .filter((pair) => {
+      return pair && pair !== ';';
+    });
+};
+
+/**
  * Creates a cheerio ($) object from the html for DOM manipulation.
  *
  * @param  {string} markup  The html markup to use for the cheerio object

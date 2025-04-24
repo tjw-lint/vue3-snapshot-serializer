@@ -418,7 +418,10 @@ describe('Cheerio Manipulation', () => {
         .toMatchInlineSnapshot(`
           <h1
             class="active"
-            style="background: #F00; width: 0px;"
+            style="
+              background: #F00;
+              width: 0px;
+            "
             title="{ a: 2 }"
           >
             Text
@@ -436,7 +439,10 @@ describe('Cheerio Manipulation', () => {
         .toMatchInlineSnapshot(`
           <h1
             class="active"
-            style="background: #F00; width: 0px;"
+            style="
+              background: #F00;
+              width: 0px;
+            "
             title="[object Object]"
           >
             Text

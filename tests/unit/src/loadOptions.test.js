@@ -22,6 +22,7 @@ describe('Load options', () => {
       ...formattingBooleanDefaults,
       attributesPerLine: 1,
       classesPerLine: 1,
+      inlineStylesPerLine: 1,
       tagsWithWhitespacePreserved: ['a', 'pre'],
       voidElements: 'xhtml'
     }
@@ -79,6 +80,7 @@ describe('Load options', () => {
               emptyAttributes: true,
               escapeAttributes: false,
               escapeInnerText: true,
+              inlineStylesPerLine: 1,
               selfClosingTag: false,
               tagsWithWhitespacePreserved: ['a', 'pre'],
               voidElements: 'xhtml'
@@ -121,6 +123,7 @@ describe('Load options', () => {
               emptyAttributes: true,
               escapeAttributes: false,
               escapeInnerText: true,
+              inlineStylesPerLine: 1,
               selfClosingTag: false,
               tagsWithWhitespacePreserved: ['a', 'pre'],
               voidElements: 'xhtml'
@@ -596,6 +599,47 @@ describe('Load options', () => {
         .toHaveBeenCalledWith([
           'Vue 3 Snapshot Serializer:',
           'global.vueSnapshots.formatting.classesPerLine',
+          'must be a whole number.'
+        ].join(' '));
+    });
+  });
+
+
+  describe('Diffable Formatter inlineStylesPerLine Options', () => {
+    beforeEach(() => {
+      globalThis.vueSnapshots.formatter = 'diffable';
+      globalThis.vueSnapshots.formatting = {};
+    });
+
+    const testCases = [
+      [-1, 1],
+      [0, 0],
+      ['', 1],
+      [true, 1],
+      [100, 100],
+      [7.5, 1],
+      [null, 1]
+    ];
+
+    test.each(testCases)('Inline styles per line when value is "%s"', (value, expected) => {
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = value;
+      loadOptions();
+
+      expect(global.vueSnapshots.formatting.inlineStylesPerLine)
+        .toEqual(expected);
+    });
+
+    test('Logger message', () => {
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 3.5;
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.formatting.inlineStylesPerLine)
+        .toEqual(1);
+
+      expect(console.info)
+        .toHaveBeenCalledWith([
+          'Vue 3 Snapshot Serializer:',
+          'global.vueSnapshots.formatting.inlineStylesPerLine',
           'must be a whole number.'
         ].join(' '));
     });

@@ -5,6 +5,7 @@ import {
   isHtmlString,
   isVueWrapper,
   logger,
+  parseInlineStyles,
   parseMarkup,
   stringify,
   swapQuotes
@@ -196,6 +197,29 @@ describe('Helpers', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', { function: 'helpers.js:parseMarkup' });
+    });
+  });
+
+  describe('ParseInlineStyles', () => {
+    test('Debug mode', () => {
+      globalThis.vueSnapshots.debug = true;
+      parseInlineStyles('');
+
+      expect(console.info)
+        .toHaveBeenCalledWith('V3SS Debug:', { function: 'helpers.js:parseInlineStyles' });
+    });
+
+    test('Edgecases', () => {
+      const input = [
+        'color:#F00;',
+        'content: \';\';',
+        'background-image: url(data:image/svg+xml;base64,...);',
+        'text-decoration: none;',
+        'content: ";";'
+      ];
+
+      expect(parseInlineStyles(input.join('')))
+        .toEqual(input);
     });
   });
 
