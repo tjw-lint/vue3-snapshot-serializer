@@ -839,7 +839,117 @@ describe('diffableFormatter', () => {
     });
   });
 
-  describe('Classes and attributes per line', () => {
+  describe('Inline Styles Per Line', () => {
+    beforeEach(() => {
+      MyComponent = {
+        template: `<span></span>
+        <span style="border: 1px solid #000;"></span>
+        <span style="border: 1px solid #000; margin: 1rem;"></span>
+        <span style="border: 1px solid #000; margin: 1rem; padding: 2px;"></span>`
+      };
+    });
+
+    test('Inline Styles Per Line set to 0', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span style="
+            border: 1px solid #000;
+          "></span>
+          <span style="
+            border: 1px solid #000;
+            margin: 1rem;
+          "></span>
+          <span style="
+            border: 1px solid #000;
+            margin: 1rem;
+            padding: 2px;
+          "></span>
+        `);
+    });
+
+    test('Inline Styles Per Line set to Default', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span style="border: 1px solid #000;"></span>
+          <span style="
+            border: 1px solid #000;
+            margin: 1rem;
+          "></span>
+          <span style="
+            border: 1px solid #000;
+            margin: 1rem;
+            padding: 2px;
+          "></span>
+        `);
+    });
+
+    test('Inline Styles Per Line set to 2', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 2;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span style="border: 1px solid #000;"></span>
+          <span style="border: 1px solid #000; margin: 1rem;"></span>
+          <span style="
+            border: 1px solid #000;
+            margin: 1rem;
+            padding: 2px;
+          "></span>
+        `);
+    });
+
+    test('Inline Styles Per Line set to 3', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 3;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span></span>
+          <span style="border: 1px solid #000;"></span>
+          <span style="border: 1px solid #000; margin: 1rem;"></span>
+          <span style="border: 1px solid #000; margin: 1rem; padding: 2px;"></span>
+        `);
+    });
+
+    test('Inline Styles Per Line set to 0 with no inline styles', async () => {
+      MyComponent = {
+        template: `<p :style="''">
+          Empty attribute example
+        </p>`
+      };
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.emptyAttributes = true;
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <p style="">
+            Empty attribute example
+          </p>
+        `);
+
+      globalThis.vueSnapshots.formatting.emptyAttributes = false;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <p style>
+            Empty attribute example
+          </p>
+        `);
+    });
+  });
+
+  describe('Classes and Attributes Per Line', () => {
     beforeEach(() => {
       MyComponent = {
         template: '<span class="cow dog pig" title="a"></span>'
@@ -892,6 +1002,65 @@ describe('diffableFormatter', () => {
           <span
             class="
               cow
+            "
+          ></span>
+        `);
+    });
+  });
+
+  describe('Inline Styles and Attributes Per Line', () => {
+    beforeEach(() => {
+      MyComponent = {
+        template: '<span style="border: 1px solid #000; margin: 1rem; padding: 2px;" title="a"></span>'
+      };
+    });
+
+    test('Defaults', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 1;
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span
+            style="
+              border: 1px solid #000;
+              margin: 1rem;
+              padding: 2px;
+            "
+            title="a"
+          ></span>
+        `);
+    });
+
+    test('Weird, but accurate', async () => {
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 2;
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 1;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span style="
+            border: 1px solid #000;
+            margin: 1rem;
+            padding: 2px;
+          " title="a"></span>
+        `);
+    });
+
+    test('Double zero', async () => {
+      MyComponent = {
+        template: '<span style="margin: 1rem"></span>'
+      };
+      const wrapper = mount(MyComponent);
+      globalThis.vueSnapshots.formatting.attributesPerLine = 0;
+      globalThis.vueSnapshots.formatting.inlineStylesPerLine = 0;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <span
+            style="
+              margin: 1rem;
             "
           ></span>
         `);
