@@ -49,6 +49,7 @@
  * @property {boolean}      [emptyAttributes=true]                     Determines whether empty attributes will include `=""`. If false then `<span class="" id=""></span>`` becomes `<span class id></span>`.
  * @property {boolean}      [escapeAttributes=false]                   Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<` in HTML attributes.
  * @property {boolean}      [escapeInnerText=true]                     Retains (if `true`) or discards (if `false`) named HTML entity encodings, like `&lt;` instead of `<` in HTML text nodes.
+ * @property {number}       [inlineStylesPerLine=1]                    How many inline styles are allowed on the same line as the style attribute.
  * @property {boolean}      [selfClosingTag=false]                     Converts `<div></div>` to `<div />` or `<p class="x"></p>` to `<p class="x" />`. Does not affect void elements (like `<input>`), use the `voidElements` setting for them.
  * @property {string[]}     [tagsWithWhitespacePreserved=['a','pre']]  Does not add returns and indentation to the inner content of these tags when formatting. Accepts an array of tags name strings.
  * @property {VOIDELEMENTS} [voidElements='xhtml']                     Determines how void elements are closed. Accepts 'html' for `<input>`, 'xhtml' for `<input />`, and 'xml' for `<input></input>`.
