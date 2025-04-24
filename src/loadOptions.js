@@ -305,7 +305,7 @@ export const loadOptions = function () {
      * The validation for attributesPerLine, classesPerLine, and inlineStylesPerLine
      * are all identical, so this DRYs them up.
      *
-     * @param  {string} setting  The setting name, without "PerLine"
+     * @param {string} setting  The setting name, without "PerLine"
      */
     function perLine (setting) {
       if (
