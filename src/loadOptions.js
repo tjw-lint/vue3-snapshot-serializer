@@ -301,35 +301,34 @@ export const loadOptions = function () {
       globalThis.vueSnapshots.formatting.tagsWithWhitespacePreserved = TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS;
     }
 
-    // Formatting - Attributes Per Line
-    if (
-      typeof(globalThis.vueSnapshots.formatting.attributesPerLine) !== 'number' || 
-      globalThis.vueSnapshots.formatting.attributesPerLine < 0 ||
-      globalThis.vueSnapshots.formatting.attributesPerLine % 1 !== 0
-    ) {
-      if (globalThis.vueSnapshots.formatting.attributesPerLine !== undefined) {
-        logger([
-          'global.vueSnapshots.formatting.attributesPerLine',
-          'must be a whole number.'
-        ].join(' '));
+    /**
+     * The validation for attributesPerLine, classesPerLine, and inlineStylesPerLine
+     * are all identical, so this DRYs them up.
+     *
+     * @param  {string} setting  The setting name, without "PerLine"
+     */
+    function perLine (setting) {
+      if (
+        typeof(globalThis.vueSnapshots.formatting[setting + 'PerLine']) !== 'number' ||
+        globalThis.vueSnapshots.formatting[setting + 'PerLine'] < 0 ||
+        globalThis.vueSnapshots.formatting[setting + 'PerLine'] % 1 !== 0
+      ) {
+        if (globalThis.vueSnapshots.formatting[setting + 'PerLine'] !== undefined) {
+          logger([
+            'global.vueSnapshots.formatting.' + setting + 'PerLine',
+            'must be a whole number.'
+          ].join(' '));
+        }
+        globalThis.vueSnapshots.formatting[setting + 'PerLine'] = 1;
       }
-      globalThis.vueSnapshots.formatting.attributesPerLine = 1;
     }
 
+    // Formatting - Attributes Per Line
+    perLine('attributes');
     // Formatting - Classes Per Line
-    if (
-      typeof(globalThis.vueSnapshots.formatting.classesPerLine) !== 'number' ||
-      globalThis.vueSnapshots.formatting.classesPerLine < 0 ||
-      globalThis.vueSnapshots.formatting.classesPerLine % 1 !== 0
-    ) {
-      if (globalThis.vueSnapshots.formatting.classesPerLine !== undefined) {
-        logger([
-          'global.vueSnapshots.formatting.classesPerLine',
-          'must be a whole number.'
-        ].join(' '));
-      }
-      globalThis.vueSnapshots.formatting.classesPerLine = 1;
-    }
+    perLine('classes');
+    // Formatting - Inline Styles Per Line
+    perLine('inlineStyles');
 
     // Formatting - Void Elements
     if (!ALLOWED_VOID_ELEMENTS.includes(globalThis.vueSnapshots.formatting.voidElements)) {
@@ -398,6 +397,7 @@ export const loadOptions = function () {
     ...Object.keys(formattingBooleanDefaults),
     'attributesPerLine',
     'classesPerLine',
+    'inlineStylesPerLine',
     'tagsWithWhitespacePreserved',
     'voidElements',
     'whiteSpacePreservedOption'
