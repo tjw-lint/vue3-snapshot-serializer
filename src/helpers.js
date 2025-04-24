@@ -256,8 +256,8 @@ export const parseMarkup = function (markup) {
  * @param  {string}   styles  Any string of inline styles
  * @return {string[]}         Array of separated inline styles
  */
-export const parseInlineStyle = function (styles) {
-  debugLogger({ function: 'helpers.js:parseInlineStyle' });
+export const parseInlineStyles = function (styles) {
+  debugLogger({ function: 'helpers.js:parseInlineStyles' });
   if (!styles) {
     return [];
   }

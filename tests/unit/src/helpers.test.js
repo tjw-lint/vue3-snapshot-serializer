@@ -5,7 +5,7 @@ import {
   isHtmlString,
   isVueWrapper,
   logger,
-  parseInlineStyle,
+  parseInlineStyles,
   parseMarkup,
   stringify,
   swapQuotes
@@ -200,13 +200,13 @@ describe('Helpers', () => {
     });
   });
 
-  describe('ParseInlineStyle', () => {
+  describe('ParseInlineStyles', () => {
     test('Debug mode', () => {
       globalThis.vueSnapshots.debug = true;
-      parseInlineStyle('');
+      parseInlineStyles('');
 
       expect(console.info)
-        .toHaveBeenCalledWith('V3SS Debug:', { function: 'helpers.js:parseInlineStyle' });
+        .toHaveBeenCalledWith('V3SS Debug:', { function: 'helpers.js:parseInlineStyles' });
     });
 
     test('Edgecases', () => {
@@ -218,7 +218,7 @@ describe('Helpers', () => {
         'content: ";"'
       ];
 
-      expect(parseInlineStyle(input.join(';')))
+      expect(parseInlineStyles(input.join(';')))
         .toEqual(input);
     });
   });
