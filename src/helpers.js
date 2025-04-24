@@ -253,6 +253,12 @@ export const parseMarkup = function (markup) {
  * Takes in the value from an HTML style attribute.
  * Splits on the semi-colon, handling edge cases.
  *
+ * @example
+ * const input = ' color:#F00;   padding: 2px ';
+ * const output = parseInlineStyles(input);
+ * expect(output)
+ *   .toEqual(['color:#F00;', 'padding: 2px;']);
+ *
  * @param  {string}   styles  Any string of inline styles
  * @return {string[]}         Array of separated inline styles
  */
