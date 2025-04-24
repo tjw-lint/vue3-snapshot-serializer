@@ -211,14 +211,14 @@ describe('Helpers', () => {
 
     test('Edgecases', () => {
       const input = [
-        'color:#F00',
-        'content: \';\'',
-        'background-image: url(data:image/svg+xml;base64,...)',
-        'text-decoration: none',
-        'content: ";"'
+        'color:#F00;',
+        'content: \';\';',
+        'background-image: url(data:image/svg+xml;base64,...);',
+        'text-decoration: none;',
+        'content: ";";'
       ];
 
-      expect(parseInlineStyles(input.join(';')))
+      expect(parseInlineStyles(input.join('')))
         .toEqual(input);
     });
   });

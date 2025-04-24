@@ -296,9 +296,11 @@ export const parseInlineStyles = function (styles) {
 
   return pairs
     .map((pair) => {
-      return pair.trim();
+      return pair.trim() + ';';
     })
-    .filter(Boolean);
+    .filter((pair) => {
+      return pair && pair !== ';';
+    });
 };
 
 /**

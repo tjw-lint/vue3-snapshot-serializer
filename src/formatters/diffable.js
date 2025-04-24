@@ -19,6 +19,7 @@ import {
 import {
   debugLogger,
   escapeHtml,
+  parseInlineStyles,
   parseMarkup,
   unescapeHtml
 } from '../helpers.js';
@@ -209,6 +210,27 @@ export const diffableFormatter = function (markup) {
               }
             }
           }
+
+          if (attribute.name === 'style') {
+            const styles = parseInlineStyles(attributeValue);
+            const stylesOnNewLine = styles.length > options.inlineStylesPerLine;
+            if (stylesOnNewLine) {
+              const multiLineStyles = styles
+                .map((inlineStyle) => {
+                  if (isNewLine) {
+                    return '\n' + '  '.repeat(indent + 2) + inlineStyle;
+                  }
+                  return '\n' + '  '.repeat(indent + 1) + inlineStyle;
+                })
+                .join('');
+              if (isNewLine) {
+                attributeValue = multiLineStyles + '\n' + '  '.repeat(indent + 1);
+              } else {
+                attributeValue = multiLineStyles + '\n' + '  '.repeat(indent);
+              }
+            }
+          }
+
           fullAttribute = attribute.name + '="' + attributeValue + '"';
         } else {
           fullAttribute = attribute.name;
