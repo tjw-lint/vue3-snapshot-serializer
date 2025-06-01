@@ -232,6 +232,15 @@ export const loadOptions = function () {
   }
   globalThis.vueSnapshots.stubs = stubsToProcess;
 
+  const regexToRemoveAttributesValid = (
+    globalThis.vueSnapshots.regexToRemoveAttributes === undefined ||
+    globalThis.vueSnapshots.regexToRemoveAttributes instanceof RegExp
+  );
+  if (!regexToRemoveAttributesValid) {
+    logger('The global.vueSnapshots.regexToRemoveAttributes setting must be an instanceof RegExp or undefined. Received: ' + globalThis.vueSnapshots.regexToRemoveAttributes);
+    delete globalThis.vueSnapshots.regexToRemoveAttributes;
+  }
+
   // Formatter
   if (!ALLOWED_FORMATTERS.includes(globalThis.vueSnapshots.formatter)) {
     if (globalThis.vueSnapshots.formatter) {
@@ -391,6 +400,7 @@ export const loadOptions = function () {
     'formatter',
     'formatting',
     'postProcessor',
+    'regexToRemoveAttributes',
     'stubs'
   ];
   const permittedFormattingKeys = [

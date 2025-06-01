@@ -41,9 +41,11 @@ describe('Load options', () => {
   });
 
   test('Override defaults', () => {
+    const dataRegex = new RegExp(/data-.*/);
     const invertedDefaults = {
       attributesToClear: [false],
-      attributesNotToStringify: []
+      attributesNotToStringify: [],
+      regexToRemoveAttributes: dataRegex
     };
     for (const setting in booleanDefaults) {
       invertedDefaults[setting] = !booleanDefaults[setting];
@@ -56,7 +58,8 @@ describe('Load options', () => {
       .toEqual({
         ...invertedDefaults,
         attributesToClear: [],
-        attributesNotToStringify: []
+        attributesNotToStringify: [],
+        regexToRemoveAttributes: dataRegex
       });
 
     expect(console.info)
@@ -85,6 +88,7 @@ describe('Load options', () => {
               tagsWithWhitespacePreserved: ['a', 'pre'],
               voidElements: 'xhtml'
             },
+            regexToRemoveAttributes: dataRegex,
             removeClassTest: true,
             removeComments: true,
             removeDataCy: true,
@@ -128,6 +132,7 @@ describe('Load options', () => {
               tagsWithWhitespacePreserved: ['a', 'pre'],
               voidElements: 'xhtml'
             },
+            regexToRemoveAttributes: dataRegex,
             removeClassTest: true,
             removeComments: true,
             removeDataCy: true,
@@ -423,6 +428,22 @@ describe('Load options', () => {
     });
   });
 
+  describe('Regex based attribute removal', () => {
+    test('Warns if regexToRemoveAttributes is not a regular expression', () => {
+      global.vueSnapshots = {
+        regexToRemoveAttributes: false
+      };
+
+      loadOptions();
+
+      expect(globalThis.vueSnapshots.regexToRemoveAttributes)
+        .toEqual(undefined);
+
+      expect(console.info)
+        .toHaveBeenCalledWith('Vue 3 Snapshot Serializer: The global.vueSnapshots.regexToRemoveAttributes setting must be an instanceof RegExp or undefined. Received: ' + false);
+    });
+  });
+
   describe('Post processing markup', () => {
     test('Warns if postProcessor is not a function', () => {
       global.vueSnapshots = {
@@ -603,7 +624,6 @@ describe('Load options', () => {
         ].join(' '));
     });
   });
-
 
   describe('Diffable Formatter inlineStylesPerLine Options', () => {
     beforeEach(() => {

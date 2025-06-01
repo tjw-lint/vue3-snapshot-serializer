@@ -264,6 +264,25 @@ const stringifyAttributes = function ($, vueWrapper) {
 };
 
 /**
+ * Tests every attribute on every element to see if it matches the provided regex.
+ * If it is a match, remove the attribute from the snapshot.
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+const removeAttributesViaRegex = function ($) {
+  if (globalThis.vueSnapshots?.regexToRemoveAttributes) {
+    debugLogger({ function: 'cheerioManipulation.js:removeAttributesViaRegex' });
+    $('*').each(function (index, element) {
+      Object.keys(element.attribs).forEach(function (attributeName) {
+        if (globalThis.vueSnapshots?.regexToRemoveAttributes.test(attributeName)) {
+          $(element).removeAttr(attributeName);
+        }
+      });
+    });
+  }
+};
+
+/**
  * This removes data-v-1234abcd="" from your snapshots.
  *
  * @param {object} $  The markup as a cheerio object
@@ -504,6 +523,7 @@ export const cheerioManipulation = function (vueWrapper) {
   stringifyAttributes($, vueWrapper);
   // Uses CSS Selectors, so must run before test tokens are removed
   stubOutDom($);
+  removeAttributesViaRegex($);
   removeServerRenderedText($);
   removeTestTokens($);
   removeScopedStylesDataVIDAttributes($);

@@ -86,6 +86,54 @@ describe('Cheerio Manipulation', () => {
     });
   });
 
+  describe('Remove attributes via regex', () => {
+    const markup = `
+      <div class data-p data-pc-name data-pc-section data-scrollselectors pc51>
+        <div class data-p data-pc-section style>
+          <table class data-pc-section role="table">
+            <thead class data-p-scrollable="false" data-pc-section role="rowgroup" style>
+              <tr data-pc-section role="row">
+                <th class data-p-filter-column="false" data-p-reorderable-column="false" data-p-resizable-column="false" data-pc-name data-pc-section first="0" pc57 role="columnheader">
+                  <div class data-pc-section>
+                    <span class data-pc-section>
+                      Component DC
+                    </span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    `.trim();
+    const cleaned = `
+      <div class data-scrollselectors pc51>
+        <div class style>
+          <table class role="table">
+            <thead class role="rowgroup" style>
+              <tr role="row">
+                <th class first="0" pc57 role="columnheader">
+                  <div class>
+                    <span class>
+                      Component DC
+                    </span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    `.trim();
+
+    test('Removes data-p attributes', () => {
+      globalThis.vueSnapshots.regexToRemoveAttributes = new RegExp(/data-p.*/);
+
+      expect(cheerioManipulation(markup))
+        .toEqual(cleaned);
+    });
+  });
+
   describe('data-v-ids', () => {
     const markup = '<div data-v-34cd6f4f class="hello"> Hello World </div>';
     const cleaned = '<div class="hello"> Hello World </div>';

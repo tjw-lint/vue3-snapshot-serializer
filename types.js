@@ -92,6 +92,7 @@
  * @property {boolean}           [clearInlineFunctions=false]          Replaces `<div title="function () { return true; }"></div>` or `<div title="(x) => !x"></div>` with this placeholder `<div title="[function]"></div>`.
  * @property {STUBS}             [stubs={}]                            Allows targeting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
  * @property {POSTPROCESSOR}     [postProcessor]                       This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
+ * @property {RegExp}            [regexToRemoveAttributes]             You can provide a regex pattern to match HTML attributes against to have them removed from the snapshot. Example: `global.vueSnapshots.regexToRemoveAttributes = new RegExp(/data-+/);`
  * @property {FORMATTER}         [formatter='diffable']                Function to use for formatting the markup output. Accepts 'none', 'diffable', or 'classic'.
  * @property {FORMATTING}        [formatting]                          An object containing settings specific to the "diffable" formatter.
  * @property {CLASSICFORMATTING} [classicFormatting]                   An object containing settings specific to the "classic" formatter.
