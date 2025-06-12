@@ -10,6 +10,7 @@ import CheckboxesAndRadios from '@@/mockComponents/CheckboxesAndRadios.vue';
 import EmbeddedStyles from '@@/mockComponents/EmbeddedStyles.vue';
 import InlineFunctions from '@@/mockComponents/InlineFunctions.vue';
 import SeveralInputs from '@@/mockComponents/SeveralInputs.vue';
+import ScopedVBindStyles from '@@/mockComponents/ScopedVBindStyles.vue';
 import SortAttributes from '@@/mockComponents/SortAttributes.vue';
 import SortClasses from '@@/mockComponents/SortClasses.vue';
 import StringifyAttributes from '@@/mockComponents/StringifyAttributes.vue';
@@ -284,6 +285,50 @@ describe('Cheerio Manipulation', () => {
                 border: 1px solid #F00;
               }
             </style>
+          </div>
+        `);
+    });
+  });
+
+  describe('ScopedVBindStyles.vue', () => {
+    test('Scoped ID replaced in dynamic custom properties', async () => {
+      const wrapper = await mount(ScopedVBindStyles);
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div style="
+            --9593b251-color: #FF0000;
+            --9593b251-pageWidth: 800px;
+          ">
+            <span
+              class="example"
+              style="
+                --padding-size: 10px;
+                padding: var(--padding-size);
+              "
+            >
+              Text
+            </span>
+          </div>
+        `);
+
+      globalThis.vueSnapshots.renameScopedVBindCSS = true;
+
+      expect(wrapper)
+        .toMatchInlineSnapshot(`
+          <div style="
+            --scoped-color: #FF0000;
+            --scoped-pageWidth: 800px;
+          ">
+            <span
+              class="example"
+              style="
+                --padding-size: 10px;
+                padding: var(--padding-size);
+              "
+            >
+              Text
+            </span>
           </div>
         `);
     });
