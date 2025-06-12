@@ -27,6 +27,7 @@ export const booleanDefaults = {
   removeIdTest: false,
   removeClassTest: false,
   removeComments: false,
+  renameScopedVBindCSS: false,
   clearInlineFunctions: false
 };
 export const formattingBooleanDefaults = {

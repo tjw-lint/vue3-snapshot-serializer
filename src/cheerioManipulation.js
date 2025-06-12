@@ -310,6 +310,52 @@ const removeScopedStylesDataVIDAttributes = function ($) {
 };
 
 /**
+ * This renames `style="--abcd1234-color: #F00;"` to
+ * `style="--scoped-color: #F00;"`. This come from using
+ * `background: v-bind(color);` in your scoped styles.
+ *
+ * @param {object} $  The markup as a cheerio object
+ */
+const renameScopedVBindCustomProperties = function ($) {
+  if (globalThis.vueSnapshots?.renameScopedVBindCSS) {
+    debugLogger({ function: 'cheerioManipulation.js:renameScopedVBindCustomProperties' });
+    // String starts, there are exactly 8 characters using lowercase
+    // hexidecimal, no other characters allowed, then the string ends.
+    const scopeIdTester = /^[0-9a-f]{8}$/;
+    $('[style]').each(function (index, element) {
+      let inlineStyles = element.attribs.style;
+      inlineStyles = inlineStyles
+        .split(';')
+        .map((inlineStyle) => {
+          // Is a custom property definition
+          if (inlineStyle.trim().startsWith('--')) {
+            // '--abcd1234-background-color'
+            let property = inlineStyle.split(':')[0].trim();
+            // '#F00'
+            const value = inlineStyle.split(':')[1].trim();
+            // ['abcd1234', 'background', 'color']
+            let propertyChunks = property.split('-').filter(Boolean);
+            const isVbindScopedCustomProperty = (
+              propertyChunks.length > 1 &&
+              scopeIdTester.test(propertyChunks[0])
+            );
+            if (isVbindScopedCustomProperty) {
+              // 'abcd1234' => 'scoped'
+              propertyChunks[0] = 'scoped';
+              // '--scoped-background-color: #F00'
+              return '--' + propertyChunks.join('-') + ': ' + value;
+            }
+            return inlineStyle;
+          }
+          return inlineStyle;
+        })
+        .join(';');
+      element.attribs.style = inlineStyles;
+    });
+  }
+};
+
+/**
  * This removes the data-server-rendered="true" from your snapshots.
  *
  * @param {object} $  The markup as a cheerio object
@@ -529,6 +575,7 @@ export const cheerioManipulation = function (vueWrapper) {
   removeScopedStylesDataVIDAttributes($);
   clearAttributes($);
   clearInlineFunctions($);
+  renameScopedVBindCustomProperties($);
   sortAttributes($);
   sortClasses($);
 

@@ -15,7 +15,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@@': fileURLToPath(new URL('./tests', import.meta.url))
+      '@@': fileURLToPath(new URL('./tests', import.meta.url)),
+      vue: 'vue/dist/vue.esm-bundler.js',
+      '@vue/runtime-dom': '@vue/runtime-dom/dist/runtime-dom.esm-bundler.js'
     }
   },
   test: {
