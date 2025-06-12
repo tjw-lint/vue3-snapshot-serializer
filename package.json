@@ -31,7 +31,7 @@
     "eslint-config-tjw-jest": "^3.0.0",
     "eslint-config-tjw-jsdoc": "^2.0.1",
     "eslint-plugin-jest": "^28.13.3",
-    "eslint-plugin-jsdoc": "^50.8.0",
+    "eslint-plugin-jsdoc": "^51.0.1",
     "happy-dom": "^18.0.1",
     "vitest": "^3.2.3"
   },
