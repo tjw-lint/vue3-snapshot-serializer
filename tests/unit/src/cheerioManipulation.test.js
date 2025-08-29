@@ -58,7 +58,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:clearAttributes'
+          function: 'cheerioManipulation.js:clearAttributes',
+          data: { $: markup }
         });
     });
   });
@@ -75,7 +76,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:removeServerRenderedText'
+          function: 'cheerioManipulation.js:removeServerRenderedText',
+          data: { $: markup }
         });
     });
 
@@ -149,7 +151,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:removeScopedStylesDataVIDAttributes'
+          function: 'cheerioManipulation.js:removeScopedStylesDataVIDAttributes',
+          data: { $: markup }
         });
     });
 
@@ -199,7 +202,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:clearInlineFunctions'
+          function: 'cheerioManipulation.js:clearInlineFunctions',
+          data: { $: expect.any(String) }
         });
     });
 
@@ -231,7 +235,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:sortAttributes'
+          function: 'cheerioManipulation.js:sortAttributes',
+          data: { $: expect.any(String) }
         });
     });
 
@@ -258,7 +263,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:sortClasses'
+          function: 'cheerioManipulation.js:sortClasses',
+          data: { $: expect.any(String) }
         });
     });
 
@@ -363,12 +369,14 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:addInputValues'
+          function: 'cheerioManipulation.js:addInputValues',
+          data: { $: expect.any(String) }
         });
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:removeSerializerKeys'
+          function: 'cheerioManipulation.js:removeSerializerKeys',
+          data: { $: expect.any(String) }
         });
     });
 
@@ -459,7 +467,8 @@ describe('Cheerio Manipulation', () => {
 
       expect(console.info)
         .toHaveBeenCalledWith('V3SS Debug:', {
-          function: 'cheerioManipulation.js:stringifyAttributes'
+          function: 'cheerioManipulation.js:stringifyAttributes',
+          data: { $: expect.any(String) }
         });
     });
 
@@ -501,7 +510,7 @@ describe('Cheerio Manipulation', () => {
   });
 
   describe('Attributes not to stringify', () => {
-    test('Skips style by default', async () => {
+    test('Skips class and style by default', async () => {
       globalThis.vueSnapshots.stringifyAttributes = true;
       globalThis.vueSnapshots.attributesNotToStringify = undefined;
 
@@ -524,7 +533,7 @@ describe('Cheerio Manipulation', () => {
 
     test('Has no effect if stringifyAttributes is disabled', async () => {
       globalThis.vueSnapshots.stringifyAttributes = false;
-      globalThis.vueSnapshots.attributesNotToStringify = ['style'];
+      globalThis.vueSnapshots.attributesNotToStringify = ['class', 'style'];
 
       const wrapper = await mount(AttributesNotToStringify);
 

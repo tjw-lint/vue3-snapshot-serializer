@@ -17,6 +17,20 @@ let key = 0;
 let alreadyRemovedKey = true;
 
 /**
+ * In most cases, debug will be falsy, so we can skip
+ * the expensive cost of serializing the Cheerio object.
+ *
+ * @param  {object} $  The markup as a cheerio object
+ * @return {string}    The cheerio object serialized to markup
+ */
+function logSpeedup ($) {
+  if (globalThis.vueSnapshots?.debug) {
+    return $.html();
+  }
+  return undefined;
+}
+
+/**
  * Safety check to ensure the vueWrapper contains the needed
  * methods for attribute stringification.
  *
@@ -98,7 +112,10 @@ const addSerializerKeys = function (vueWrapper) {
  */
 const removeSerializerKeys = function ($, vueWrapper) {
   if (!alreadyRemovedKey) {
-    debugLogger({ function: 'cheerioManipulation.js:removeSerializerKeys' });
+    debugLogger({
+      function: 'cheerioManipulation.js:removeSerializerKeys',
+      data: { $: logSpeedup($) }
+    });
 
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
@@ -139,7 +156,10 @@ const addInputValues = function ($, vueWrapper) {
     globalThis.vueSnapshots?.addInputValues &&
     attributesCanBeStringified(vueWrapper)
   ) {
-    debugLogger({ function: 'cheerioManipulation.js:addInputValues' });
+    debugLogger({
+      function: 'cheerioManipulation.js:addInputValues',
+      data: { $: logSpeedup($) }
+    });
     $('input, textarea, select').each(function (index, element) {
       const currentKey = $(element).attr(KEY_NAME);
       const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
@@ -199,7 +219,10 @@ const stringifyAttributes = function ($, vueWrapper) {
     globalThis.vueSnapshots?.stringifyAttributes &&
     attributesCanBeStringified(vueWrapper)
   ) {
-    debugLogger({ function: 'cheerioManipulation.js:stringifyAttributes' });
+    debugLogger({
+      function: 'cheerioManipulation.js:stringifyAttributes',
+      data: { $: logSpeedup($) }
+    });
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
       const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
@@ -271,7 +294,10 @@ const stringifyAttributes = function ($, vueWrapper) {
  */
 const removeAttributesViaRegex = function ($) {
   if (globalThis.vueSnapshots?.regexToRemoveAttributes) {
-    debugLogger({ function: 'cheerioManipulation.js:removeAttributesViaRegex' });
+    debugLogger({
+      function: 'cheerioManipulation.js:removeAttributesViaRegex',
+      data: { $: logSpeedup($) }
+    });
     $('*').each(function (index, element) {
       Object.keys(element.attribs).forEach(function (attributeName) {
         if (globalThis.vueSnapshots?.regexToRemoveAttributes.test(attributeName)) {
@@ -289,7 +315,10 @@ const removeAttributesViaRegex = function ($) {
  */
 const removeScopedStylesDataVIDAttributes = function ($) {
   if (globalThis.vueSnapshots?.removeDataVId) {
-    debugLogger({ function: 'cheerioManipulation.js:removeScopedStylesDataVIDAttributes' });
+    debugLogger({
+      function: 'cheerioManipulation.js:removeScopedStylesDataVIDAttributes',
+      data: { $: logSpeedup($) }
+    });
 
     // [-\w]+ will catch 1 or more instaces of a-z, A-Z, 0-9, hyphen (-), or underscore (_)
     const regex = / data-v-[-\w]+/g;
@@ -318,7 +347,10 @@ const removeScopedStylesDataVIDAttributes = function ($) {
  */
 const renameScopedVBindCustomProperties = function ($) {
   if (globalThis.vueSnapshots?.renameScopedVBindCSS) {
-    debugLogger({ function: 'cheerioManipulation.js:renameScopedVBindCustomProperties' });
+    debugLogger({
+      function: 'cheerioManipulation.js:renameScopedVBindCustomProperties',
+      data: { $: logSpeedup($) }
+    });
     // String starts, there are exactly 8 characters using lowercase
     // hexidecimal, no other characters allowed, then the string ends.
     const scopeIdTester = /^[0-9a-f]{8}$/;
@@ -362,7 +394,10 @@ const renameScopedVBindCustomProperties = function ($) {
  */
 const removeServerRenderedText = function ($) {
   if (globalThis.vueSnapshots?.removeServerRendered) {
-    debugLogger({ function: 'cheerioManipulation.js:removeServerRenderedText' });
+    debugLogger({
+      function: 'cheerioManipulation.js:removeServerRenderedText',
+      data: { $: logSpeedup($) }
+    });
     $('[data-server-rendered]').removeAttr('data-server-rendered');
   }
 };
@@ -375,7 +410,10 @@ const removeServerRenderedText = function ($) {
  */
 const clearAttributes = function ($) {
   if (globalThis.vueSnapshots?.attributesToClear?.length) {
-    debugLogger({ function: 'cheerioManipulation.js:clearAttributes' });
+    debugLogger({
+      function: 'cheerioManipulation.js:clearAttributes',
+      data: { $: logSpeedup($) }
+    });
     globalThis.vueSnapshots.attributesToClear.forEach(function (attribute) {
       $('[' + attribute + ']').attr(attribute, '');
     });
@@ -389,7 +427,10 @@ const clearAttributes = function ($) {
  */
 const clearInlineFunctions = function ($) {
   if (globalThis.vueSnapshots?.clearInlineFunctions) {
-    debugLogger({ function: 'cheerioManipulation.js:clearInlineFunctions' });
+    debugLogger({
+      function: 'cheerioManipulation.js:clearInlineFunctions',
+      data: { $: logSpeedup($) }
+    });
 
     /**
      * Takes a string and tells you if it is a function.
@@ -492,7 +533,10 @@ const stubOutDom = function ($) {
  */
 const sortAttributes = function ($) {
   if (globalThis.vueSnapshots?.sortAttributes) {
-    debugLogger({ function: 'cheerioManipulation.js:sortAttributes' });
+    debugLogger({
+      function: 'cheerioManipulation.js:sortAttributes',
+      data: { $: logSpeedup($) }
+    });
     $('*').each(function (index, element) {
       Object.keys(element.attribs).sort().forEach(function (key) {
         let value = element.attribs[key];
@@ -514,7 +558,10 @@ const sortAttributes = function ($) {
  */
 const sortClasses = function ($) {
   if (globalThis.vueSnapshots?.sortClasses) {
-    debugLogger({ function: 'cheerioManipulation.js:sortClasses' });
+    debugLogger({
+      function: 'cheerioManipulation.js:sortClasses',
+      data: { $: logSpeedup($) }
+    });
     $('*').each(function (index, element) {
       const classes = element?.attribs?.class?.trim();
       if (classes) {
