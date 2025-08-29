@@ -41,7 +41,7 @@ const ALLOWED_FORMATTERS = [
   'diffable',
   'none'
 ];
-const ATTRIBUTES_NOT_TO_STRINGIFY_DEFAULTS = ['style'];
+const ATTRIBUTES_NOT_TO_STRINGIFY_DEFAULTS = ['class', 'style'];
 const TAGS_WITH_WHITESPACE_PRESERVED_DEFAULTS = ['a', 'pre'];
 const VOID_ELEMENTS_DEFAULT = 'xhtml';
 const ALLOWED_VOID_ELEMENTS = Object.freeze([

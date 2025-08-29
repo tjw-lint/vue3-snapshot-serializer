@@ -68,35 +68,51 @@
 /** @typedef {SELECTOR[]} STUBARRAY */
 /** @typedef {STUBOBJECT|STUBARRAY} STUBS */
 
+/** @typedef  */
+
+
+/* eslint-disable no-unused-vars */
+/**
+ * Attributes Not To Stringify (ANTS) defaults.
+ * This is defined here to keep the SETTINGs block
+ * horizontally shorter.
+ *
+ * @type {string[]}
+ */
+const ANTS = [
+  'class',
+  'style'
+];
+
 /**
  * @typedef  {object}            SETTINGS
- * @property {boolean}           [verbose=true]                        Logs to the console errors or other messages if true.
- * @property {boolean}           [debug=false]                         Logs to the console as internal functions are called, including relevant data to help in troubleshooting.
- * @property {string[]}          [attributesToClear=[]]                Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
- * @property {boolean}           [addInputValues=true]                 Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
- * @property {boolean}           [sortAttributes=true]                 Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
- * @property {boolean}           [sortClasses=true]                    Sorts the classes inside the `class` attribute on all HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
- * @property {boolean}           [stringifyAttributes=true]            Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
- * @property {string[]}          [attributesNotToStringify=['style']]  If stringifyAttributes is enabled, the attributes defined here will be skipped, preserving the value set by Vue. Defaults to 'style', because Vue can usually accurately convert it to a string in the DOM without help.
- * @property {boolean}           [removeServerRendered=true]           Removes `data-server-rendered="true"` from your snapshots if true.
- * @property {boolean}           [removeDataVId=true]                  Removes `data-v-1234abcd=""` from your snapshots if true. Useful if 3rd-party components use scoped styles to reduce snapshot noise when updating dependencies.
- * @property {boolean}           [removeDataTest=true]                 Removes `data-test="whatever"` from your snapshots if true.
- * @property {boolean}           [removeDataTestid=true]               Removes `data-testid="whatever"` from your snapshots if true.
- * @property {boolean}           [removeDataTestId=true]               Removes `data-test-id="whatever"` from your snapshots if true.
- * @property {boolean}           [removeDataQa=false]                  Removes `data-qa="whatever"` from your snapshots if true. `data-qa` is usually used by non-dev QA members. If they change in your snapshot, that indicates it may break someone else's E2E tests. So most using `data-qa` prefer they be left in by default.
- * @property {boolean}           [removeDataCy=false]                  Removes `data-cy="whatever"` from your snapshots if true. `data-cy` is used by Cypress end-to-end tests. If they change in your snapshot, that indicates it may break an E2E test. So most using data-cy prefer they be left in by default.
- * @property {boolean}           [removeDataPw=false]                  Removes `data-pw="whatever"` from your snapshots if true. `data-pw` is used by Playwright end-to-end tests. If they change in your snapshot, that indicates it may break an E2E test. So most using data-pw prefer they be left in by default.
- * @property {boolean}           [removeIdTest=false]                  Removes `id="test-whatever"` or `id="testWhatever"` from snapshots. **Warning:** You should never use ID's for test tokens, as they can also be used by JS and CSS, making them more brittle and their intent less clear. Use `data-test-id` instead.
- * @property {boolean}           [removeClassTest=false]               Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
- * @property {boolean}           [removeComments=false]                Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
- * @property {boolean}           [renameScopedVBindCSS=false]          This renames `style="--abcd1234-color: #F00;"` to `style="--scoped-color: #F00;"`. This come from using `background: v-bind(color);` in your scoped styles.
- * @property {boolean}           [clearInlineFunctions=false]          Replaces `<div title="function () { return true; }"></div>` or `<div title="(x) => !x"></div>` with this placeholder `<div title="[function]"></div>`.
- * @property {STUBS}             [stubs={}]                            Allows targeting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
- * @property {POSTPROCESSOR}     [postProcessor]                       This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
- * @property {RegExp}            [regexToRemoveAttributes]             You can provide a regex pattern to match HTML attributes against to have them removed from the snapshot. Example: `global.vueSnapshots.regexToRemoveAttributes = new RegExp(/data-+/);`
- * @property {FORMATTER}         [formatter='diffable']                Function to use for formatting the markup output. Accepts 'none', 'diffable', or 'classic'.
- * @property {FORMATTING}        [formatting]                          An object containing settings specific to the "diffable" formatter.
- * @property {CLASSICFORMATTING} [classicFormatting]                   An object containing settings specific to the "classic" formatter.
+ * @property {boolean}           [verbose=true]                   Logs to the console errors or other messages if true.
+ * @property {boolean}           [debug=false]                    Logs to the console as internal functions are called, including relevant data to help in troubleshooting.
+ * @property {string[]}          [attributesToClear=[]]           Takes an array of attribute strings, like `['title', 'id']`, to remove the values from these attributes. `<i title="9:04:55 AM" id="uuid_48a50d2" class="current-time"></i>` becomes `<i title id class="current-time"></i>`.
+ * @property {boolean}           [addInputValues=true]            Display current internal element value on `input`, `textarea`, and `select` fields. `<input>` becomes `<input value="'whatever'">`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
+ * @property {boolean}           [sortAttributes=true]            Sorts the attributes inside HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
+ * @property {boolean}           [sortClasses=true]               Sorts the classes inside the `class` attribute on all HTML elements in the snapshot. This greatly reduces snapshot noise, making diffs easier to read.
+ * @property {boolean}           [stringifyAttributes=true]       Injects the real values of dynamic attributes/props into the snapshot. `to="[object Object]"` becomes `to="{ name: 'home' }"`. Requires passing in the VTU `wrapper` or TLV `wrapper`, not `wrapper.html()`.
+ * @property {string[]}          [attributesNotToStringify=ANTS]  If stringifyAttributes is enabled, the attributes defined here will be skipped, preserving the value set by Vue. Defaults to 'style', because Vue can usually accurately convert it to a string in the DOM without help.
+ * @property {boolean}           [removeServerRendered=true]      Removes `data-server-rendered="true"` from your snapshots if true.
+ * @property {boolean}           [removeDataVId=true]             Removes `data-v-1234abcd=""` from your snapshots if true. Useful if 3rd-party components use scoped styles to reduce snapshot noise when updating dependencies.
+ * @property {boolean}           [removeDataTest=true]            Removes `data-test="whatever"` from your snapshots if true.
+ * @property {boolean}           [removeDataTestid=true]          Removes `data-testid="whatever"` from your snapshots if true.
+ * @property {boolean}           [removeDataTestId=true]          Removes `data-test-id="whatever"` from your snapshots if true.
+ * @property {boolean}           [removeDataQa=false]             Removes `data-qa="whatever"` from your snapshots if true. `data-qa` is usually used by non-dev QA members. If they change in your snapshot, that indicates it may break someone else's E2E tests. So most using `data-qa` prefer they be left in by default.
+ * @property {boolean}           [removeDataCy=false]             Removes `data-cy="whatever"` from your snapshots if true. `data-cy` is used by Cypress end-to-end tests. If they change in your snapshot, that indicates it may break an E2E test. So most using data-cy prefer they be left in by default.
+ * @property {boolean}           [removeDataPw=false]             Removes `data-pw="whatever"` from your snapshots if true. `data-pw` is used by Playwright end-to-end tests. If they change in your snapshot, that indicates it may break an E2E test. So most using data-pw prefer they be left in by default.
+ * @property {boolean}           [removeIdTest=false]             Removes `id="test-whatever"` or `id="testWhatever"` from snapshots. **Warning:** You should never use ID's for test tokens, as they can also be used by JS and CSS, making them more brittle and their intent less clear. Use `data-test-id` instead.
+ * @property {boolean}           [removeClassTest=false]          Removes all CSS classes that start with "test", like `class="test-whatever"`. **Warning:** Don't use this approach. Use `data-test` instead. It is better suited for this because it doesn't conflate CSS and test tokens.
+ * @property {boolean}           [removeComments=false]           Removes all HTML comments from your snapshots. This is false by default, as sometimes these comments can infer important information about how your DOM was rendered. However, this is mostly just personal preference.
+ * @property {boolean}           [renameScopedVBindCSS=false]     This renames `style="--abcd1234-color: #F00;"` to `style="--scoped-color: #F00;"`. This come from using `background: v-bind(color);` in your scoped styles.
+ * @property {boolean}           [clearInlineFunctions=false]     Replaces `<div title="function () { return true; }"></div>` or `<div title="(x) => !x"></div>` with this placeholder `<div title="[function]"></div>`.
+ * @property {STUBS}             [stubs={}]                       Allows targeting specific DOM nodes in the snapshot to optionally replace their tag name or remove attributes and innerHTML.
+ * @property {POSTPROCESSOR}     [postProcessor]                  This is a custom function you can pass in. It will be handed a string of formatted markup and must return a string (not a promise). It runs right after the formatter.
+ * @property {RegExp}            [regexToRemoveAttributes]        You can provide a regex pattern to match HTML attributes against to have them removed from the snapshot. Example: `global.vueSnapshots.regexToRemoveAttributes = new RegExp(/data-+/);`
+ * @property {FORMATTER}         [formatter='diffable']           Function to use for formatting the markup output. Accepts 'none', 'diffable', or 'classic'.
+ * @property {FORMATTING}        [formatting]                     An object containing settings specific to the "diffable" formatter.
+ * @property {CLASSICFORMATTING} [classicFormatting]              An object containing settings specific to the "classic" formatter.
  */
 
 /** @typedef {'root'|'tag'|'text'|'comment'|'doctype'|'cdata'|'script'|'style'|'directive'} ASTNODETYPE */

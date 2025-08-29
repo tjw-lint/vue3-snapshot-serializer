@@ -15,7 +15,7 @@ describe('Load options', () => {
   const defaultSettings = Object.freeze({
     ...booleanDefaults,
     attributesToClear: [],
-    attributesNotToStringify: ['style'],
+    attributesNotToStringify: ['class', 'style'],
     stubs: {},
     formatter: 'diffable',
     formatting: {
