@@ -68,9 +68,6 @@
 /** @typedef {SELECTOR[]} STUBARRAY */
 /** @typedef {STUBOBJECT|STUBARRAY} STUBS */
 
-/** @typedef  */
-
-
 /* eslint-disable no-unused-vars */
 /**
  * Attributes Not To Stringify (ANTS) defaults.
