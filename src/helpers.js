@@ -37,7 +37,7 @@ export const isVueTestUtilsWrapper = function (wrapper) {
 /**
  * Determines if the passed value is a TLV render container.
  *
- * @param  {object}  container  A @Testing-Library/Vue render container
+ * @param  {object}  container  A `@Testing-Library/Vue` render container
  * @return {boolean}            true = TLV container
  */
 export const isTestingLibraryVueContainer = function (container) {
@@ -53,7 +53,7 @@ export const isTestingLibraryVueContainer = function (container) {
 /**
  * Determines if the passed value is a TLV wrapper.
  *
- * @param  {object}  wrapper  A @Testing-Library/Vue render wrapper
+ * @param  {object}  wrapper  A `@Testing-Library/Vue` render wrapper
  * @return {boolean}          true = TLV wrapper
  */
 export const isTestingLibraryVueWrapper = function (wrapper) {
@@ -67,7 +67,7 @@ export const isTestingLibraryVueWrapper = function (wrapper) {
 
 /**
  * Determines if the passed value is a Vue-Test-Utils
- * or @Testing-Library/Vue wrapper.
+ * or `@Testing-Library/Vue` wrapper.
  *
  * @param  {object}  received  A VTU or TLV component wrapper
  * @return {boolean}           true = VTU wrapper or TLV wrapper
@@ -92,11 +92,13 @@ export const logger = function (message) {
   }
 };
 
+/* eslint-disable jsdoc/reject-any-type */
 /**
  * @typedef  {object} DEBUGSTATEMENT
  * @property {string} function        Name of the function being called
  * @property {any}    [any]           Any additional properties related to the function
  */
+/* eslint-enable jsdoc/reject-any-type */
 
 /**
  * Logs out information to help in debugging why snapshots aren't working.

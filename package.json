@@ -9,6 +9,7 @@
     "fix": "npm run lint -- --fix",
     "test": "vitest --coverage",
     "unit": "vitest --run",
+    "outdated": "npx --yes -- check-outdated --columns package,current,wanted,latest --types major,minor,patch",
     "volta": "volta pin node@latest && volta pin npm@latest",
     "bump": "npx --yes -- @jsdevtools/version-bump-prompt && npm i",
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
@@ -19,20 +20,20 @@
     "js-beautify": "^1.15.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@stylistic/eslint-plugin": "^5.3.1",
+    "@eslint/js": "^9.37.0",
+    "@stylistic/eslint-plugin": "^5.4.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitest/coverage-v8": "^3.2.4",
     "@vue/test-utils": "^2.4.6",
-    "eslint": "^9.35.0",
+    "eslint": "^9.37.0",
     "eslint-config-tjw-base": "^4.3.0",
     "eslint-config-tjw-jest": "^3.0.1",
     "eslint-config-tjw-jsdoc": "^2.0.1",
     "eslint-plugin-jest": "^29.0.1",
-    "eslint-plugin-jsdoc": "^54.5.0",
-    "happy-dom": "^18.0.1",
+    "eslint-plugin-jsdoc": "^61.1.1",
+    "happy-dom": "^20.0.0",
     "vitest": "^3.2.3"
   },
   "repository": {
@@ -58,7 +59,7 @@
   },
   "homepage": "https://github.com/tjw-lint/vue3-snapshot-serializer#readme",
   "volta": {
-    "node": "24.7.0",
-    "npm": "11.5.2"
+    "node": "24.10.0",
+    "npm": "11.6.2"
   }
 }
