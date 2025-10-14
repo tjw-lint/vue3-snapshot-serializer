@@ -6,9 +6,9 @@
  * Optional custom function to apply any adjustments to the markup prior to being used in the snapshot.
  * Must return a string (not a promise). Is ran after the formatter.
  *
- * @typedef {Function} POSTPROCESSOR
- * @param   {string}   markup         A string of formatted HTML markup.
- * @return  {string}                  Mutated version of the markup string to store in a snapshot.
+ * @callback          POSTPROCESSOR
+ * @param    {string} markup         A string of formatted HTML markup.
+ * @return   {string}                Mutated version of the markup string to store in a snapshot.
  */
 
 /** @typedef {'normal'|'keep'|'separate'} INDENTSCRIPTS */
