@@ -7,7 +7,7 @@ describe('Remove test tokens', () => {
   const dataQa = '<div data-qa="token">Test</div>';
   const dataCy = '<div data-cy="token">Test</div>';
   const dataPw = '<div data-pw="token">Test</div>';
-  const idTest = '<div id="testtoken">Test</div>';
+  const idTest = '<div id="testtoken"><div id="not-test-token">Test</div></div>';
   const classTest = '<div class="testtoken">Test</div>';
   const classCow = '<div class="cow">Test</div>';
   const div = '<div>Test</div>';
@@ -48,7 +48,7 @@ describe('Remove test tokens', () => {
       .toEqual(div);
 
     expect(removeTestTokens(idTest))
-      .toEqual(div);
+      .toEqual('<div><div id="not-test-token">Test</div></div>');
 
     expect(removeTestTokens(classTest))
       .toEqual(div);

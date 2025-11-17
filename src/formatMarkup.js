@@ -22,6 +22,7 @@ export const formatMarkup = function (markup) {
     function: 'formatMarkup.js:formatMarkup',
     data: { markup }
   });
+  /* v8 ignore else */
   if (globalThis.vueSnapshots) {
     if (globalThis.vueSnapshots.formatter === 'diffable') {
       markup = diffableFormatter(markup);
