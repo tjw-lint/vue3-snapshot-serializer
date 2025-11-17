@@ -8,7 +8,7 @@ import vue from '@vitejs/plugin-vue';
 import {
   configDefaults,
   defineConfig
-} from 'vitest/dist/config.js';
+} from 'vitest/config';
 
 export default defineConfig({
   plugins: [vue()],
@@ -24,8 +24,8 @@ export default defineConfig({
     coverage: {
       exclude: [
         ...(configDefaults?.coverage?.exclude || []),
+        '/tests/mockComponents/',
         'types.js'
-        // '**/dist/'
       ],
       reportsDirectory: './tests/unit/coverage',
       thresholds: {

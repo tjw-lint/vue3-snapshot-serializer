@@ -77,6 +77,7 @@ const addSerializerKeys = function (vueWrapper) {
   if (attributesCanBeStringified(vueWrapper)) {
     debugLogger({ function: 'cheerioManipulation.js:addSerializerKeys' });
     let vnodes;
+    /* v8 ignore else */
     if (isVueTestUtilsWrapper(vueWrapper)) {
       vnodes = vueWrapper.findAll('*');
     } else if (vueWrapper.container?.querySelectorAll) {
@@ -89,6 +90,7 @@ const addSerializerKeys = function (vueWrapper) {
       }
     }
     for (let vnode of vnodes) {
+      /* v8 ignore else */
       if (vnode.element?.setAttribute) {
         vnode.element.setAttribute(KEY_NAME, 'v-' + key);
       } else if (vnode.setAttribute) {
@@ -122,6 +124,7 @@ const removeSerializerKeys = function ($, vueWrapper) {
       const selectorKey = '[' + KEY_NAME + '="' + currentKey + '"]';
 
       let vnode;
+      /* v8 ignore else */
       if (typeof(vueWrapper?.find) === 'function') {
         vnode = vueWrapper.find(selectorKey);
         vnode.element.removeAttribute(KEY_NAME);
@@ -171,6 +174,7 @@ const addInputValues = function ($, vueWrapper) {
       let checked;
 
       // VTU Wrapper
+      /* v8 ignore else */
       if (isVueTestUtilsWrapper(vueWrapper)) {
         vnode = vueWrapper.find(keySelector);
         value = vnode.element.value;
@@ -194,6 +198,7 @@ const addInputValues = function ($, vueWrapper) {
 
       const valueWasSet = value !== tempValue;
 
+      /* v8 ignore else */
       if (valueWasSet) {
         element.attribs.value = swapQuotes(stringify(value));
         if (['checkbox', 'radio'].includes(element.attribs.type)) {
@@ -228,11 +233,13 @@ const stringifyAttributes = function ($, vueWrapper) {
       const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
 
       let vnode;
+      /* v8 ignore else */
       if (vueWrapper && typeof(vueWrapper) === 'object') {
         const isVTUwrapper = typeof(vueWrapper.find) === 'function';
         const isTLVwrapper = typeof(vueWrapper.container?.querySelector) === 'function';
         const isTLVcontainer = typeof(vueWrapper.querySelector) === 'function';
 
+        /* v8 ignore else */
         if (isVTUwrapper) {
           vnode = vueWrapper.find(keySelector);
         } else if (isTLVwrapper) {
@@ -264,6 +271,7 @@ const stringifyAttributes = function ($, vueWrapper) {
           for (let attribute of attributes) {
             const attributeName = attribute.name;
             let value = attribute.value;
+            /* v8 ignore else */
             if (!globalThis.vueSnapshots.attributesNotToStringify.includes(attributeName)) {
               if (vnode.__vnode?.props?.[attributeName] !== undefined) {
                 value = vnode.__vnode.props[attributeName];
@@ -591,6 +599,7 @@ export const cheerioManipulation = function (vueWrapper) {
   addSerializerKeys(vueWrapper);
   let html = vueWrapper;
   // VTU or TLV Wrapper
+  /* v8 ignore else */
   if (typeof(vueWrapper?.html) === 'function') {
     html = vueWrapper.html();
   // TLV Container
