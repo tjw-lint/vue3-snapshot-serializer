@@ -22,21 +22,21 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@stylistic/eslint-plugin": "^5.5.0",
+    "@stylistic/eslint-plugin": "^5.6.1",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vitest/coverage-v8": "^4.0.10",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "@vitest/coverage-v8": "^4.0.12",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.39.1",
     "eslint-config-tjw-base": "^4.3.0",
     "eslint-config-tjw-jest": "^3.0.1",
     "eslint-config-tjw-jsdoc": "^2.0.1",
-    "eslint-plugin-jest": "^29.1.0",
-    "eslint-plugin-jsdoc": "^61.2.1",
+    "eslint-plugin-jest": "^29.2.0",
+    "eslint-plugin-jsdoc": "^61.4.0",
     "happy-dom": "^20.0.10",
     "npm-free-server": "^1.1.0",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.12"
   },
   "repository": {
     "type": "git",
