@@ -348,7 +348,7 @@ const removeScopedStylesDataVIDAttributes = function ($) {
 
 /**
  * This renames `style="--abcd1234-color: #F00;"` to
- * `style="--scoped-color: #F00;"`. This come from using
+ * `style="--scoped-color: #F00;"`. This comes from using
  * `background: v-bind(color);` in your scoped styles.
  *
  * @param {object} $  The markup as a cheerio object

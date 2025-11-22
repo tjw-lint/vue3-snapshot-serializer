@@ -11,7 +11,7 @@ Related to issue #0
 **Checklist:**
 
 * [ ] Update documentation site
-* [ ] Update dependencies - `npm outdated`
+* [ ] Update dependencies - `npm run outdated`
 * [ ] `npm run volta`
 * [ ] `npm run bump`
 * [ ] If API changed, update `types.js`
