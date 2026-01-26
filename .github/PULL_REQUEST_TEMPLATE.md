@@ -12,6 +12,6 @@ Related to issue #0
 
 * [ ] Update documentation site
 * [ ] Update dependencies - `npm run outdated`
-* [ ] `npm run volta`
+* [ ] `npm run proto`, then copy versions to `devEngines` and delete `.prototools`
 * [ ] `npm run bump`
 * [ ] If API changed, update `types.js`
