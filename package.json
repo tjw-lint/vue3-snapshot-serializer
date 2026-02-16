@@ -22,19 +22,19 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@stylistic/eslint-plugin": "^5.7.1",
+    "@stylistic/eslint-plugin": "^5.8.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
-    "@vitejs/plugin-vue": "^6.0.3",
+    "@vitejs/plugin-vue": "^6.0.4",
     "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.39.2",
     "eslint-config-tjw-base": "^4.3.0",
     "eslint-config-tjw-jest": "^3.0.1",
     "eslint-config-tjw-jsdoc": "^2.0.1",
-    "eslint-plugin-jest": "^29.12.1",
-    "eslint-plugin-jsdoc": "^62.4.1",
-    "happy-dom": "^20.3.9",
+    "eslint-plugin-jest": "^29.15.0",
+    "eslint-plugin-jsdoc": "^62.5.5",
+    "happy-dom": "^20.6.1",
     "npm-free-server": "^1.1.0",
     "vitest": "^4.0.18"
   },
@@ -63,11 +63,11 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "25.4.0"
+      "version": "25.6.1"
     },
     "packageManager": {
       "name": "npm",
-      "version": "11.8.0"
+      "version": "11.9.0"
     }
   }
 }
