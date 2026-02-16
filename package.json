@@ -11,7 +11,7 @@
     "unit": "vitest --run",
     "coverage": "cd tests && cd unit && cd coverage && node ../../../node_modules/npm-free-server/dist/server.js",
     "outdated": "npx --yes -- check-outdated --columns package,current,wanted,latest --types major,minor,patch",
-    "proto": "proto pin node latest --resolve && proto pin npm latest --resolve",
+    "proto": "proto pin node latest --resolve --tool-native && proto pin npm latest --resolve --tool-native",
     "bump": "npx --yes -- @jsdevtools/version-bump-prompt && npm i",
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
   },
