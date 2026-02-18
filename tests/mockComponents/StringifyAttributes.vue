@@ -13,7 +13,7 @@
   </div>
   <StringifyProps
     :person="{ name: 'bob' }"
-    :came-case-prop="value"
+    :camel-case-prop="value"
   />
 </template>
 
