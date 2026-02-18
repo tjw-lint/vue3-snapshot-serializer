@@ -21,14 +21,14 @@
     "js-beautify": "^1.15.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.8.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-tjw-base": "^4.3.0",
     "eslint-config-tjw-jest": "^3.0.1",
     "eslint-config-tjw-jsdoc": "^2.0.1",
