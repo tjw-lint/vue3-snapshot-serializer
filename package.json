@@ -1,7 +1,7 @@
 {
   "name": "vue3-snapshot-serializer",
   "type": "module",
-  "version": "2.13.0",
+  "version": "2.13.1",
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
@@ -16,27 +16,27 @@
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
   },
   "dependencies": {
-    "cheerio": "^1.1.2",
-    "htmlparser2": "^10.0.0",
+    "cheerio": "^1.2.0",
+    "htmlparser2": "^10.1.0",
     "js-beautify": "^1.15.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@stylistic/eslint-plugin": "^5.7.0",
+    "@stylistic/eslint-plugin": "^5.8.0",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
-    "@vitejs/plugin-vue": "^6.0.3",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.39.2",
     "eslint-config-tjw-base": "^4.3.0",
     "eslint-config-tjw-jest": "^3.0.1",
     "eslint-config-tjw-jsdoc": "^2.0.1",
-    "eslint-plugin-jest": "^29.12.1",
-    "eslint-plugin-jsdoc": "^62.1.0",
-    "happy-dom": "^20.3.3",
+    "eslint-plugin-jest": "^29.15.0",
+    "eslint-plugin-jsdoc": "^62.6.0",
+    "happy-dom": "^20.6.2",
     "npm-free-server": "^1.1.0",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   },
   "repository": {
     "type": "git",
@@ -61,7 +61,7 @@
   },
   "homepage": "https://github.com/tjw-lint/vue3-snapshot-serializer#readme",
   "volta": {
-    "node": "25.2.1",
-    "npm": "11.7.0"
+    "node": "25.6.1",
+    "npm": "11.9.0"
   }
 }

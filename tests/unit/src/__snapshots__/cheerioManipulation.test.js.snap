@@ -332,6 +332,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Does not stringify attrib
 <div title="[object Object]">
   bob
 </div>
+<div title="[object Object]"></div>
 `;
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values including child components 1`] = `
@@ -362,6 +363,7 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
 <div title="{ name: 'bob' }">
   bob
 </div>
+<div title="{ y: 2 }"></div>
 `;
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values with stubbed child component 1`] = `
@@ -389,7 +391,10 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces attribute values
     stuff.
   </span>
 </div>
-<span person="{ name: 'bob' }"></span>
+<span
+  camel-case-prop="{ y: 2 }"
+  person="{ name: 'bob' }"
+></span>
 `;
 
 exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on children in shallow mounts 1`] = `
@@ -417,5 +422,8 @@ exports[`Cheerio Manipulation > Stringify attributes > Replaces prop values on c
     stuff.
   </span>
 </div>
-<stringify-props-stub person="{ name: 'bob' }"></stringify-props-stub>
+<stringify-props-stub
+  camelcaseprop="{ y: 2 }"
+  person="{ name: 'bob' }"
+></stringify-props-stub>
 `;
