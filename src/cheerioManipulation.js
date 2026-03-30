@@ -230,11 +230,13 @@ const stringifyAttributes = function ($, vueWrapper) {
     });
     $('[' + KEY_NAME + ']').each((index, element) => {
       const currentKey = $(element).attr(KEY_NAME);
+      // '[data-vue-snapshot-serializer-key="v-28"]'
       const keySelector = '[' + KEY_NAME + '="' + currentKey + '"]';
 
       let vnode;
       /* v8 ignore else */
       if (vueWrapper && typeof(vueWrapper) === 'object') {
+        // Detect if using @vue/test-utils or @testing-library/vue
         const isVTUwrapper = typeof(vueWrapper.find) === 'function';
         const isTLVwrapper = typeof(vueWrapper.container?.querySelector) === 'function';
         const isTLVcontainer = typeof(vueWrapper.querySelector) === 'function';
@@ -256,6 +258,14 @@ const stringifyAttributes = function ($, vueWrapper) {
           const attributeNames = Object.keys(attributes);
           for (let attributeName of attributeNames) {
             let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
+            // handle camelCaseProps that get lowercased as HTML attributes
+            if (!value) {
+              let lowercaseProps = {};
+              for (const propName in vnode?.wrapperElement?.__vnode?.props) {
+                lowercaseProps[propName.toLowerCase()] = vnode?.wrapperElement?.__vnode?.props[propName];
+              }
+              value = lowercaseProps[attributeName];
+            }
             if (
               value !== undefined &&
               typeof(value) !== 'string' &&
@@ -275,6 +285,13 @@ const stringifyAttributes = function ($, vueWrapper) {
             if (!globalThis.vueSnapshots.attributesNotToStringify.includes(attributeName)) {
               if (vnode.__vnode?.props?.[attributeName] !== undefined) {
                 value = vnode.__vnode.props[attributeName];
+              } else {
+                // handle camelCaseProps that get lowercased as HTML attributes
+                let lowercaseProps = {};
+                for (const propName in vnode.__vnode?.props) {
+                  lowercaseProps[propName.toLowerCase()] = vnode.__vnode?.props[propName];
+                }
+                value = lowercaseProps[attributeName];
               }
               if (value !== undefined && typeof(value) !== 'string') {
                 value = swapQuotes(stringify(value));

@@ -11,7 +11,10 @@
       <em>Some</em> stuff.
     </span>
   </div>
-  <StringifyProps :person="{ name: 'bob' }" />
+  <StringifyProps
+    :camel-case-prop="value"
+    :person="{ name: 'bob' }"
+  />
 </template>
 
 <script>
