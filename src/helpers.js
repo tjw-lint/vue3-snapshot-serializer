@@ -3,7 +3,7 @@
  */
 
 import * as cheerio from 'cheerio';
-import * as htmlparser2 from 'htmlparser2';
+import { parseDocument } from 'htmlparser2';
 
 /**
  * Determines if the passed in value is markup.
@@ -247,7 +247,7 @@ const xmlOptions = {
  */
 export const parseMarkup = function (markup) {
   debugLogger({ function: 'helpers.js:parseMarkup' });
-  const ast = htmlparser2.parseDOM(markup, xmlOptions);
+  const ast = parseDocument(markup, xmlOptions).children;
   return ast;
 };
 
