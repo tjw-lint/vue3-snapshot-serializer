@@ -17,7 +17,7 @@ Website repo:
 ## Running this repo locally
 
 1. Fork or Clone the repo
-1. Install [Volta](https://volta.sh)
+1. Install [Proto](https://github.com/TheJaredWilcurt/blog/discussions/41)
 1. `npm install`
 1. `npm t` (runs unit tests)
 1. `npm run fix` (runs linter)
