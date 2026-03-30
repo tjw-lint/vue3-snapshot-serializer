@@ -1,7 +1,7 @@
 {
   "name": "vue3-snapshot-serializer",
   "type": "module",
-  "version": "2.13.1",
+  "version": "2.13.2",
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "coverage": "cd tests && cd unit && cd coverage && node ../../../node_modules/npm-free-server/dist/server.js",
     "outdated": "npx --yes -- check-outdated --columns package,current,wanted,latest --types major,minor,patch",
     "proto": "proto pin node latest --resolve --tool-native && proto pin npm latest --resolve --tool-native",
-    "bump": "npx --yes -- @jsdevtools/version-bump-prompt && npm i",
+    "bump": "npx --yes -- @jsdevtools/version-bump-prompt@latest && npm i",
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
   },
   "dependencies": {
