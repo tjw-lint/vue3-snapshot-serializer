@@ -26,7 +26,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.6",
-    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.6",
     "@vue/test-utils": "^2.4.10",
     "eslint": "^10.3.0",
     "eslint-config-tjw-base": "^5.0.0",
@@ -37,7 +37,7 @@
     "globals": "^17.6.0",
     "happy-dom": "^20.9.0",
     "npm-free-server": "^1.1.0",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.6"
   },
   "repository": {
     "type": "git",
@@ -64,11 +64,11 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "25.9.0"
+      "version": "26.1.0"
     },
     "packageManager": {
       "name": "npm",
-      "version": "11.12.1"
+      "version": "11.13.0"
     }
   }
 }
