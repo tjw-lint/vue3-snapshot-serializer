@@ -4,8 +4,8 @@ exports[`ObjectAfterVIfStubParent > Props do not become [object Object] after a 
 <div>
   <!-- v-if -->
   <object-after-v-if-stub-child-stub
-    arr="['c']"
-    obj="{ a: { b: ['c'] } }"
+    myarr="['c']"
+    myobj="{ a: { b: ['c'] } }"
   ></object-after-v-if-stub-child-stub>
 </div>
 `;
@@ -16,8 +16,8 @@ exports[`ObjectAfterVIfStubParent > Serializes object/array props correctly with
     Header
   </h1>
   <object-after-v-if-stub-child-stub
-    arr="['c']"
-    obj="{ a: { b: ['c'] } }"
+    myarr="['c']"
+    myobj="{ a: { b: ['c'] } }"
   ></object-after-v-if-stub-child-stub>
 </div>
 `;

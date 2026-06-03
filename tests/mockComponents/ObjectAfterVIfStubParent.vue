@@ -2,8 +2,8 @@
   <div>
     <h1 v-if="hasHeader">Header</h1>
     <ObjectAfterVIfStubChild
-      :obj="{ a: { b: ['c'] } }"
-      :arr="['c']"
+      :my-obj="{ a: { b: ['c'] } }"
+      :my-arr="['c']"
     />
   </div>
 </template>

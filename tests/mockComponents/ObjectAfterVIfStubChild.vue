@@ -5,6 +5,6 @@
 <script>
 export default {
   name: 'ObjectAfterVIfStubChild',
-  props: ['obj', 'arr']
+  props: ['myObj', 'myArr']
 };
 </script>
