@@ -1,5 +1,5 @@
 <template>
-  <div>{{ obj?.a }}</div>
+  <div>{{ myObj?.a }}</div>
 </template>
 
 <script>
