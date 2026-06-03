@@ -262,7 +262,8 @@ const stringifyAttributes = function ($, vueWrapper) {
             if (!value) {
               let lowercaseProps = {};
               for (const propName in vnode?.wrapperElement?.__vnode?.props) {
-                lowercaseProps[propName.toLowerCase()] = vnode?.wrapperElement?.__vnode?.props[propName];
+                let lowercasePropName = propName.toLowerCase().replaceAll('-', '');
+                lowercaseProps[lowercasePropName] = vnode?.wrapperElement?.__vnode?.props[propName];
               }
               value = lowercaseProps[attributeName];
             }

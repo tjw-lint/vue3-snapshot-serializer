@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ObjectAfterVIfStubParent > Props do not become [object Object] after a v-if toggle 1`] = `
+<div>
+  <!-- v-if -->
+  <object-after-v-if-stub-child-stub
+    myarr="['c']"
+    myobj="{ a: { b: ['c'] } }"
+  ></object-after-v-if-stub-child-stub>
+</div>
+`;
+
+exports[`ObjectAfterVIfStubParent > Serializes object/array props correctly without a v-if toggle 1`] = `
+<div>
+  <h1>
+    Header
+  </h1>
+  <object-after-v-if-stub-child-stub
+    myarr="['c']"
+    myobj="{ a: { b: ['c'] } }"
+  ></object-after-v-if-stub-child-stub>
+</div>
+`;
