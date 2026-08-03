@@ -33,7 +33,7 @@
     "eslint-config-tjw-jest": "^4.0.0",
     "eslint-config-tjw-jsdoc": "^2.0.1",
     "eslint-plugin-jest": "^29.16.0",
-    "eslint-plugin-jsdoc": "^63.3.1",
+    "eslint-plugin-jsdoc": "^63.3.2",
     "globals": "^17.8.0",
     "happy-dom": "^20.11.1",
     "npm-free-server": "^1.1.0",
