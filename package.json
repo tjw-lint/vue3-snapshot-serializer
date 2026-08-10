@@ -1,7 +1,7 @@
 {
   "name": "vue3-snapshot-serializer",
   "type": "module",
-  "version": "2.13.3",
+  "version": "2.13.4",
   "description": "Vitest snapshot serializer for Vue 3 components",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "vitest --coverage",
     "unit": "vitest --run",
     "coverage": "cd tests && cd unit && cd coverage && node ../../../node_modules/npm-free-server/dist/server.js",
-    "outdated": "npx --yes -- check-outdated --columns package,current,wanted,latest --types major,minor,patch",
+    "outdated": "npx --yes -- check-outdated --ignore-packages js-beautify --columns package,current,wanted,latest --types major,minor,patch",
     "proto": "proto pin node latest --resolve --tool-native && proto pin npm latest --resolve --tool-native",
     "bump": "npx --yes -- @jsdevtools/version-bump-prompt@latest && npm i",
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
@@ -28,14 +28,14 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-v8": "^4.1.10",
     "@vue/test-utils": "^2.4.11",
-    "eslint": "^10.8.0",
+    "eslint": "^10.8.1",
     "eslint-config-tjw-base": "^5.0.0",
     "eslint-config-tjw-jest": "^4.0.0",
     "eslint-config-tjw-jsdoc": "^2.0.1",
     "eslint-plugin-jest": "^29.16.0",
-    "eslint-plugin-jsdoc": "^63.3.3",
+    "eslint-plugin-jsdoc": "^64.0.2",
     "globals": "^17.9.0",
-    "happy-dom": "^20.11.1",
+    "happy-dom": "^20.11.2",
     "npm-free-server": "^1.1.0",
     "vitest": "^4.1.6"
   },
@@ -64,11 +64,11 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "26.3.0"
+      "version": "26.7.0"
     },
     "packageManager": {
       "name": "npm",
-      "version": "11.16.0"
+      "version": "12.0.2"
     }
   }
 }
