@@ -23,7 +23,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.9.0",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/user-event": "^14.6.3",
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-v8": "^4.1.10",
@@ -33,8 +33,8 @@
     "eslint-config-tjw-jest": "^4.0.0",
     "eslint-config-tjw-jsdoc": "^2.0.1",
     "eslint-plugin-jest": "^29.16.0",
-    "eslint-plugin-jsdoc": "^63.3.2",
-    "globals": "^17.8.0",
+    "eslint-plugin-jsdoc": "^63.3.3",
+    "globals": "^17.9.0",
     "happy-dom": "^20.11.1",
     "npm-free-server": "^1.1.0",
     "vitest": "^4.1.6"
