@@ -8,7 +8,8 @@ import {
   parseInlineStyles,
   parseMarkup,
   stringify,
-  swapQuotes
+  swapQuotes,
+  unescapeHtml
 } from '@/helpers.js';
 
 describe('Helpers', () => {
@@ -187,6 +188,26 @@ describe('Helpers', () => {
 
       expect(swapQuotes('{ "key": "value" }'))
         .toEqual('{ \'key\': \'value\' }');
+    });
+  });
+
+  describe('UnescapeHtml', () => {
+    test('Decodes entities', () => {
+      const escapedMarkup = '&lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;';
+
+      expect(unescapeHtml(escapedMarkup))
+        .toEqual('<div title="text">1 & 2</div>');
+    });
+
+    test('Does not double decode an escaped ampersand', () => {
+      expect(unescapeHtml('&amp;lt;'))
+        .toEqual('&lt;');
+
+      expect(unescapeHtml('&amp;nbsp;'))
+        .toEqual('&nbsp;');
+
+      expect(unescapeHtml('&amp;quot;'))
+        .toEqual('&quot;');
     });
   });
 

@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Removes specific attributes related to testing tokens from the supplied Cheerio object.
  */
