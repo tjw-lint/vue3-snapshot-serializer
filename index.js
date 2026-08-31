@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Entry point for the library. Exports test/print functions for Vitest/Jest.
  * Also exports `vueMarkupFormatter` function for any other uses.
