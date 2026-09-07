@@ -24,7 +24,7 @@ export default defineConfig({
     coverage: {
       exclude: [
         ...(configDefaults?.coverage?.exclude || []),
-        '/tests/mockComponents/',
+        '**/tests/mockComponents/**',
         'types.js'
       ],
       reportsDirectory: './tests/unit/coverage',
