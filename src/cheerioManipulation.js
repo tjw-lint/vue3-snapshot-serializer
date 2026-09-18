@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Uses the Cheerio library to mutate the markup based on the global vueSnapshots settings.
  */
@@ -259,7 +261,7 @@ const stringifyAttributes = function ($, vueWrapper) {
           for (let attributeName of attributeNames) {
             let value = vnode?.wrapperElement?.__vnode?.props?.[attributeName];
             // handle camelCaseProps that get lowercased as HTML attributes
-            if (!value) {
+            if (value === undefined) {
               let lowercaseProps = {};
               for (const propName in vnode?.wrapperElement?.__vnode?.props) {
                 let lowercasePropName = propName.toLowerCase().replaceAll('-', '');
@@ -387,10 +389,17 @@ const renameScopedVBindCustomProperties = function ($) {
         .map((inlineStyle) => {
           // Is a custom property definition
           if (inlineStyle.trim().startsWith('--')) {
+            // Only split on the first colon, values may contain colons,
+            // like `url(https://site.com/img.png)`. A custom property
+            // with no value at all has no colon to split on.
+            const colonIndex = inlineStyle.indexOf(':');
+            if (colonIndex === -1) {
+              return inlineStyle;
+            }
             // '--abcd1234-background-color'
-            let property = inlineStyle.split(':')[0].trim();
+            let property = inlineStyle.slice(0, colonIndex).trim();
             // '#F00'
-            const value = inlineStyle.split(':')[1].trim();
+            const value = inlineStyle.slice(colonIndex + 1).trim();
             // ['abcd1234', 'background', 'color']
             let propertyChunks = property.split('-').filter(Boolean);
             const isVbindScopedCustomProperty = (
@@ -592,7 +601,8 @@ const sortClasses = function ($) {
       const classes = element?.attribs?.class?.trim();
       if (classes) {
         element.attribs.class = classes
-          .split(' ')
+          .split(/\s+/)
+          .filter(Boolean)
           .sort()
           .join(' ');
       }
