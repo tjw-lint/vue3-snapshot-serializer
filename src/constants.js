@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Constants and large object generation/storage.
  */
