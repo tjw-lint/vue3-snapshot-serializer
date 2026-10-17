@@ -15,29 +15,32 @@
     "bump": "npx --yes -- @jsdevtools/version-bump-prompt@latest && npm i",
     "debug": "vitest --inspect-brk --no-file-parallelism -t \"Renders\" \"testingLibrary\""
   },
+  "ManifestComments": [
+    "js-beautify is pinned to 1.x.x as it is only used as a migration path from jest-serializer-vue-tjw"
+  ],
   "dependencies": {
     "cheerio": "^1.2.0",
     "htmlparser2": "^12.0.0",
-    "js-beautify": "^1.15.4"
+    "js-beautify": "1.15.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.9.0",
-    "@testing-library/user-event": "^14.6.7",
+    "@testing-library/user-event": "^14.6.8",
     "@testing-library/vue": "^8.1.0",
-    "@vitejs/plugin-vue": "^6.0.9",
+    "@vitejs/plugin-vue": "^6.0.10",
     "@vitest/coverage-v8": "^5.0.3",
     "@vue/test-utils": "^2.5.1",
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "eslint-config-tjw-base": "^5.0.0",
     "eslint-config-tjw-jest": "^4.0.0",
     "eslint-config-tjw-jsdoc": "^2.0.1",
-    "eslint-plugin-jest": "^29.16.6",
-    "eslint-plugin-jsdoc": "^65.2.2",
+    "eslint-plugin-jest": "^29.17.0",
+    "eslint-plugin-jsdoc": "^65.3.11",
     "globals": "^17.13.0",
-    "happy-dom": "^20.14.6",
+    "happy-dom": "^21.0.3",
     "npm-free-server": "^1.1.0",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.5"
   },
   "repository": {
     "type": "git",
@@ -64,11 +67,11 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "26.8.1"
+      "version": "26.12.0"
     },
     "packageManager": {
       "name": "npm",
-      "version": "12.0.2"
+      "version": "12.2.0"
     }
   }
 }
