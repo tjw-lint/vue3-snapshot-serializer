@@ -277,6 +277,16 @@ describe('Cheerio Manipulation', () => {
       expect(cheerioManipulation(markup))
         .toMatchSnapshot();
     });
+
+    test('Collapses extra whitespace between classes', () => {
+      globalThis.vueSnapshots.sortClasses = true;
+
+      expect(cheerioManipulation('<div class="cow  bat"></div>'))
+        .toEqual('<div class="bat cow"></div>');
+
+      expect(cheerioManipulation('<div class="cow\n  bat\n"></div>'))
+        .toEqual('<div class="bat cow"></div>');
+    });
   });
 
   describe('EmbeddedStyles.vue', () => {
@@ -337,6 +347,20 @@ describe('Cheerio Manipulation', () => {
             </span>
           </div>
         `);
+    });
+
+    test('Retains values containing a colon', () => {
+      globalThis.vueSnapshots.renameScopedVBindCSS = true;
+
+      expect(cheerioManipulation('<div style="--9593b251-bg: url(https://site.com/a.png)"></div>'))
+        .toEqual('<div style="--scoped-bg: url(https://site.com/a.png)"></div>');
+    });
+
+    test('Does not throw on a custom property with no value', () => {
+      globalThis.vueSnapshots.renameScopedVBindCSS = true;
+
+      expect(cheerioManipulation('<div style="--9593b251-color"></div>'))
+        .toEqual('<div style="--9593b251-color"></div>');
     });
   });
 

@@ -40,6 +40,31 @@ describe('diffableFormatter', () => {
       });
   });
 
+  describe('Doctype', () => {
+    test('Formats a document with a doctype', () => {
+      const markup = '<!DOCTYPE html><html><body><p>Text</p></body></html>';
+
+      expect(markup)
+        .toMatchInlineSnapshot(`
+          <!DOCTYPE html>
+          <html>
+            <body>
+              <p>
+                Text
+              </p>
+            </body>
+          </html>
+        `);
+    });
+
+    test('Formats a lone doctype', () => {
+      const markup = '<!DOCTYPE html>';
+
+      expect(markup)
+        .toMatchInlineSnapshot('<!DOCTYPE html>');
+    });
+  });
+
   describe('HTML entity encoding', () => {
     /* eslint-disable no-irregular-whitespace */
     // non-breaking-space character code

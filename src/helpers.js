@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Utility functions imported by other files.
  */
@@ -187,15 +189,20 @@ export const stringify = function (obj) {
 };
 
 /**
- * Escapes special HTML characters.
+ * Encodes non-breaking spaces so they are visible in a snapshot.
+ *
+ * This is deliberately not a full HTML escape, and so is not the
+ * exact inverse of `unescapeHtml`. Any entities already present in
+ * the markup are left untouched, so `&lt;` stays as `&lt;` rather
+ * than becoming `&amp;lt;`.
  *
  * @example
- * '<div title="text">1 & 2</div>'
+ * '&lt;div&gt;1 &amp; 2\xa03&lt;/div&gt;'
  * becomes
- * '&lt;div title=&quot;text&quot;&gt;1 &amp; 2&lt;/div&gt;'
+ * '&lt;div&gt;1 &amp; 2&nbsp;3&lt;/div&gt;'
  *
  * @param  {string} value  Any input string.
- * @return {string}        The same string, but with encoded HTML entities.
+ * @return {string}        The same string, with non-breaking spaces encoded.
  */
 export const escapeHtml = function (value) {
   // https://html.spec.whatwg.org/multipage/named-characters.html
@@ -219,9 +226,10 @@ export const unescapeHtml = function (value) {
     .replaceAll('&#xA;', '\n')
     .replaceAll('&nbsp;', '\xa0')
     .replaceAll('&quot;', '"')
-    .replaceAll('&amp;', '&')
     .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>');
+    .replaceAll('&gt;', '>')
+    // Must go last
+    .replaceAll('&amp;', '&');
 };
 
 /**
