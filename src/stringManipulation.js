@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Applies regex-based string manipulations to the supplied markup, after Cheerio manipulation is complete.
  */
