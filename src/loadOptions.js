@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @file Loads in the user's settings, validates them, and sets defaults.
  */
@@ -417,8 +419,7 @@ export const loadOptions = function () {
     'classesPerLine',
     'inlineStylesPerLine',
     'tagsWithWhitespacePreserved',
-    'voidElements',
-    'whiteSpacePreservedOption'
+    'voidElements'
   ];
   const allRootKeys = Object.keys(globalThis.vueSnapshots);
 

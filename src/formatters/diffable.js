@@ -56,7 +56,6 @@ export const diffableFormatter = function (markup) {
     indent = indent || 0;
     const tagTypes = [
       'cdata',
-      'doctype',
       'script',
       'style',
       'tag'
@@ -100,6 +99,11 @@ export const diffableFormatter = function (markup) {
         return '\n' + '  '.repeat(indent) + nodeValue.trim();
       }
       return '';
+    }
+
+    // <!DOCTYPE html>
+    if (node.type === 'directive') {
+      return '\n' + '  '.repeat(indent) + '<' + node.data + '>';
     }
 
     // <!-- Comments -->
